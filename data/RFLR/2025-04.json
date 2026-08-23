@@ -1,0 +1,412 @@
+{
+  "app": "Third Floor",
+  "schema_version": "4.0",
+  "ticker": "RFLR",
+  "name": "Innovator U.S. Small Cap Managed Floor ETF",
+  "issuer": "Innovator (Goldman Sachs Asset Management)",
+  "category": "options_integrated",
+  "as_of": "2025-04-30",
+  "generated_at": "2026-08-23T19:18:31Z",
+  "coverage": {
+    "inception": "2024-09-17",
+    "earliest_available_snapshot": "2025-01",
+    "earliest_full_baseline_snapshot": "2025-09",
+    "requested_backfill_depth_months": 19,
+    "history_limited_by_inception": false
+  },
+  "methodology": {
+    "score_normalization": "A raw semibeta of 1.0 \u2014 the fund moving one-for-one with its benchmark in that combination of directions \u2014 is shown as 50. Moving twice as much is shown as 100, and not moving at all is shown as 0.",
+    "score_normalization_formula": "clamp(floor(50 * raw_semibeta + 0.5), 0, 100)",
+    "shift_threshold": null,
+    "shift_threshold_note": "Not yet set. Whether the marker for a shifted reading should be a flat number of points from the 12-month baseline, or scaled to how many days sit behind each reading, is open (3F-O-01). Every snapshot carries the raw semibeta and the observation counts either answer needs, so the marker can be added without recomputing anything.",
+    "min_observations_per_cell": 20,
+    "price_basis": "close_adjusted",
+    "price_source": "yfinance",
+    "return_frequency": "daily",
+    "defined_outcome_caveat": true
+  },
+  "benchmarks": {
+    "VOO": {
+      "roles": [
+        "universal_anchor"
+      ],
+      "benchmark_source": null,
+      "horizons": [
+        {
+          "horizon": "12mo",
+          "window_start": "2024-04-30",
+          "window_end": "2025-04-30",
+          "observations_total": 0,
+          "observations_classified": 0,
+          "observations_unclassified": 0,
+          "states": null,
+          "blockers": [
+            {
+              "code": "window_shorter_than_horizon",
+              "message": "This reading covers the 12 months up to this date, which means going back to 2024-04-30. This fund's price history only starts on 2024-09-18, so there is nothing to read for the earlier part of that period.",
+              "remedy": "Read the shorter windows in this same table, which fit inside the history the fund does have. The 12 months reading becomes available once the fund has been trading that long.",
+              "subjects": [
+                "12mo"
+              ]
+            }
+          ]
+        },
+        {
+          "horizon": "6mo",
+          "window_start": "2024-10-30",
+          "window_end": "2025-04-30",
+          "observations_total": 124,
+          "observations_classified": 124,
+          "observations_unclassified": 0,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.194250680848462,
+              "score": 10,
+              "observation_count": 54,
+              "quadrant_cov": 3.334134281998907e-05,
+              "quadrant_var_bench": 0.00017164080287573958,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.29745080357349635,
+              "score": 15,
+              "observation_count": 46,
+              "quadrant_cov": 4.212297745101966e-05,
+              "quadrant_var_bench": 0.0001416132582093079,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": 0.6862614535585495,
+              "score": 34,
+              "observation_count": 8,
+              "quadrant_cov": 3.845466443262333e-06,
+              "quadrant_var_bench": 5.603500565742108e-06,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": 0.2851848822798877,
+              "score": 14,
+              "observation_count": 16,
+              "quadrant_cov": 1.778547307264776e-06,
+              "quadrant_var_bench": 6.236471207892655e-06,
+              "data_sufficiency": "thin",
+              "blockers": []
+            }
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "13wk",
+          "window_start": "2025-01-29",
+          "window_end": "2025-04-30",
+          "observations_total": 64,
+          "observations_classified": 64,
+          "observations_unclassified": 0,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.16837427119736242,
+              "score": 8,
+              "observation_count": 27,
+              "quadrant_cov": 5.1272384808087e-05,
+              "quadrant_var_bench": 0.0003045143681601288,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.25316185080176296,
+              "score": 13,
+              "observation_count": 28,
+              "quadrant_cov": 4.657257730316971e-05,
+              "quadrant_var_bench": 0.00018396364679620754,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": null,
+              "score": null,
+              "observation_count": 1,
+              "quadrant_cov": null,
+              "quadrant_var_bench": null,
+              "data_sufficiency": "blocked",
+              "blockers": [
+                {
+                  "code": "quadrant_too_few_observations",
+                  "message": "There were only 1 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
+                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
+                  "subjects": [
+                    "fund_up_bench_down"
+                  ]
+                }
+              ]
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": 0.24706134818255,
+              "score": 12,
+              "observation_count": 8,
+              "quadrant_cov": 1.1752092801003656e-06,
+              "quadrant_var_bench": 4.756750858624882e-06,
+              "data_sufficiency": "thin",
+              "blockers": []
+            }
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "4wk",
+          "window_start": "2025-04-02",
+          "window_end": "2025-04-30",
+          "observations_total": 20,
+          "observations_classified": 20,
+          "observations_unclassified": 0,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.17530618268137366,
+              "score": 9,
+              "observation_count": 12,
+              "quadrant_cov": 0.00011137264993549685,
+              "quadrant_var_bench": 0.0006353036055660473,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.3003145922272316,
+              "score": 15,
+              "observation_count": 8,
+              "quadrant_cov": 0.00011666214619019735,
+              "quadrant_var_bench": 0.0003884664588723197,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": null,
+              "score": null,
+              "observation_count": 0,
+              "quadrant_cov": null,
+              "quadrant_var_bench": null,
+              "data_sufficiency": "blocked",
+              "blockers": [
+                {
+                  "code": "quadrant_too_few_observations",
+                  "message": "There were only 0 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
+                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
+                  "subjects": [
+                    "fund_up_bench_down"
+                  ]
+                }
+              ]
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": null,
+              "score": null,
+              "observation_count": 0,
+              "quadrant_cov": null,
+              "quadrant_var_bench": null,
+              "data_sufficiency": "blocked",
+              "blockers": [
+                {
+                  "code": "quadrant_too_few_observations",
+                  "message": "There were only 0 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
+                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
+                  "subjects": [
+                    "fund_down_bench_up"
+                  ]
+                }
+              ]
+            }
+          },
+          "blockers": []
+        }
+      ]
+    },
+    "IWM": {
+      "roles": [
+        "named_benchmark"
+      ],
+      "benchmark_source": "marketing_language",
+      "horizons": [
+        {
+          "horizon": "12mo",
+          "window_start": "2024-04-30",
+          "window_end": "2025-04-30",
+          "observations_total": 0,
+          "observations_classified": 0,
+          "observations_unclassified": 0,
+          "states": null,
+          "blockers": [
+            {
+              "code": "window_shorter_than_horizon",
+              "message": "This reading covers the 12 months up to this date, which means going back to 2024-04-30. This fund's price history only starts on 2024-09-18, so there is nothing to read for the earlier part of that period.",
+              "remedy": "Read the shorter windows in this same table, which fit inside the history the fund does have. The 12 months reading becomes available once the fund has been trading that long.",
+              "subjects": [
+                "12mo"
+              ]
+            }
+          ]
+        },
+        {
+          "horizon": "6mo",
+          "window_start": "2024-10-30",
+          "window_end": "2025-04-30",
+          "observations_total": 124,
+          "observations_classified": 124,
+          "observations_unclassified": 0,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.28337259355159017,
+              "score": 14,
+              "observation_count": 56,
+              "quadrant_cov": 5.267187906392674e-05,
+              "quadrant_var_bench": 0.0001858749937803615,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.39574666105144524,
+              "score": 20,
+              "observation_count": 57,
+              "quadrant_cov": 5.7106840063919745e-05,
+              "quadrant_var_bench": 0.00014430150822294902,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": -0.16271578053717814,
+              "score": 0,
+              "observation_count": 6,
+              "quadrant_cov": -8.611334429398065e-07,
+              "quadrant_var_bench": 5.292255244678314e-06,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": 0.40741575300338473,
+              "score": 20,
+              "observation_count": 5,
+              "quadrant_cov": 1.4407127750927207e-07,
+              "quadrant_var_bench": 3.5362225551468833e-07,
+              "data_sufficiency": "thin",
+              "blockers": []
+            }
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "13wk",
+          "window_start": "2025-01-29",
+          "window_end": "2025-04-30",
+          "observations_total": 64,
+          "observations_classified": 64,
+          "observations_unclassified": 0,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.2110282211864133,
+              "score": 11,
+              "observation_count": 26,
+              "quadrant_cov": 5.512064416564655e-05,
+              "quadrant_var_bench": 0.00026120034493848734,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.3160606882711187,
+              "score": 16,
+              "observation_count": 34,
+              "quadrant_cov": 6.007489360166724e-05,
+              "quadrant_var_bench": 0.00019007391881060084,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": -0.03764638310060882,
+              "score": 0,
+              "observation_count": 2,
+              "quadrant_cov": -7.172805161788242e-07,
+              "quadrant_var_bench": 1.905310569309975e-05,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": -1.34779630826393,
+              "score": 0,
+              "observation_count": 2,
+              "quadrant_cov": -1.7560379203202896e-07,
+              "quadrant_var_bench": 1.3028956301135798e-07,
+              "data_sufficiency": "thin",
+              "blockers": []
+            }
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "4wk",
+          "window_start": "2025-04-02",
+          "window_end": "2025-04-30",
+          "observations_total": 20,
+          "observations_classified": 20,
+          "observations_unclassified": 0,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.2042800742994548,
+              "score": 10,
+              "observation_count": 11,
+              "quadrant_cov": 0.00010949963270510247,
+              "quadrant_var_bench": 0.0005360269868738476,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.3728810760884591,
+              "score": 19,
+              "observation_count": 7,
+              "quadrant_cov": 0.0001547596597393823,
+              "quadrant_var_bench": 0.0004150375807826419,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": null,
+              "score": null,
+              "observation_count": 1,
+              "quadrant_cov": null,
+              "quadrant_var_bench": null,
+              "data_sufficiency": "blocked",
+              "blockers": [
+                {
+                  "code": "quadrant_too_few_observations",
+                  "message": "There were only 1 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
+                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
+                  "subjects": [
+                    "fund_up_bench_down"
+                  ]
+                }
+              ]
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": null,
+              "score": null,
+              "observation_count": 1,
+              "quadrant_cov": null,
+              "quadrant_var_bench": null,
+              "data_sufficiency": "blocked",
+              "blockers": [
+                {
+                  "code": "quadrant_too_few_observations",
+                  "message": "There were only 1 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
+                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
+                  "subjects": [
+                    "fund_down_bench_up"
+                  ]
+                }
+              ]
+            }
+          },
+          "blockers": []
+        }
+      ],
+      "benchmark_note": "Prospectus references the Solactive United States 2000 Index; Innovator's own marketing describes the fund in Russell 2000 terms. IWM used as the practical, literature-aligned proxy."
+    }
+  }
+}

@@ -1,0 +1,333 @@
+/* SPDX-License-Identifier: MIT
+ *
+ * Second Floor — dark-mode modern newspaper (AGENTS.md §8).
+ *
+ * Companion to First Floor, and it has to look like one: Arvo for the wordmark
+ * and headings, Newsreader for body, a monospace stack for tickers and figures.
+ *
+ * The @font-face src values below say __FONT_ARVO_400__ and so on. The build
+ * substitutes base64 data: URIs (SF-18) and then asserts that every remaining
+ * asset reference in the built file is a data: URI, so the "no network call
+ * after load" promise is checked rather than remembered.
+ *
+ * Sizes here are numbers rather than adjectives on purpose. "Reasonably large"
+ * is not a specification, and this audience skews toward readers over forty.
+ *
+ * Every declared size is twice §8's stated minimums: body at 2.25rem (36px),
+ * table figures at 2rem, the wordmark at 3.5–5rem. §8 sets floors rather than
+ * targets, so this clears them by a wide margin and nothing in it is broken by
+ * the change.
+ *
+ * Doubled by writing the numbers out rather than by setting the root to 200%,
+ * for two reasons. The root size is what a reader's own browser setting scales,
+ * and taking it over means their preference stops doing anything. And the
+ * clamp() bounds below are mixed rem and vw: moving the root would double the
+ * rem ends and leave the vw middle where it was, so the headings would scale by
+ * some other number at most window widths.
+ */
+
+@font-face {
+  font-family: 'Arvo';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(__FONT_ARVO_400__) format('woff2');
+}
+@font-face {
+  font-family: 'Arvo';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(__FONT_ARVO_700__) format('woff2');
+}
+@font-face {
+  font-family: 'Newsreader';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url(__FONT_NEWSREADER__) format('woff2');
+}
+
+:root {
+  /* Ground and ink. Contrast of --ink on --ground is 14.8:1, well past the
+   * 7:1 this page holds itself to (§8). */
+  --ground: #14151a;
+  --ground-raised: #1d1f26;
+  --ground-sunken: #101116;
+  --rule: #333644;
+  --rule-soft: #24262f;
+
+  --ink: #ece9e3;
+  --ink-quiet: #a9a69f;
+  --ink-faint: #7d7b75;
+
+  /* One accent, used for links, rules and focus. Not for data. */
+  --accent: #d6a75f;
+
+  /* The same accent as a solid fill, darkened. A colour that reads well as a
+   * thin line on the dark ground is too bright as a large block of it, and the
+   * primary button is the largest block on the page. Kept separate from
+   * --accent rather than darkening that: links and focus rings need the bright
+   * one against --ground, and moving both would trade a loud button for
+   * dimmer links. Dark ink on this is 5.7:1, comfortably past the 4.5:1 that
+   * bold text this size is held to. */
+  --accent-solid: #c08340;
+
+  /* Direction only, never magnitude (SF-21). Both sit above 4.5:1 on the
+   * raised ground, and neither is ever the only thing carrying the meaning —
+   * a sign or a word travels with it. */
+  --above: #7fbf8a;
+  --below: #d98b7e;
+
+  --measure: 68ch;
+  --body-size: 2.25rem;
+  --body-leading: 1.6;
+
+  --sans: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --display: 'Arvo', Georgia, 'Times New Roman', serif;
+  --mono: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo, Consolas, monospace;
+}
+
+/* The page commits to dark (§8). A light mode would be a second palette to
+ * keep honest, and the family's look is the dark one. Stated rather than
+ * left to chance, so nothing borrows the host's theme. */
+* { box-sizing: border-box; }
+
+html {
+  background: var(--ground);
+  /* Never below 100%: shrinking the root size is how "responsive" typography
+   * quietly becomes unreadable on the phone most of this audience is holding. */
+  font-size: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: var(--body-size);
+  line-height: var(--body-leading);
+  font-optical-sizing: auto;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* --- layout --------------------------------------------------------------- */
+
+.wrap {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 2rem 1.25rem 6rem;
+}
+
+/* Wide tables get the full width; prose stays at the measure. */
+.wide { max-width: min(96rem, 100%); }
+
+header.masthead {
+  border-bottom: 3px double var(--rule);
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+}
+
+.wordmark {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(3.5rem, 10vw, 5rem);
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--ink);
+}
+
+/* One colour across the whole wordmark. The span stays so the two words remain
+ * addressable, but "Floor" is no longer set apart in the accent. */
+.wordmark .floor { color: var(--ink); }
+
+.standfirst {
+  font-size: 2.125rem;
+  color: var(--ink-quiet);
+  margin: 0.4rem 0 0;
+  max-width: var(--measure);
+}
+
+/* --- type ----------------------------------------------------------------- */
+
+h1, h2, h3 {
+  font-family: var(--display);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+h1 { font-size: clamp(3rem, 8vw, 4rem); margin: 2.5rem 0 0.75rem; }
+h2 {
+  font-size: clamp(2.5rem, 6vw, 3rem);
+  margin: 2.75rem 0 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule-soft);
+}
+h3 { font-size: 2.25rem; margin: 1.75rem 0 0.5rem; }
+
+p { margin: 0 0 1rem; max-width: var(--measure); }
+
+.lede { font-size: 2.5rem; color: var(--ink); }
+.quiet { color: var(--ink-quiet); }
+.faint { color: var(--ink-faint); font-size: 2rem; }
+
+/* The caveat that travels with a figure (INV-1). Not small print — it is set
+ * at the same size as the body, because burying it would defeat the point. */
+.assumption {
+  border-left: 3px solid var(--rule);
+  padding: 0.15rem 0 0.15rem 1rem;
+  margin: 1rem 0;
+  color: var(--ink-quiet);
+}
+
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a:hover { text-decoration-thickness: 2px; }
+
+/* --- tables --------------------------------------------------------------- */
+
+/* Wide tables scroll inside their own container and never push the page
+ * sideways — the page body must not scroll horizontally at 200% zoom (§8). */
+.scroll-x {
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  border: 1px solid var(--rule-soft);
+  border-radius: 2px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 2rem;
+}
+
+th, td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+thead th {
+  font-family: var(--display);
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--ink-quiet);
+  background: var(--ground-sunken);
+  border-bottom: 2px solid var(--rule);
+  position: sticky;
+  top: 0;
+}
+
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+td.ticker { font-family: var(--mono); font-size: 1.875rem; letter-spacing: 0.01em; }
+
+tbody tr:hover { background: var(--ground-raised); }
+
+/* Direction only. The sign in the cell text is what carries the meaning when
+ * colour is unavailable; the colour is a second channel, never the only one. */
+td.above { color: var(--above); }
+td.below { color: var(--below); }
+
+/* --- components ----------------------------------------------------------- */
+
+.card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--ground-raised);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 1.25rem;
+  margin: 0 0 1rem;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+.card:hover { border-color: var(--accent); }
+.card h3 { margin: 0 0 0.35rem; }
+.card p { margin: 0; color: var(--ink-quiet); font-size: 2rem; }
+
+.cards { display: grid; gap: 1rem; grid-template-columns: 1fr; margin: 1.5rem 0; }
+@media (min-width: 46rem) {
+  .cards { grid-template-columns: 1fr 1fr; }
+}
+
+button {
+  font-family: var(--sans);
+  font-size: 2rem;
+  color: var(--ink);
+  background: var(--ground-raised);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+button:hover { border-color: var(--accent); }
+button.primary {
+  background: var(--accent-solid);
+  color: #14151a;
+  border-color: var(--accent-solid);
+  font-weight: 600;
+}
+
+select, input[type='text'], input[type='date'] {
+  font-family: var(--sans);
+  font-size: 2rem;
+  color: var(--ink);
+  background: var(--ground-sunken);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0.5rem 0.65rem;
+  max-width: 100%;
+}
+
+label { display: block; margin: 1rem 0 0.35rem; color: var(--ink-quiet); font-size: 2rem; }
+
+/* Focus must be visible and must not rely on colour alone. */
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* A blocker: why a figure is absent, with what would bring it back (INV-2). */
+.blocker {
+  background: var(--ground-raised);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--accent);
+  border-radius: 3px;
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+.blocker p { margin: 0; }
+.blocker .remedy { margin-top: 0.5rem; color: var(--ink-quiet); }
+
+.ledger { color: var(--ink-quiet); font-size: 2rem; }
+
+.toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ground-raised);
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  padding: 0.75rem 1.25rem;
+  z-index: 10;
+}
+
+hr { border: 0; border-top: 1px solid var(--rule-soft); margin: 2.5rem 0; }
+
+footer {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 3px double var(--rule);
+  color: var(--ink-faint);
+  font-size: 2rem;
+}
+
+@media print {
+  body { background: #fff; color: #000; }
+  .scroll-x { overflow: visible; }
+  td.above, td.below { color: #000; }
+}

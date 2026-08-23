@@ -1,0 +1,64 @@
+# SPDX-License-Identifier: MIT
+#
+# Every gate that can run without a browser. Run the gate; do not assume the
+# phase — First Floor found a real determinism defect the first time it ran one,
+# which is the argument for this whole structure.
+
+name: Validate
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: npm ci
+
+      # The origin tree is gitignored, so this reports "skipped" on a fresh
+      # clone rather than failing. Drift is only checkable where it is present.
+      - name: Vendored modules are still verbatim (SF-17)
+        run: npm run check:vendored
+
+      - name: The notebook is not stale (3F D-05)
+        run: npm run check:notebook
+
+      - name: Typecheck
+        run: npm run build
+
+      - name: Test — TypeScript
+        run: npm test
+
+      - name: Test — the notebook package
+        run: python3 -m unittest discover notebook/test -v
+
+      # Every committed snapshot, against the schema and against the identities
+      # a single document cannot check about itself.
+      - name: Validate the archive
+        run: npm run validate:data
+
+      # Real issuer downloads are data, not repository content (FF D-31), and
+      # the handover tree carries eighteen of them.
+      - name: No handover tree in the history
+        run: |
+          if git ls-files | grep -q '^floor_foundations/'; then
+            echo "::error::floor_foundations/ is tracked; it is a handover tree, not history"
+            exit 1
+          fi
+          echo "handover tree is not tracked"

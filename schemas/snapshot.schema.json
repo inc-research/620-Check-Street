@@ -1,0 +1,163 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://third-floor.example/schemas/snapshot.schema.json",
+  "title": "Third Floor snapshot",
+  "description": "One ticker, one month. The primary artifact: the notebook produces it, the static site renders it, and because every run is committed under a dated filename the archive of past reports exists the moment the files are committed. It must be sufficient on the day it ships — a field cannot be added retroactively to files already committed.",
+  "type": "object",
+  "required": ["app", "schema_version", "ticker", "name", "issuer", "category", "as_of", "generated_at", "coverage", "methodology", "benchmarks"],
+  "additionalProperties": false,
+  "properties": {
+    "app": { "const": "Third Floor" },
+    "schema_version": {
+      "description": "Below 1.0 the compatibility axis is MINOR, not MAJOR (SF-14, from FF D-34): every 0.x document shares major 0, so a major-only check is vacuous. This document is past 1.0 and checks on MAJOR.",
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+$"
+    },
+    "ticker": { "type": "string", "pattern": "^[A-Z.]{1,6}$" },
+    "name": { "type": "string", "minLength": 1 },
+    "issuer": { "type": "string", "minLength": 1 },
+    "category": { "enum": ["options_integrated", "managed_futures"] },
+    "as_of": {
+      "description": "The last trading date in the window, not the calendar month end. A month end that falls on a weekend is not a date any price was observed on, and recording one would put a confident wrong date on the reading.",
+      "type": "string", "format": "date"
+    },
+    "generated_at": { "type": "string", "format": "date-time" },
+
+    "coverage": {
+      "type": "object",
+      "required": ["inception", "earliest_available_snapshot", "earliest_full_baseline_snapshot", "requested_backfill_depth_months", "history_limited_by_inception"],
+      "additionalProperties": false,
+      "properties": {
+        "inception": {
+          "description": "First date the fetch source has a price for. A floor on what any snapshot can know, and the reason several tickers in this set truncate.",
+          "type": "string", "format": "date"
+        },
+        "earliest_available_snapshot": {
+          "description": "Oldest month with a file on disk. The site's rule: a historical-comparison target older than this shows 'Check Fund is too new for historical analysis' and stops, rather than rendering anything.",
+          "type": "string", "pattern": "^\\d{4}-\\d{2}$"
+        },
+        "earliest_full_baseline_snapshot": {
+          "description": "Oldest month whose 12mo horizon is computable. Null means no snapshot in this ticker's archive has a 12-month baseline at all. Distinct from earliest_available_snapshot because 3F D-09 writes a snapshot when ANY horizon is computable — so a file can exist whose baseline row is blocked, and the shift marker, defined as distance from that row, has nothing to measure from.",
+          "type": ["string", "null"], "pattern": "^\\d{4}-\\d{2}$"
+        },
+        "requested_backfill_depth_months": { "type": "integer", "minimum": 1 },
+        "history_limited_by_inception": { "type": "boolean" }
+      }
+    },
+
+    "methodology": {
+      "type": "object",
+      "required": ["score_normalization", "score_normalization_formula", "shift_threshold", "min_observations_per_cell", "price_basis", "price_source", "return_frequency", "defined_outcome_caveat"],
+      "additionalProperties": false,
+      "properties": {
+        "score_normalization": { "type": "string", "minLength": 1 },
+        "score_normalization_formula": {
+          "description": "Stated so a reader can recompute any score from its own raw_semibeta, and so scripts/validate-snapshots.mjs can check that every committed score actually matches. That check is what makes 3F D-04's promise real: the transform can be changed and the whole archive regenerated from stored raw values with no network call.",
+          "type": "string", "minLength": 1
+        },
+        "shift_threshold": { "type": ["number", "null"] },
+        "shift_threshold_note": { "type": "string" },
+        "min_observations_per_cell": { "type": "integer", "minimum": 1 },
+        "price_basis": {
+          "description": "close_adjusted uses dividend- and split-adjusted closes, so an ex-distribution day is not read as a sharp negative return — which would land specifically in the two fund-down quadrants and bias the resilience reading. The cost is that adjustment factors move over time, which is why the archive is append-only (3F D-08).",
+          "enum": ["close_adjusted", "close_unadjusted"]
+        },
+        "price_source": { "enum": ["yfinance", "stooq", "yahoo_chart"] },
+        "return_frequency": { "const": "daily" },
+        "defined_outcome_caveat": { "type": "boolean" }
+      }
+    },
+
+    "benchmarks": {
+      "description": "Keyed by benchmark ticker. Every fund carries VOO, always — that universal anchor is what keeps cross-fund comparison usable across the whole coverage set regardless of what each fund claims to track. A fund whose named benchmark IS VOO carries one entry with both roles, never a duplicated table.",
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["roles", "benchmark_source", "horizons"],
+        "additionalProperties": false,
+        "properties": {
+          "roles": {
+            "type": "array", "minItems": 1, "uniqueItems": true,
+            "items": { "enum": ["universal_anchor", "named_benchmark"] }
+          },
+          "benchmark_source": { "type": ["string", "null"], "enum": ["prospectus_index", "marketing_language", "default_no_named_benchmark", null] },
+          "benchmark_note": { "type": "string", "minLength": 1 },
+          "horizons": {
+            "description": "An array, not an object, because its order is the report table's column order: 12 mo, 6 mo, 13 wk, 4 wk, left to right.",
+            "type": "array", "minItems": 4, "maxItems": 4,
+            "items": { "$ref": "#/$defs/horizon" }
+          }
+        }
+      }
+    }
+  },
+
+  "$defs": {
+    "blocker": {
+      "description": "INV-2: a missing input blocks its metric and names a remedy. Nothing is defaulted quietly, because a zero and an unknown are opposite claims that look identical on the page.",
+      "type": "object",
+      "required": ["code", "message", "remedy"],
+      "additionalProperties": false,
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 },
+        "remedy": { "type": "string", "minLength": 1 },
+        "subjects": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+
+    "horizon": {
+      "type": "object",
+      "required": ["horizon", "window_start", "window_end", "observations_total", "observations_classified", "observations_unclassified", "states", "blockers"],
+      "additionalProperties": false,
+      "properties": {
+        "horizon": { "enum": ["12mo", "6mo", "13wk", "4wk"] },
+        "window_start": { "type": ["string", "null"], "format": "date" },
+        "window_end": { "type": ["string", "null"], "format": "date" },
+        "observations_total": {
+          "description": "Paired trading days in the window. Fund and benchmark are joined on date, inner join only — a date missing from either series drops the pair rather than being forward-filled, because a filled day manufactures a 0.00% return that falls in no quadrant and silently deflates the counts the thin flag depends on.",
+          "type": "integer", "minimum": 0
+        },
+        "observations_classified": { "type": "integer", "minimum": 0 },
+        "observations_unclassified": {
+          "description": "Paired days where either return was exactly zero. The four sign quadrants do NOT partition the sample, and flat days are real in thinly-traded buffered ETFs. Counting them is this app's form of INV-3: observations_total == observations_classified + observations_unclassified, asserted in code and tested.",
+          "type": "integer", "minimum": 0
+        },
+        "states": {
+          "type": ["object", "null"],
+          "required": ["fund_up_bench_up", "fund_down_bench_down", "fund_up_bench_down", "fund_down_bench_up"],
+          "additionalProperties": false,
+          "properties": {
+            "fund_up_bench_up": { "$ref": "#/$defs/cell" },
+            "fund_down_bench_down": { "$ref": "#/$defs/cell" },
+            "fund_up_bench_down": { "$ref": "#/$defs/cell" },
+            "fund_down_bench_up": { "$ref": "#/$defs/cell" }
+          }
+        },
+        "blockers": { "type": "array", "items": { "$ref": "#/$defs/blocker" } }
+      }
+    },
+
+    "cell": {
+      "type": "object",
+      "required": ["raw_semibeta", "score", "observation_count", "quadrant_cov", "quadrant_var_bench", "data_sufficiency", "blockers"],
+      "additionalProperties": false,
+      "properties": {
+        "raw_semibeta": {
+          "description": "Quadrant covariance of fund and benchmark returns, normalised by benchmark variance within that same quadrant. Stored alongside score so the display transform can be changed and every snapshot regenerated with zero network calls (3F D-04). Null when blocked — never a number standing in for one.",
+          "type": ["number", "null"]
+        },
+        "score": { "type": ["integer", "null"], "minimum": 0, "maximum": 100 },
+        "observation_count": { "type": "integer", "minimum": 0 },
+        "quadrant_cov": { "type": ["number", "null"] },
+        "quadrant_var_bench": { "type": ["number", "null"] },
+        "data_sufficiency": {
+          "description": "thin marks a cell below min_observations_per_cell. Distinct from, and in addition to, the ticker-level history_limited_by_inception flag. Expect nearly the whole 4wk column to be thin: a 4-week window is about 20 trading days split four ways, and that is correct disclosure rather than a defect.",
+          "enum": ["ok", "thin", "blocked"]
+        },
+        "blockers": { "type": "array", "items": { "$ref": "#/$defs/blocker" } }
+      }
+    }
+  }
+}

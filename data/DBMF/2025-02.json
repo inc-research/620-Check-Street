@@ -1,0 +1,227 @@
+{
+  "app": "Third Floor",
+  "schema_version": "4.0",
+  "ticker": "DBMF",
+  "name": "iMGP DBi Managed Futures Strategy ETF",
+  "issuer": "iMGP / DBi",
+  "category": "managed_futures",
+  "as_of": "2025-02-28",
+  "generated_at": "2026-08-23T19:18:31Z",
+  "coverage": {
+    "inception": "2024-01-31",
+    "earliest_available_snapshot": "2025-01",
+    "earliest_full_baseline_snapshot": "2025-02",
+    "requested_backfill_depth_months": 19,
+    "history_limited_by_inception": false
+  },
+  "methodology": {
+    "score_normalization": "A raw semibeta of 1.0 \u2014 the fund moving one-for-one with its benchmark in that combination of directions \u2014 is shown as 50. Moving twice as much is shown as 100, and not moving at all is shown as 0.",
+    "score_normalization_formula": "clamp(floor(50 * raw_semibeta + 0.5), 0, 100)",
+    "shift_threshold": null,
+    "shift_threshold_note": "Not yet set. Whether the marker for a shifted reading should be a flat number of points from the 12-month baseline, or scaled to how many days sit behind each reading, is open (3F-O-01). Every snapshot carries the raw semibeta and the observation counts either answer needs, so the marker can be added without recomputing anything.",
+    "min_observations_per_cell": 20,
+    "price_basis": "close_adjusted",
+    "price_source": "yfinance",
+    "return_frequency": "daily",
+    "defined_outcome_caveat": false
+  },
+  "benchmarks": {
+    "VOO": {
+      "roles": [
+        "universal_anchor"
+      ],
+      "benchmark_source": null,
+      "horizons": [
+        {
+          "horizon": "12mo",
+          "window_start": "2024-02-28",
+          "window_end": "2025-02-28",
+          "observations_total": 252,
+          "observations_classified": 248,
+          "observations_unclassified": 4,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.13808703926754917,
+              "score": 7,
+              "observation_count": 98,
+              "quadrant_cov": 3.562233365173097e-06,
+              "quadrant_var_bench": 2.5797014579124455e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.4590086411488171,
+              "score": 23,
+              "observation_count": 68,
+              "quadrant_cov": 2.1738700246955135e-05,
+              "quadrant_var_bench": 4.736011111369718e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": -0.12949515667962702,
+              "score": 0,
+              "observation_count": 37,
+              "quadrant_cov": -2.2079081760891054e-06,
+              "quadrant_var_bench": 1.7050121662476566e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": 0.07432433648786169,
+              "score": 4,
+              "observation_count": 45,
+              "quadrant_cov": 1.2415689907893175e-06,
+              "quadrant_var_bench": 1.6704743687716404e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            }
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "6mo",
+          "window_start": "2024-08-28",
+          "window_end": "2025-02-28",
+          "observations_total": 126,
+          "observations_classified": 124,
+          "observations_unclassified": 2,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.04188036223490866,
+              "score": 2,
+              "observation_count": 50,
+              "quadrant_cov": 1.0181777080906574e-06,
+              "quadrant_var_bench": 2.4311578356931514e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.16630099024235914,
+              "score": 8,
+              "observation_count": 40,
+              "quadrant_cov": 7.746542389349935e-06,
+              "quadrant_var_bench": 4.6581456779424425e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": -0.307198077321973,
+              "score": 0,
+              "observation_count": 13,
+              "quadrant_cov": -4.955116284819789e-06,
+              "quadrant_var_bench": 1.613003677632511e-05,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": 0.11041080107505417,
+              "score": 6,
+              "observation_count": 21,
+              "quadrant_cov": 2.204106432271906e-06,
+              "quadrant_var_bench": 1.996277910141795e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            }
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "13wk",
+          "window_start": "2024-11-29",
+          "window_end": "2025-02-28",
+          "observations_total": 61,
+          "observations_classified": 61,
+          "observations_unclassified": 0,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": -0.11206283913040722,
+              "score": 0,
+              "observation_count": 21,
+              "quadrant_cov": -2.034046257178805e-06,
+              "quadrant_var_bench": 1.8150943461389472e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.1340023598183748,
+              "score": 7,
+              "observation_count": 18,
+              "quadrant_cov": 8.020385566753095e-06,
+              "quadrant_var_bench": 5.985256959372827e-05,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": -0.3851874286300918,
+              "score": 0,
+              "observation_count": 10,
+              "quadrant_cov": -6.376183279689657e-06,
+              "quadrant_var_bench": 1.6553456332586897e-05,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": 0.1786371589708786,
+              "score": 9,
+              "observation_count": 12,
+              "quadrant_cov": 4.5721016657164885e-06,
+              "quadrant_var_bench": 2.5594348298283406e-05,
+              "data_sufficiency": "thin",
+              "blockers": []
+            }
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "4wk",
+          "window_start": "2025-01-31",
+          "window_end": "2025-02-28",
+          "observations_total": 20,
+          "observations_classified": 20,
+          "observations_unclassified": 0,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 1.2398746842039463,
+              "score": 62,
+              "observation_count": 5,
+              "quadrant_cov": 8.581132328619618e-06,
+              "quadrant_var_bench": 6.92096744771354e-06,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.02600328976957362,
+              "score": 1,
+              "observation_count": 5,
+              "quadrant_cov": 1.109871258072036e-06,
+              "quadrant_var_bench": 4.268195554897417e-05,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": -0.28978059407434503,
+              "score": 0,
+              "observation_count": 4,
+              "quadrant_cov": -2.0898085704581617e-06,
+              "quadrant_var_bench": 7.211692615696716e-06,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": 0.3430384914237127,
+              "score": 17,
+              "observation_count": 6,
+              "quadrant_cov": 1.1143307525524375e-05,
+              "quadrant_var_bench": 3.2484131676525e-05,
+              "data_sufficiency": "thin",
+              "blockers": []
+            }
+          },
+          "blockers": []
+        }
+      ],
+      "benchmark_note": "Fund's own factsheet states it is 'not managed in relation to any benchmark.' Bloomberg US Aggregate appears only as one of two illustrative comparison lines in fund materials, alongside an SG CTA index \u2014 not a declared reference. Computed against VOO anchor only, which is informative here (shows diversification benefit vs. equities) even though it isn't a claimed-exposure match."
+    }
+  }
+}

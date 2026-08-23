@@ -1,0 +1,551 @@
+{
+  "app": "Third Floor",
+  "run_started_at": "2026-08-23T19:18:31Z",
+  "run_finished_at": "2026-08-23T19:19:33Z",
+  "registry_schema_version": "1.1",
+  "registry_locked_at": "2026-08-23",
+  "requested_backfill_depth_months": 19,
+  "snapshot_range": {
+    "from": "2025-01",
+    "to": "2026-07"
+  },
+  "min_observations_per_cell": 20,
+  "instruments_fetched": 35,
+  "sources": {
+    "BALT": {
+      "ticker": "BALT",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "BUFC": {
+      "ticker": "BUFC",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "BUFD": {
+      "ticker": "BUFD",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "BUFF": {
+      "ticker": "BUFF",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "BUFI": {
+      "ticker": "BUFI",
+      "source": "yfinance",
+      "rows": 425,
+      "first": "2024-12-10",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "BUFM": {
+      "ticker": "BUFM",
+      "source": "yfinance",
+      "rows": 424,
+      "first": "2024-12-11",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "BUFQ": {
+      "ticker": "BUFQ",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "BUFR": {
+      "ticker": "BUFR",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "BUFX": {
+      "ticker": "BUFX",
+      "source": "yfinance",
+      "rows": 292,
+      "first": "2025-06-25",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "BUFY": {
+      "ticker": "BUFY",
+      "source": "yfinance",
+      "rows": 477,
+      "first": "2024-09-26",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "BUFZ": {
+      "ticker": "BUFZ",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "CPSL": {
+      "ticker": "CPSL",
+      "source": "yfinance",
+      "rows": 490,
+      "first": "2024-09-09",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "DBMF": {
+      "ticker": "DBMF",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "DHDG": {
+      "ticker": "DHDG",
+      "source": "yfinance",
+      "rows": 460,
+      "first": "2024-10-21",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "DMAX": {
+      "ticker": "DMAX",
+      "source": "yfinance",
+      "rows": 410,
+      "first": "2025-01-02",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "EFA": {
+      "ticker": "EFA",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "FGSI": {
+      "ticker": "FGSI",
+      "source": "yfinance",
+      "rows": 291,
+      "first": "2025-06-26",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "FHDG": {
+      "ticker": "FHDG",
+      "source": "yfinance",
+      "rows": 440,
+      "first": "2024-11-18",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "HELO": {
+      "ticker": "HELO",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "HEQQ": {
+      "ticker": "HEQQ",
+      "source": "yfinance",
+      "rows": 353,
+      "first": "2025-03-27",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "HOLA": {
+      "ticker": "HOLA",
+      "source": "yfinance",
+      "rows": 280,
+      "first": "2025-07-14",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "IVVB": {
+      "ticker": "IVVB",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "IVVM": {
+      "ticker": "IVVM",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "IWM": {
+      "ticker": "IWM",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "LADM": {
+      "ticker": "LADM",
+      "source": "yfinance",
+      "rows": 40,
+      "first": "2026-06-26",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "MAXJ": {
+      "ticker": "MAXJ",
+      "source": "yfinance",
+      "rows": 538,
+      "first": "2024-07-01",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "MMAX": {
+      "ticker": "MMAX",
+      "source": "yfinance",
+      "rows": 350,
+      "first": "2025-04-01",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "PSFF": {
+      "ticker": "PSFF",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "QFLR": {
+      "ticker": "QFLR",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "QQQ": {
+      "ticker": "QQQ",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "RFLR": {
+      "ticker": "RFLR",
+      "source": "yfinance",
+      "rows": 484,
+      "first": "2024-09-17",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "SFLR": {
+      "ticker": "SFLR",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "SMAX": {
+      "ticker": "SMAX",
+      "source": "yfinance",
+      "rows": 474,
+      "first": "2024-10-01",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "SQMX": {
+      "ticker": "SQMX",
+      "source": "yfinance",
+      "rows": 405,
+      "first": "2025-01-10",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    },
+    "VOO": {
+      "ticker": "VOO",
+      "source": "yfinance",
+      "rows": 642,
+      "first": "2024-01-31",
+      "last": "2026-08-21",
+      "price_basis": "close_adjusted"
+    }
+  },
+  "fetch_failures": {},
+  "snapshot_counts": {
+    "BALT": 19,
+    "BUFC": 19,
+    "BUFD": 19,
+    "BUFF": 19,
+    "BUFI": 19,
+    "BUFM": 19,
+    "BUFQ": 19,
+    "BUFR": 19,
+    "BUFX": 13,
+    "BUFY": 19,
+    "BUFZ": 19,
+    "CPSL": 19,
+    "DBMF": 19,
+    "DHDG": 19,
+    "DMAX": 19,
+    "FGSI": 13,
+    "FHDG": 19,
+    "HELO": 19,
+    "HEQQ": 16,
+    "HOLA": 12,
+    "IVVB": 19,
+    "IVVM": 19,
+    "LADM": 1,
+    "MAXJ": 19,
+    "MMAX": 16,
+    "PSFF": 19,
+    "QFLR": 19,
+    "RFLR": 19,
+    "SFLR": 19,
+    "SMAX": 19,
+    "SQMX": 18
+  },
+  "tickers_with_no_snapshots": [],
+  "coverage": {
+    "BALT": {
+      "inception": "2024-01-31",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-02",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "BUFC": {
+      "inception": "2024-01-31",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-02",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "BUFD": {
+      "inception": "2024-01-31",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-02",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "BUFF": {
+      "inception": "2024-01-31",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-02",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "BUFI": {
+      "inception": "2024-12-10",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-12",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "BUFM": {
+      "inception": "2024-12-11",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-12",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "BUFQ": {
+      "inception": "2024-01-31",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-02",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "BUFR": {
+      "inception": "2024-01-31",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-02",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "BUFX": {
+      "inception": "2025-06-25",
+      "earliest_available_snapshot": "2025-07",
+      "earliest_full_baseline_snapshot": "2026-06",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": true
+    },
+    "BUFY": {
+      "inception": "2024-09-26",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-09",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "BUFZ": {
+      "inception": "2024-01-31",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-02",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "CPSL": {
+      "inception": "2024-09-09",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-09",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "DBMF": {
+      "inception": "2024-01-31",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-02",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "DHDG": {
+      "inception": "2024-10-21",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-10",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "DMAX": {
+      "inception": "2025-01-02",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2026-01",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "FGSI": {
+      "inception": "2025-06-26",
+      "earliest_available_snapshot": "2025-07",
+      "earliest_full_baseline_snapshot": "2026-06",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": true
+    },
+    "FHDG": {
+      "inception": "2024-11-18",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-11",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "HELO": {
+      "inception": "2024-01-31",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-02",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "HEQQ": {
+      "inception": "2025-03-27",
+      "earliest_available_snapshot": "2025-04",
+      "earliest_full_baseline_snapshot": "2026-03",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": true
+    },
+    "HOLA": {
+      "inception": "2025-07-14",
+      "earliest_available_snapshot": "2025-08",
+      "earliest_full_baseline_snapshot": "2026-07",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": true
+    },
+    "IVVB": {
+      "inception": "2024-01-31",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-02",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "IVVM": {
+      "inception": "2024-01-31",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-02",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "LADM": {
+      "inception": "2026-06-26",
+      "earliest_available_snapshot": "2026-07",
+      "earliest_full_baseline_snapshot": null,
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": true
+    },
+    "MAXJ": {
+      "inception": "2024-07-01",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-07",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "MMAX": {
+      "inception": "2025-04-01",
+      "earliest_available_snapshot": "2025-04",
+      "earliest_full_baseline_snapshot": "2026-04",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": true
+    },
+    "PSFF": {
+      "inception": "2024-01-31",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-02",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "QFLR": {
+      "inception": "2024-01-31",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-02",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "RFLR": {
+      "inception": "2024-09-17",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-09",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "SFLR": {
+      "inception": "2024-01-31",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-02",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "SMAX": {
+      "inception": "2024-10-01",
+      "earliest_available_snapshot": "2025-01",
+      "earliest_full_baseline_snapshot": "2025-10",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": false
+    },
+    "SQMX": {
+      "inception": "2025-01-10",
+      "earliest_available_snapshot": "2025-02",
+      "earliest_full_baseline_snapshot": "2026-01",
+      "requested_backfill_depth_months": 19,
+      "history_limited_by_inception": true
+    }
+  },
+  "total_snapshot_files": 545
+}

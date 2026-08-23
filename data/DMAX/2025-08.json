@@ -1,0 +1,209 @@
+{
+  "app": "Third Floor",
+  "schema_version": "4.0",
+  "ticker": "DMAX",
+  "name": "iShares Large Cap Max Buffer Dec ETF",
+  "issuer": "iShares / BlackRock",
+  "category": "options_integrated",
+  "as_of": "2025-08-29",
+  "generated_at": "2026-08-23T19:18:31Z",
+  "coverage": {
+    "inception": "2025-01-02",
+    "earliest_available_snapshot": "2025-01",
+    "earliest_full_baseline_snapshot": "2026-01",
+    "requested_backfill_depth_months": 19,
+    "history_limited_by_inception": false
+  },
+  "methodology": {
+    "score_normalization": "A raw semibeta of 1.0 \u2014 the fund moving one-for-one with its benchmark in that combination of directions \u2014 is shown as 50. Moving twice as much is shown as 100, and not moving at all is shown as 0.",
+    "score_normalization_formula": "clamp(floor(50 * raw_semibeta + 0.5), 0, 100)",
+    "shift_threshold": null,
+    "shift_threshold_note": "Not yet set. Whether the marker for a shifted reading should be a flat number of points from the 12-month baseline, or scaled to how many days sit behind each reading, is open (3F-O-01). Every snapshot carries the raw semibeta and the observation counts either answer needs, so the marker can be added without recomputing anything.",
+    "min_observations_per_cell": 20,
+    "price_basis": "close_adjusted",
+    "price_source": "yfinance",
+    "return_frequency": "daily",
+    "defined_outcome_caveat": true
+  },
+  "benchmarks": {
+    "VOO": {
+      "roles": [
+        "universal_anchor",
+        "named_benchmark"
+      ],
+      "benchmark_source": "prospectus_index",
+      "horizons": [
+        {
+          "horizon": "12mo",
+          "window_start": "2024-08-29",
+          "window_end": "2025-08-29",
+          "observations_total": 0,
+          "observations_classified": 0,
+          "observations_unclassified": 0,
+          "states": null,
+          "blockers": [
+            {
+              "code": "window_shorter_than_horizon",
+              "message": "This reading covers the 12 months up to this date, which means going back to 2024-08-29. This fund's price history only starts on 2025-01-03, so there is nothing to read for the earlier part of that period.",
+              "remedy": "Read the shorter windows in this same table, which fit inside the history the fund does have. The 12 months reading becomes available once the fund has been trading that long.",
+              "subjects": [
+                "12mo"
+              ]
+            }
+          ]
+        },
+        {
+          "horizon": "6mo",
+          "window_start": "2025-02-28",
+          "window_end": "2025-08-29",
+          "observations_total": 127,
+          "observations_classified": 120,
+          "observations_unclassified": 7,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.153205605855441,
+              "score": 8,
+              "observation_count": 59,
+              "quadrant_cov": 2.4774946155270536e-05,
+              "quadrant_var_bench": 0.00016171044144851486,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.1722360126203897,
+              "score": 9,
+              "observation_count": 44,
+              "quadrant_cov": 2.5568691370857188e-05,
+              "quadrant_var_bench": 0.00014845148225308083,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": 0.01115366513210921,
+              "score": 1,
+              "observation_count": 10,
+              "quadrant_cov": 2.8676888218763285e-08,
+              "quadrant_var_bench": 2.571073084865006e-06,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": -0.14501598234229096,
+              "score": 0,
+              "observation_count": 7,
+              "quadrant_cov": -3.5486302359487796e-07,
+              "quadrant_var_bench": 2.447061474626093e-06,
+              "data_sufficiency": "thin",
+              "blockers": []
+            }
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "13wk",
+          "window_start": "2025-05-30",
+          "window_end": "2025-08-29",
+          "observations_total": 64,
+          "observations_classified": 58,
+          "observations_unclassified": 6,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.21426150683859338,
+              "score": 11,
+              "observation_count": 28,
+              "quadrant_cov": 3.0196217131908917e-06,
+              "quadrant_var_bench": 1.409316007221783e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.22202661827097145,
+              "score": 11,
+              "observation_count": 20,
+              "quadrant_cov": 3.7116355946981046e-06,
+              "quadrant_var_bench": 1.6717074842658075e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": 0.1631854450727118,
+              "score": 8,
+              "observation_count": 8,
+              "quadrant_cov": 3.9740258155789173e-07,
+              "quadrant_var_bench": 2.435282027639279e-06,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": -2.402068497966911,
+              "score": 0,
+              "observation_count": 2,
+              "quadrant_cov": -3.916129256015363e-07,
+              "quadrant_var_bench": 1.6303153966383303e-07,
+              "data_sufficiency": "thin",
+              "blockers": []
+            }
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "4wk",
+          "window_start": "2025-08-01",
+          "window_end": "2025-08-29",
+          "observations_total": 21,
+          "observations_classified": 19,
+          "observations_unclassified": 2,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.2048183731975726,
+              "score": 10,
+              "observation_count": 8,
+              "quadrant_cov": 5.425550077815049e-06,
+              "quadrant_var_bench": 2.648956728399281e-05,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.24278387969124668,
+              "score": 12,
+              "observation_count": 9,
+              "quadrant_cov": 5.300450868130678e-06,
+              "quadrant_var_bench": 2.1831972019194075e-05,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": 0.1600650070428822,
+              "score": 8,
+              "observation_count": 2,
+              "quadrant_cov": 1.0275154681684165e-06,
+              "quadrant_var_bench": 6.419363527052106e-06,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": null,
+              "score": null,
+              "observation_count": 0,
+              "quadrant_cov": null,
+              "quadrant_var_bench": null,
+              "data_sufficiency": "blocked",
+              "blockers": [
+                {
+                  "code": "quadrant_too_few_observations",
+                  "message": "There were only 0 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
+                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
+                  "subjects": [
+                    "fund_down_bench_up"
+                  ]
+                }
+              ]
+            }
+          },
+          "blockers": []
+        }
+      ],
+      "benchmark_note": "Fund's underlying reference is IVV, not VOO; both track the S&P 500."
+    }
+  }
+}

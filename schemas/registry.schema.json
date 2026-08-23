@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://third-floor.example/schemas/registry.schema.json",
+  "title": "Third Floor ticker registry",
+  "description": "The permanent source of truth for what Third Floor covers, read by the notebook on every monthly run for the life of the project. Deliberately separate from any request or expansion queue: a queue is transient, this is not.",
+  "type": "object",
+  "required": ["schema_version", "locked_at", "benchmark_anchors", "tickers"],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+    "locked_at": { "type": "string", "format": "date" },
+    "note": { "type": "string" },
+    "benchmark_anchors": {
+      "description": "Every instrument the notebook fetches as a benchmark. A fund's named_benchmark must name one of these, because a benchmark that is not fetched cannot be computed against.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["ticker", "role", "note"],
+        "additionalProperties": false,
+        "properties": {
+          "ticker": { "type": "string", "pattern": "^[A-Z.]{1,6}$" },
+          "role": { "enum": ["universal_anchor", "named_benchmark_option"] },
+          "note": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "benchmark_gap": { "type": "object" },
+    "tickers": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["ticker", "name", "issuer", "category", "defined_outcome_caveat", "named_benchmark", "benchmark_source"],
+        "additionalProperties": true,
+        "properties": {
+          "ticker": { "type": "string", "pattern": "^[A-Z.]{1,6}$" },
+          "name": { "type": "string", "minLength": 1 },
+          "issuer": { "type": "string", "minLength": 1 },
+          "category": {
+            "description": "options_integrated is the subject of this app. managed_futures exists so that DBMF, which is not options-based at all, cannot be silently read as one — a label that no longer means what it says is worse than no label.",
+            "enum": ["options_integrated", "managed_futures"]
+          },
+          "defined_outcome_caveat": {
+            "description": "True where the fund is a capped or buffered defined-outcome product whose relationship to its benchmark is deliberately nonlinear and path-dependent. Drives a prominent caveat on the report: the reading reflects where price sits in the fund's current outcome period as much as how the fund behaves against the market.",
+            "type": "boolean"
+          },
+          "named_benchmark": {
+            "description": "The anchor ticker this fund's own literature points to, or null where it names none. Never a silent default: null REQUIRES benchmark_note, because a fund that declares no benchmark and a fund whose benchmark is untracked are different facts and must not look identical.",
+            "type": ["string", "null"]
+          },
+          "benchmark_source": {
+            "description": "How confident the benchmark match is, recorded per ticker rather than assumed uniform, so the site can show how it was arrived at and not just what it is.",
+            "enum": ["prospectus_index", "marketing_language", "default_no_named_benchmark"]
+          },
+          "benchmark_note": { "type": "string", "minLength": 1 },
+          "wrapper": { "type": "boolean" },
+          "wrapper_note": { "type": "string" },
+          "notes": { "type": "string" }
+        }
+      }
+    }
+  }
+}

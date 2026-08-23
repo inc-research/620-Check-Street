@@ -1,0 +1,29 @@
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Local tool settings. Ignored here rather than only in a personal global
+# ignore file, so a clone is protected on someone else's machine too.
+.claude/settings.local.json
+
+# Read-only handover tree from Second Floor. Vendored modules are committed
+# under packages/ with provenance headers (SF-17); this tree is not built,
+# tested or deployed, and is not part of this repository's history.
+#
+# It also carries eighteen real issuer downloads under examples/, which are
+# data and not repository content (FF D-31) — a second reason not to track it.
+floor_foundations/
+
+# Python bytecode and notebook scratch.
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Scratch output from a local run. The snapshots that matter are moved into
+# data/ by scripts/ingest-snapshots.mjs; what is left here is a working copy.
+build/
+
+# Run packages produced by the notebook. The snapshots they carry are committed
+# under data/ by scripts/ingest-snapshots.mjs; the zip itself is a transport
+# format and is not history.
+*.zip

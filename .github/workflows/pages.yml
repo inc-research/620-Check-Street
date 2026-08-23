@@ -1,0 +1,126 @@
+# SPDX-License-Identifier: MIT
+#
+# Build and publish the static site to GitHub Pages.
+#
+# There are no secrets here, and there is nowhere for one to go. The site is
+# static and runs entirely in the reader's browser, so anything this workflow
+# could inject into the bundle would be published along with it. A repository
+# secret protects the repository, not the artifact.
+
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time. Never cancel one in flight: a half-published site is
+# worse than a slightly stale one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+          cache: npm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: npm ci
+
+      - name: Vendored modules are still verbatim (SF-17)
+        run: npm run check:vendored
+
+      - name: The notebook is not stale (3F D-05)
+        run: npm run check:notebook
+
+      - name: Typecheck
+        run: npm run build
+
+      - name: Test
+        run: |
+          npm test
+          python3 -m unittest discover notebook/test
+
+      - name: Validate the archive
+        run: npm run validate:data
+
+      - name: Build the site
+        run: npm run build --workspace @third-floor/web
+
+      - name: Publish the archive alongside the site
+        run: cp -R data packages/web/dist/data
+
+      # 3F D-02 amends INV-6 in scope rather than dropping it. Third Floor's
+      # page must read its own committed archive, so a bare ban on `fetch` would
+      # ban the architecture. What is still forbidden is any external origin —
+      # the reader-facing promise INV-6 actually protects.
+      #
+      # Checked on the artifact that ships, not on the sources it was built from.
+      - name: No external origin in the built site (INV-6, as amended by 3F D-02)
+        run: |
+          cd packages/web/dist
+
+          if grep -oE 'url\([^)]*\)' styles.css | grep -qv '^url(data:'; then
+            echo "::error::the stylesheet references something that is not a data: URI (SF-18)"
+            exit 1
+          fi
+
+          if grep -qE 'https?://' styles.css main.js; then
+            echo "::error::the bundle references an external origin"
+            exit 1
+          fi
+
+          # These have no legitimate use in this app at all.
+          if grep -qE 'XMLHttpRequest|WebSocket|sendBeacon' main.js; then
+            echo "::error::the bundle contains a network primitive that is not a same-origin read"
+            exit 1
+          fi
+
+          # fetch() is allowed, but only with a relative argument. A scheme or a
+          # protocol-relative '//' would reach off this origin.
+          if grep -oE "fetch\(\s*[\`'\"][^\`'\"]*" main.js | grep -qE "fetch\(\s*[\`'\"](https?:|//)"; then
+            echo "::error::the bundle fetches an absolute URL; only same-origin reads are allowed (3F D-02)"
+            exit 1
+          fi
+
+          echo "no external origin in the built site"
+
+      - name: No secret in the artifact
+        run: |
+          cd packages/web/dist
+          if grep -rniE 'api[_-]?key|secret[_-]?key|bearer |authorization:' \
+               --exclude-dir=data . ; then
+            echo "::error::something that looks like a credential is in the built site"
+            exit 1
+          fi
+          echo "no credentials in the built site"
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: packages/web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

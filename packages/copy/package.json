@@ -1,0 +1,19 @@
+{
+  "name": "@third-floor/copy",
+  "version": "0.1.0",
+  "description": "The plain-English copy deck. One voice; the audience is not a specialist.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --build",
+    "test": "node --test --experimental-strip-types \"test/**/*.test.ts\""
+  }
+}

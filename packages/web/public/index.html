@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Third Floor — how options-based funds actually behave</title>
+<meta name="description" content="How funds that use options respond to the market on the way up and on the way down. Worked out monthly from daily closing prices.">
+<meta name="color-scheme" content="dark">
+<!-- Relative paths throughout, so this works opened from a file:// path and
+     served from a project-page subpath without a rebuild (SF-19). -->
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <h1 class="wordmark">Third <span class="floor">Floor</span></h1>
+    <p class="standfirst">How a fund that uses options actually responded to the market, on the days it rose and the days it fell.</p>
+    <p id="nav"></p>
+  </header>
+
+  <main id="app">
+    <noscript>
+      <p>This page reads reports that were worked out in advance and published here, so it needs
+      JavaScript switched on to fetch and lay them out. Nothing about you is sent anywhere: the only
+      thing it reads is this site&rsquo;s own published files.</p>
+    </noscript>
+  </main>
+
+  <footer>
+    <p>Third Floor describes how a fixed list of funds that use options responded to the market
+    over past months. It does not give advice, rank funds, or say what to hold, and it says nothing
+    about what any of them does next. Nothing about you is uploaded or stored, and the only files
+    this page fetches are the published reports on this site.</p>
+    <p>A companion to First Floor and Second Floor. Code under MIT; the written explanations under
+    CC BY 4.0.</p>
+  </footer>
+</div>
+<!-- Classic script with defer, not type="module": browsers refuse module
+     scripts loaded from a file:// path, and opening this page from a folder
+     has to work (SF-19). -->
+<script src="main.js" defer></script>
+</body>
+</html>
