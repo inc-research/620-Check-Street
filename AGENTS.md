@@ -309,12 +309,23 @@ vs. the one closest to 13 weeks ago — real past instances of the report,
 not different window lengths at one point in time. Sourced entirely from
 files already in `/data`.
 
-**Open default, flagged rather than assumed (3F-O-03):** Lens B needs to
-pick which column of each archived snapshot to compare against the current
-one — most likely the 12-month baseline row, as the most statistically
-robust column. Not yet confirmed. Note that for a young fund that row may
-be blocked in the older snapshot; `earliest_full_baseline_snapshot` is how
-the site tells in advance.
+**Settled by 3F D-13, against this section's own guess.** The column is
+**matched to the lookback**, not fixed at the 12-month baseline: the
+six-month lookback reads the `6mo` column on both sides, the thirteen-week
+lookback reads `13wk`. The two windows are then exactly adjacent and share
+no days — the six months to July against the six months before those.
+
+Fixing the column at `12mo` was the guess here, on robustness grounds. It
+would have compared windows overlapping by half at a six-month lookback and
+by three quarters at thirteen weeks, so most of the "change" would have
+been the same days measured twice. Measured on the archive, that version's
+thirteen-week comparison barely moved at all — a median change of 0.045
+against 0.117 for the matched column.
+
+The cost is real and accepted: matched columns lose cells, because the
+shorter columns block more often. 33% of the six-month comparison's cells
+and 43% of the thirteen-week one's are not comparable, against roughly 10%
+had the baseline been used.
 
 **Lens C — across two tracked funds, at the same reading.** Pick two
 funds and see, per state per horizon, the delta between their scores —
@@ -586,10 +597,15 @@ Each step has a gate. Run the gate; do not assume the step.
 
 **Still to build:**
 
-9. Static site: table rendering for Lens A, with a benchmark toggle where
-   more than one benchmark exists per fund.
-10. Static site: Lens B historical-comparison button (3F-O-03 first).
+9. ✅ Static site: Lens A, with a benchmark toggle where more than one
+   benchmark exists per fund, the options caveat, the thin marker and the
+   shift marker. *Gate:* no spec vocabulary reaches the page; every marker
+   the table can draw is explained in the legend; both `fetch` calls in the
+   shipped bundle are relative.
+10. ✅ Static site: Lens B historical comparison, offered only for the
+    lookbacks the archive can answer. *Gate:* the two windows are adjacent
+    and disjoint; a version-mismatched or uncomputable pair is refused with
+    a remedy rather than half-drawn.
 11. Static site: Lens C two-fund comparison, defaulting to the VOO anchor.
-12. Static site: options-caveat banner driven by `defined_outcome_caveat`,
-    the thin-data marker, the shift marker (3F-O-01 and 3F-O-02 first),
-    and the still-open untracked-ticker search behavior (3F-O-04).
+12. `data/index.json` is generated and CI-checked — a static site cannot list
+    a directory. Done alongside step 9.

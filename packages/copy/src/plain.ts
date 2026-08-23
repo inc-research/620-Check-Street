@@ -86,13 +86,13 @@ export const PLAIN: Deck = {
   },
 
   history: {
-    title: 'Comparing against an earlier report',
+    title: 'Has this fund changed?',
     mechanism:
-      'A new report is published every month and every past one is kept. Setting today’s report beside one from six months ago compares two real readings taken six months apart, which is a different question from the four columns above — those all look back from today, just over different lengths of time.',
+      'A new report is published every month and every past one is kept. This sets today’s reading beside the same reading from a real report published earlier, so the two cover periods that sit end to end and share no days between them. The six months up to today, against the six months before those.',
     whatWouldChangeIt:
-      'Only months that have a published report can be compared. For a fund that started recently, there may not be one from far enough back.',
+      'Only months that have a published report can be compared, so a fund that started recently may have nothing far enough back. The two periods are different stretches of market, and a fund can read differently across them without anything about the fund having changed.',
     whenAbsent:
-      'This fund is too new for a historical comparison. The oldest report on record for it is more recent than the date asked for.',
+      'This fund is too new for this comparison. There is no report from far enough back to set beside the current one.',
   },
 
   comparing_funds: {
@@ -159,6 +159,20 @@ export const TABLE: TableCopy = {
     heading: 'How to read the numbers',
     body:
       'Each number answers the same question: for every 1% the market moved on days of that kind, how far did the fund move? A number near 1.00 means the fund kept pace. A smaller number means it moved less. A number below nought means the fund went the other way from the market’s size on those days — a bigger market move going with a smaller fund move, rather than a larger one.',
+  },
+
+  history: {
+    sixMonth: 'Against six months ago',
+    thirteenWeek: 'Against thirteen weeks ago',
+    columns: { then: 'Before', now: 'Since', change: 'Change' },
+    disjoint:
+      'The two periods sit end to end and share no days, so this is a comparison of one stretch of time against the one before it — not the same days counted twice.',
+    marked:
+      'An amber dot marks a change of 0.30 or more, the same size of move the report marks anywhere else.',
+    steady:
+      'A change near nought means the fund responded to the market in much the same way across both periods.',
+    unavailable:
+      'A dash means one of the two periods had too few days of that kind to work a reading out from, so there is nothing to compare. It does not mean the reading was nought.',
   },
 
   legend: {

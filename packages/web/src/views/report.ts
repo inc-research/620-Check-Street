@@ -19,6 +19,7 @@ import {
   type HorizonName,
   type LensATable,
   type Snapshot,
+  type Lookback,
   type StateName,
   type TableCell,
 } from '../shim.ts';
@@ -26,6 +27,7 @@ import {
 export interface ReportHandlers {
   onBenchmark: (benchmark: string) => void;
   onMonth: (month: string) => void;
+  onHistory: (lookback: Lookback) => void;
   onBack: () => void;
 }
 
@@ -33,6 +35,8 @@ export interface ReportContext {
   snapshot: Snapshot;
   benchmark: string;
   months: readonly string[];
+  /** Lookbacks the archive can answer for this month. Empty is common and fine. */
+  history: readonly Lookback[];
 }
 
 /** A month key as something a person says out loud. */
@@ -210,6 +214,39 @@ function blockedNotes(model: LensATable): HTMLElement | null {
   return root;
 }
 
+/**
+ * The way through to Lens B.
+ *
+ * Offered only for the lookbacks the archive can actually answer. A button that
+ * leads to "there is no report from that far back" is a promise the page cannot
+ * keep, and this reader has no way to know in advance which it is.
+ */
+function historyOffer(ctx: ReportContext, handlers: ReportHandlers): HTMLElement {
+  const root = el('section', {});
+  append(root, [el('h3', {}, PLAIN.history.title)]);
+
+  if (ctx.history.length === 0) {
+    append(root, [el('p', { class: 'quiet' }, PLAIN.history.whenAbsent)]);
+    return root;
+  }
+
+  append(root, [el('p', {}, PLAIN.history.mechanism)]);
+  const buttons = el('div', { class: 'controls' });
+  const group = el('div', {});
+  for (const l of ctx.history) {
+    group.appendChild(
+      el(
+        'button',
+        { onclick: () => handlers.onHistory(l) },
+        l === '6mo' ? TABLE.history.sixMonth : TABLE.history.thirteenWeek,
+      ),
+    );
+  }
+  append(buttons, [group]);
+  append(root, [buttons]);
+  return root;
+}
+
 function controls(ctx: ReportContext, handlers: ReportHandlers): HTMLElement {
   const root = el('div', { class: 'controls' });
   const benchmarks = Object.keys(ctx.snapshot.benchmarks);
@@ -283,6 +320,7 @@ export function renderReport(ctx: ReportContext, handlers: ReportHandlers): HTML
   ]);
 
   append(root, [legend(model)]);
+  append(root, [historyOffer(ctx, handlers)]);
 
   const blocked = blockedNotes(model);
   if (blocked) append(root, [blocked]);

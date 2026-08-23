@@ -23,12 +23,17 @@ afterEach(() => {
   installed = null;
 });
 
-async function render(snapshot: unknown, benchmark: string, months: string[] = ['2026-07']) {
+async function render(
+  snapshot: unknown,
+  benchmark: string,
+  months: string[] = ['2026-07'],
+  history: ('6mo' | '13wk')[] = [],
+) {
   installed = installDom();
   const { renderReport } = await import('../src/views/report.ts');
   const node = renderReport(
-    { snapshot: snapshot as never, benchmark, months },
-    { onBenchmark: () => {}, onMonth: () => {}, onBack: () => {} },
+    { snapshot: snapshot as never, benchmark, months, history },
+    { onBenchmark: () => {}, onMonth: () => {}, onHistory: () => {}, onBack: () => {} },
   );
   return { node, text: node.textContent as string };
 }
@@ -121,4 +126,16 @@ test('the as-of date and benchmark travel with the numbers (INV-1)', async () =>
 test('a benchmark note from the registry is shown, not dropped', async () => {
   const { text } = await render(computed, 'EFA');
   ok(text.includes('A synthetic fund'), 'the benchmark note is missing');
+});
+
+test('the way through to the history view is offered only where the archive can answer', async () => {
+  // A button leading to "there is no report from that far back" is a promise
+  // the page cannot keep, and the reader cannot tell in advance which it is.
+  const none = await render(computed, 'VOO', ['2026-07'], []);
+  ok(none.text.includes('This fund is too new for this comparison'));
+  ok(!none.text.includes('Against six months ago'));
+
+  const both = await render(computed, 'VOO', ['2026-01', '2026-04', '2026-07'], ['6mo', '13wk']);
+  ok(both.text.includes('Against six months ago'));
+  ok(both.text.includes('Against thirteen weeks ago'));
 });

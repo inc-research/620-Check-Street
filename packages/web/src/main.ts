@@ -8,10 +8,21 @@
  * there is nothing else to route with. Nothing is stored between visits.
  */
 
-import { append, buildLensA, clear, defaultBenchmark, el, type Snapshot } from './shim.ts';
+import {
+  append,
+  archivedMonthFor,
+  buildLensA,
+  canCompare,
+  clear,
+  defaultBenchmark,
+  el,
+  type Lookback,
+  type Snapshot,
+} from './shim.ts';
 import { findFund, loadIndex, loadSnapshot, state } from './state.ts';
 import { renderFunds } from './views/funds.ts';
 import { renderReport } from './views/report.ts';
+import { renderHistory } from './views/history.ts';
 import { renderNotTracked, renderTooNew } from './views/states.ts';
 
 function app(): HTMLElement | null {
@@ -35,24 +46,44 @@ function busy(): HTMLElement {
   return el('p', { class: 'quiet', 'aria-live': 'polite' }, 'Reading…');
 }
 
-/** `#/TICKER` or `#/TICKER/YYYY-MM`. Anything else is the front page. */
-function parseHash(): { ticker: string | null; month: string | null } {
+const LOOKBACKS: Lookback[] = ['6mo', '13wk'];
+
+function isLookback(value: string | undefined): value is Lookback {
+  return value === '6mo' || value === '13wk';
+}
+
+/**
+ * `#/TICKER`, `#/TICKER/YYYY-MM`, or `#/TICKER/YYYY-MM/vs/6mo`.
+ *
+ * Hash routing because a static site has nothing else to route with, and
+ * because a reader should be able to link to a comparison and come back to it.
+ */
+function parseHash(): { ticker: string | null; month: string | null; lookback: Lookback | null } {
   const raw = location.hash.replace(/^#\/?/, '');
-  if (!raw) return { ticker: null, month: null };
-  const [ticker, month] = raw.split('/');
+  if (!raw) return { ticker: null, month: null, lookback: null };
+  const [ticker, month, vs, lookback] = raw.split('/');
   return {
     ticker: ticker ? ticker.toUpperCase() : null,
     month: month && /^\d{4}-\d{2}$/.test(month) ? month : null,
+    lookback: vs === 'vs' && isLookback(lookback) ? lookback : null,
   };
 }
 
-function goto(ticker: string | null, month?: string | null): void {
-  location.hash = ticker ? (month ? `#/${ticker}/${month}` : `#/${ticker}`) : '';
+function goto(ticker: string | null, month?: string | null, lookback?: Lookback | null): void {
+  if (!ticker) {
+    location.hash = '';
+    return;
+  }
+  if (month && lookback) {
+    location.hash = `#/${ticker}/${month}/vs/${lookback}`;
+    return;
+  }
+  location.hash = month ? `#/${ticker}/${month}` : `#/${ticker}`;
 }
 
 
 async function renderRoute(): Promise<void> {
-  const { ticker, month } = parseHash();
+  const { ticker, month, lookback } = parseHash();
 
   let index;
   try {
@@ -110,15 +141,52 @@ async function renderRoute(): Promise<void> {
     return;
   }
 
+  // Which lookbacks this month can actually answer, worked out from the index
+  // rather than by trying the fetch and handling the failure.
+  const history = LOOKBACKS.filter((l) => canCompare(fund.months, wanted, l));
+
+  if (lookback) {
+    if (!history.includes(lookback)) {
+      show(
+        message(
+          `There is no report for ${fund.ticker} from that far back to set beside this one. The oldest one on record is from ${fund.months[0]}.`,
+          'Read the current report on its own, or pick a more recent month to compare from.',
+        ),
+      );
+      return;
+    }
+
+    const earlier = archivedMonthFor(wanted, lookback);
+    let previous: Snapshot;
+    try {
+      previous = await loadSnapshot(fund.ticker, earlier);
+    } catch (e) {
+      show(message((e as Error).message, 'Read the current report on its own.'));
+      return;
+    }
+
+    show(
+      renderHistory(
+        { current: snapshot, previous, benchmark: state.benchmark, lookback, available: history },
+        {
+          onLookback: (l) => goto(fund.ticker, wanted, l),
+          onBack: () => goto(fund.ticker, wanted),
+        },
+      ),
+    );
+    return;
+  }
+
   show(
     renderReport(
-      { snapshot, benchmark: state.benchmark, months: fund.months },
+      { snapshot, benchmark: state.benchmark, months: fund.months, history },
       {
         onBenchmark: (b) => {
           state.benchmark = b;
           void renderRoute();
         },
         onMonth: (m) => goto(fund.ticker, m),
+        onHistory: (l) => goto(fund.ticker, wanted, l),
         onBack: () => goto(null),
       },
     ),

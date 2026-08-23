@@ -82,6 +82,16 @@ export interface TableCopy {
   resilience: { heading: string; blurb: string };
   /** How to read a number at all, printed once above the table. */
   reading: { heading: string; body: string };
+  /** Lens B: the same reading, across two real reports. */
+  history: {
+    sixMonth: string;
+    thirteenWeek: string;
+    columns: { then: string; now: string; change: string };
+    disjoint: string;
+    marked: string;
+    steady: string;
+    unavailable: string;
+  };
   rows: Record<StateKey, RowLabel>;
   columns: Record<HorizonKey, { short: string; full: string }>;
   legend: {

@@ -451,3 +451,18 @@ td.score .absent { color: var(--ink-faint); }
 .controls label { margin-top: 0; }
 
 .benchmark-note { font-size: 1.875rem; color: var(--ink-faint); margin-top: 0.4rem; }
+
+/* --- the history table (Lens B) ------------------------------------------- */
+
+/* The change column carries direction on a span inside the cell, not on the
+ * cell itself, because the cell also holds the shift dot. Colour is the second
+ * channel only: the sign is always in the text, so the reading survives
+ * greyscale and readers who do not separate red from green (SF-21). */
+td.score span.above { color: var(--above); }
+td.score span.below { color: var(--below); }
+
+/* The two periods being compared are not the row tint's business — a change of
+ * −0.37 is not "bad" — so the history table keeps the row tint off its numeric
+ * cells and leaves it on the row label alone. */
+tr.sought  td.score.change,
+tr.avoided td.score.change { background: none; }

@@ -320,6 +320,48 @@ comparable cells, against the 9.8% the points version marked.
 *Reverses if:* a bounded scale is found that represents the negative range
 honestly and reads more easily to a non-specialist than a two-decimal ratio.
 
+## 3F D-13 · Lens B matches its column to its lookback
+
+`AGENTS.md` guessed that Lens B would compare the 12-month column of each
+archived report, as the most statistically robust one. Measured against the
+archive, that guess was wrong in a way that mattered.
+
+Fixing the column at `12mo` compares windows that overlap: by half at a
+six-month lookback, by three quarters at thirteen weeks. Most of the resulting
+"change" would be the same days measured twice, and the thirteen-week version
+barely moved at all — a median change of 0.045, against 0.117 for the matched
+column. A comparison whose answer is mostly determined by the days both sides
+share is not a comparison of two periods.
+
+So the six-month lookback reads `6mo` on both sides and the thirteen-week
+lookback reads `13wk`. The two windows are then exactly adjacent and share no
+days: the six months to July against the six months before those. That is a
+sentence a reader can picture, and it is true.
+
+The cost is accepted rather than hidden. Matched columns block more often, so
+33% of the six-month comparison's cells and 43% of the thirteen-week one's are
+not comparable, against roughly 10% had the baseline been used. A cell that
+cannot be compared shows a dash and the legend says a dash is not a reading of
+nought.
+
+Three further rules, each of which refuses rather than approximating:
+
+- **Schema versions must match on MAJOR.** Two reports worked out differently
+  would compare two methods while claiming to compare two periods.
+- **The benchmark must be present in both reports**, or the two sides answer
+  different questions.
+- **A column blocked on either side takes the whole comparison with it.** Four
+  dashes in a row explain nothing; one sentence does.
+
+The threshold is the same 0.30 used everywhere else, deliberately — one number
+for the reader to learn. It marks more often here (16.7% and 14.0%, against 8.2%
+in Lens A), and that is the honest result rather than a miscalibration: disjoint
+periods genuinely differ more than overlapping windows within one report.
+
+*Reverses if:* the shorter columns are found to block so often that the
+comparison is unavailable more than it is available. At a third and a
+two-fifths, it is not there yet.
+
 ---
 
 ## Open
@@ -328,7 +370,7 @@ honestly and reads more easily to a non-specialist than a two-decimal ratio.
 |---|---|---|
 | ~~3F-O-01~~ | ~~Shift threshold.~~ **Closed:** a flat 0.30 in ratio units, chosen from the archive's own distribution. See 3F D-12. | — |
 | ~~3F-O-02~~ | ~~What the shift marker does with no 12-month baseline.~~ **Closed:** nothing is marked, and the report says why once above the table. About a fifth of the archive is in this state. | — |
-| 3F-O-03 | Which archived column Lens B compares against. The 12-month baseline is the likely answer, as the most statistically robust column. | Site, Lens B |
+| ~~3F-O-03~~ | ~~Which archived column Lens B compares against.~~ **Closed:** matched to the lookback, so the two windows are disjoint. See 3F D-13. | — |
 | ~~3F-O-04~~ | ~~The wording shown for a ticker outside the tracked set.~~ **Closed:** a distinct view from the too-new one, because they are different facts. | — |
 | 3F-O-05 | Whether FGSI wants its own income-overlay caveat, distinct from `defined_outcome_caveat`. It writes calls for income rather than running a capped-and-buffered outcome period, so the existing caveat does not describe it. | Site |
 | 3F-O-06 | Whether LADM stays in the registry while it supports so little, or waits for history. | Next monthly run |

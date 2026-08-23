@@ -74,6 +74,34 @@ export const BLOCKERS = {
     subjects: [ticker, month],
   }),
 
+  noReportThatFarBack: (ticker: string, month: string, earliest: string): Blocker => ({
+    code: 'no_report_that_far_back',
+    message: `There is no report for ${ticker} covering ${month}, so there is nothing from back then to set beside the current one. The oldest report on record for it is from ${earliest}.`,
+    remedy: 'Read the current report on its own, or pick a more recent month to compare from.',
+    subjects: [ticker, month],
+  }),
+
+  benchmarkNotInBothReports: (ticker: string, benchmark: string, month: string): Blocker => ({
+    code: 'benchmark_not_in_both_reports',
+    message: `The report for ${ticker} from ${month} does not measure against ${benchmark}, so the two reports would be answering different questions.`,
+    remedy: 'Compare on the US large-cap anchor, which every report here measures against.',
+    subjects: [ticker, benchmark, month],
+  }),
+
+  reportVersionMismatch: (older: string, newer: string): Blocker => ({
+    code: 'report_version_mismatch',
+    message: `These two reports were worked out in different ways — one is version ${older} and the other version ${newer} — so putting their numbers side by side would compare two different methods rather than two different periods.`,
+    remedy: 'Compare two reports of the same version. The version is recorded in every report.',
+    subjects: [older, newer],
+  }),
+
+  periodNotComparable: (month: string, why: string): Blocker => ({
+    code: 'period_not_comparable',
+    message: `The reading for the earlier period could not be worked out. ${why}`,
+    remedy: 'Read the current report on its own, or pick a different period to compare against.',
+    subjects: [month],
+  }),
+
   tickerNotTracked: (ticker: string): Blocker => ({
     code: 'ticker_not_tracked',
     message: `${ticker} is not one of the funds this site follows.`,
