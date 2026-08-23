@@ -4,8 +4,8 @@ How funds that use options actually responded to the market — on the days it
 rose, and the days it fell.
 
 Third Floor follows a fixed list of 31 Options-Integrated ETFs. Every month it
-works out, for each of them, how big its move was compared with the market's on
-each of the four combinations of directions the two can move in — over the past
+works out, for each of them, how far it moved for every 1% the market moved — on
+each of the four combinations of directions the two can move in, over the past
 twelve months, six months and thirteen weeks. The reports are published as files
 in this repository and the site reads them.
 
@@ -48,6 +48,17 @@ signals.
 `ingest-snapshots.mjs` refuses to overwrite a month that is already published.
 The archive is append-only — see 3F D-08.
 
+## What the site shows
+
+`data/index.json` lists every fund and the months it has. Each
+`data/<TICKER>/<YYYY-MM>.json` is one report. The page reads them by relative
+path and computes nothing of its own.
+
+A number is only printed where at least six days fell into that combination of
+directions; below that it shows a dash, which is not a zero. Between six and
+twenty days it is printed with a dotted underline saying how few days are behind
+it. See 3F D-11 and 3F D-12.
+
 ## Working on it
 
 ```sh
@@ -57,6 +68,7 @@ npm test               # the TypeScript suites
 python3 -m unittest discover notebook/test    # the notebook package
 npm run check:vendored # vendored modules are still verbatim
 npm run check:notebook # third_floor.ipynb is not stale
+npm run check:index    # data/index.json matches what is on disk
 npm run validate:data  # every committed snapshot
 npm run build --workspace @third-floor/web
 node packages/web/serve.mjs

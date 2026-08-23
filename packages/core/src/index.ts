@@ -3,4 +3,5 @@
 export * from './schema/types.ts';
 export * from './schema/validate.ts';
 export * from './diagnostics.ts';
+export * from './lensA.ts';
 export { fsum, fsumBy } from './sum.ts';

@@ -1,0 +1,1234 @@
+{
+  "app": "Third Floor",
+  "schema_version": "1.0",
+  "registry_schema_version": "1.1",
+  "anchors": [
+    "VOO",
+    "QQQ",
+    "IWM",
+    "EFA"
+  ],
+  "universal_anchor": "VOO",
+  "funds": [
+    {
+      "ticker": "SFLR",
+      "name": "Innovator Equity Managed Floor ETF",
+      "issuer": "Innovator (Goldman Sachs Asset Management)",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-01-31",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-02",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      }
+    },
+    {
+      "ticker": "QFLR",
+      "name": "Innovator Nasdaq-100 Managed Floor ETF",
+      "issuer": "Innovator (Goldman Sachs Asset Management)",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "QQQ",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO",
+        "QQQ"
+      ],
+      "coverage": {
+        "inception": "2024-01-31",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-02",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      }
+    },
+    {
+      "ticker": "RFLR",
+      "name": "Innovator U.S. Small Cap Managed Floor ETF",
+      "issuer": "Innovator (Goldman Sachs Asset Management)",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "IWM",
+      "benchmark_source": "marketing_language",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO",
+        "IWM"
+      ],
+      "coverage": {
+        "inception": "2024-09-17",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-09",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      },
+      "benchmark_note": "Prospectus references the Solactive United States 2000 Index; Innovator's own marketing describes the fund in Russell 2000 terms. IWM used as the practical, literature-aligned proxy."
+    },
+    {
+      "ticker": "BALT",
+      "name": "Innovator Defined Wealth Shield ETF",
+      "issuer": "Innovator (Goldman Sachs Asset Management)",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-01-31",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-02",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      }
+    },
+    {
+      "ticker": "BUFF",
+      "name": "Innovator Laddered Power Buffer ETF",
+      "issuer": "Innovator (Goldman Sachs Asset Management)",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-01-31",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-02",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      }
+    },
+    {
+      "ticker": "HELO",
+      "name": "JPMorgan Hedged Equity Laddered Overlay ETF",
+      "issuer": "JPMorgan",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-01-31",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-02",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      }
+    },
+    {
+      "ticker": "HOLA",
+      "name": "JPMorgan International Hedged Equity Laddered Overlay ETF",
+      "issuer": "JPMorgan",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "EFA",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO",
+        "EFA"
+      ],
+      "coverage": {
+        "inception": "2025-07-14",
+        "earliest_available_snapshot": "2025-10",
+        "earliest_full_baseline_snapshot": "2026-07",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": true
+      },
+      "benchmark_note": "References MSCI EAFE. Third Floor tracks that exposure through EFA (iShares MSCI EAFE ETF), added as a fourth anchor by 3F D-01. EFA is a practical, fee-bearing proxy for the index, not the index itself."
+    },
+    {
+      "ticker": "HEQQ",
+      "name": "JPMorgan Nasdaq Hedged Equity Laddered Overlay ETF",
+      "issuer": "JPMorgan",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "QQQ",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO",
+        "QQQ"
+      ],
+      "coverage": {
+        "inception": "2025-03-27",
+        "earliest_available_snapshot": "2025-06",
+        "earliest_full_baseline_snapshot": "2026-03",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": true
+      }
+    },
+    {
+      "ticker": "IVVM",
+      "name": "iShares Large Cap Moderate Quarterly Laddered ETF",
+      "issuer": "iShares / BlackRock",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-01-31",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-02",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      },
+      "benchmark_note": "Fund's underlying reference is IVV, not VOO; both track the S&P 500."
+    },
+    {
+      "ticker": "IVVB",
+      "name": "iShares Large Cap Deep Quarterly Laddered ETF",
+      "issuer": "iShares / BlackRock",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-01-31",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-02",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      },
+      "benchmark_note": "Fund's underlying reference is IVV, not VOO; both track the S&P 500."
+    },
+    {
+      "ticker": "MAXJ",
+      "name": "iShares Large Cap Max Buffer Jun ETF",
+      "issuer": "iShares / BlackRock",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-07-01",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-07",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      },
+      "benchmark_note": "Fund's underlying reference is IVV, not VOO; both track the S&P 500."
+    },
+    {
+      "ticker": "SMAX",
+      "name": "iShares Large Cap Max Buffer Sep ETF",
+      "issuer": "iShares / BlackRock",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-10-01",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-10",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      },
+      "benchmark_note": "Fund's underlying reference is IVV, not VOO; both track the S&P 500."
+    },
+    {
+      "ticker": "DMAX",
+      "name": "iShares Large Cap Max Buffer Dec ETF",
+      "issuer": "iShares / BlackRock",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2025-01-02",
+        "earliest_available_snapshot": "2025-04",
+        "earliest_full_baseline_snapshot": "2026-01",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": true
+      },
+      "benchmark_note": "Fund's underlying reference is IVV, not VOO; both track the S&P 500."
+    },
+    {
+      "ticker": "MMAX",
+      "name": "iShares Large Cap Max Buffer Mar ETF",
+      "issuer": "iShares / BlackRock",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2025-04-01",
+        "earliest_available_snapshot": "2025-07",
+        "earliest_full_baseline_snapshot": "2026-04",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": true
+      },
+      "benchmark_note": "Fund's underlying reference is IVV, not VOO; both track the S&P 500."
+    },
+    {
+      "ticker": "BUFR",
+      "name": "FT Cboe Vest Fund of Buffer ETFs",
+      "issuer": "First Trust",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-01-31",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-02",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      }
+    },
+    {
+      "ticker": "BUFQ",
+      "name": "FT Cboe Vest Fund of Nasdaq-100 Buffer ETFs",
+      "issuer": "First Trust",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "QQQ",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO",
+        "QQQ"
+      ],
+      "coverage": {
+        "inception": "2024-01-31",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-02",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      }
+    },
+    {
+      "ticker": "BUFZ",
+      "name": "FT Cboe Vest Laddered Moderate Buffer ETF",
+      "issuer": "First Trust",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-01-31",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-02",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      }
+    },
+    {
+      "ticker": "BUFX",
+      "name": "FT Vest Laddered Enhance & Moderate Buffer ETF",
+      "issuer": "First Trust",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2025-06-25",
+        "earliest_available_snapshot": "2025-09",
+        "earliest_full_baseline_snapshot": "2026-06",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": true
+      }
+    },
+    {
+      "ticker": "BUFD",
+      "name": "FT Cboe Vest Fund of Deep Buffer ETFs",
+      "issuer": "First Trust",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-01-31",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-02",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      }
+    },
+    {
+      "ticker": "BUFY",
+      "name": "FT Vest Laddered International Moderate Buffer ETF",
+      "issuer": "First Trust",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "EFA",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO",
+        "EFA"
+      ],
+      "coverage": {
+        "inception": "2024-09-26",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-09",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      },
+      "benchmark_note": "References MSCI EAFE. Third Floor tracks that exposure through EFA (iShares MSCI EAFE ETF), added as a fourth anchor by 3F D-01. EFA is a practical, fee-bearing proxy for the index, not the index itself."
+    },
+    {
+      "ticker": "FHDG",
+      "name": "FT Vest U.S. Equity Quarterly Dynamic Buffer ETF",
+      "issuer": "First Trust",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-11-18",
+        "earliest_available_snapshot": "2025-02",
+        "earliest_full_baseline_snapshot": "2025-11",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": true
+      }
+    },
+    {
+      "ticker": "DHDG",
+      "name": "FT Vest U.S. Equity Quarterly 2.5 to 15 Buffer ETF",
+      "issuer": "First Trust",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-10-21",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-10",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      }
+    },
+    {
+      "ticker": "SQMX",
+      "name": "FT Vest U.S. Equity Quarterly Max Buffer ETF",
+      "issuer": "First Trust",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2025-01-10",
+        "earliest_available_snapshot": "2025-04",
+        "earliest_full_baseline_snapshot": "2026-01",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": true
+      }
+    },
+    {
+      "ticker": "FGSI",
+      "name": "FT Vest Growth Strength & Target Income ETF",
+      "issuer": "First Trust",
+      "category": "options_integrated",
+      "defined_outcome_caveat": false,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2025-06-26",
+        "earliest_available_snapshot": "2025-09",
+        "earliest_full_baseline_snapshot": "2026-06",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": true
+      },
+      "benchmark_note": "Tracks a proprietary 'Growth Strength' equity index plus a call-writing income overlay, not a pure S&P 500 buffer/floor structure — VOO is the closest available anchor, not an exact match. Not path-dependent/capped in the way the buffer funds are, so defined_outcome_caveat is false; a separate income-overlay caveat may be worth adding."
+    },
+    {
+      "ticker": "CPSL",
+      "name": "Calamos Laddered S&P 500 Structured Alt Protection ETF",
+      "issuer": "Calamos",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-09-09",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-09",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      }
+    },
+    {
+      "ticker": "PSFF",
+      "name": "Pacer Swan SOS Fund of Funds ETF",
+      "issuer": "Pacer / Swan Global Investments",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-01-31",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-02",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      }
+    },
+    {
+      "ticker": "LADM",
+      "name": "Pacer Swan SOS Laddered Moderate ETF",
+      "issuer": "Pacer / Swan Global Investments",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [],
+      "latest": null,
+      "benchmarks": [],
+      "coverage": null
+    },
+    {
+      "ticker": "BUFC",
+      "name": "AB Conservative Buffer ETF",
+      "issuer": "AllianceBernstein",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-01-31",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-02",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      }
+    },
+    {
+      "ticker": "BUFM",
+      "name": "AB Moderate Buffer ETF",
+      "issuer": "AllianceBernstein",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "VOO",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-12-11",
+        "earliest_available_snapshot": "2025-03",
+        "earliest_full_baseline_snapshot": "2025-12",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": true
+      }
+    },
+    {
+      "ticker": "BUFI",
+      "name": "AB International Buffer ETF",
+      "issuer": "AllianceBernstein",
+      "category": "options_integrated",
+      "defined_outcome_caveat": true,
+      "named_benchmark": "EFA",
+      "benchmark_source": "prospectus_index",
+      "months": [
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO",
+        "EFA"
+      ],
+      "coverage": {
+        "inception": "2024-12-10",
+        "earliest_available_snapshot": "2025-03",
+        "earliest_full_baseline_snapshot": "2025-12",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": true
+      },
+      "benchmark_note": "References MSCI EAFE. Third Floor tracks that exposure through EFA (iShares MSCI EAFE ETF), added as a fourth anchor by 3F D-01. EFA is a practical, fee-bearing proxy for the index, not the index itself."
+    },
+    {
+      "ticker": "DBMF",
+      "name": "iMGP DBi Managed Futures Strategy ETF",
+      "issuer": "iMGP / DBi",
+      "category": "managed_futures",
+      "defined_outcome_caveat": false,
+      "named_benchmark": null,
+      "benchmark_source": "marketing_language",
+      "months": [
+        "2025-01",
+        "2025-02",
+        "2025-03",
+        "2025-04",
+        "2025-05",
+        "2025-06",
+        "2025-07",
+        "2025-08",
+        "2025-09",
+        "2025-10",
+        "2025-11",
+        "2025-12",
+        "2026-01",
+        "2026-02",
+        "2026-03",
+        "2026-04",
+        "2026-05",
+        "2026-06",
+        "2026-07"
+      ],
+      "latest": "2026-07",
+      "benchmarks": [
+        "VOO"
+      ],
+      "coverage": {
+        "inception": "2024-01-31",
+        "earliest_available_snapshot": "2025-01",
+        "earliest_full_baseline_snapshot": "2025-02",
+        "requested_backfill_depth_months": 19,
+        "history_limited_by_inception": false
+      },
+      "benchmark_note": "Fund's own factsheet states it is 'not managed in relation to any benchmark.' Bloomberg US Aggregate appears only as one of two illustrative comparison lines in fund materials, alongside an SG CTA index — not a declared reference. Computed against VOO anchor only, which is informative here (shows diversification benefit vs. equities) even though it isn't a claimed-exposure match."
+    }
+  ],
+  "totals": {
+    "tracked": 31,
+    "with_snapshots": 30,
+    "snapshots": 523
+  }
+}

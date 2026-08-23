@@ -331,3 +331,123 @@ footer {
   .scroll-x { overflow: visible; }
   td.above, td.below { color: #000; }
 }
+
+/* --- the report table (Lens A) -------------------------------------------- */
+
+/* The row tint says which way to read the row: green where a bigger number is
+ * what the fund is built to do, red where it is what the fund is built to
+ * avoid. It is a fixed property of the row and never of the value, so it never
+ * passes judgement on a number.
+ *
+ * Colour is the second channel, never the only one. Every row also carries its
+ * situation in words, and the group heading above it says the same thing again,
+ * so the table survives greyscale and readers who do not separate red from
+ * green. */
+tr.sought  th.row-label { border-left: 4px solid var(--above); }
+tr.avoided th.row-label { border-left: 4px solid var(--below); }
+
+th.row-label {
+  font-family: var(--sans);
+  font-weight: 400;
+  color: var(--ink);
+  white-space: nowrap;
+  padding-left: 0.9rem;
+}
+
+tr.sought  td.score { background: rgba(127, 191, 138, 0.07); }
+tr.avoided td.score { background: rgba(217, 139, 126, 0.07); }
+
+td.score {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--mono);
+  font-size: 2.125rem;
+  white-space: nowrap;
+}
+
+/* The group heading, spanning the table. */
+tr.group th {
+  font-family: var(--display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ink);
+  background: var(--ground-raised);
+  border-bottom: 1px solid var(--rule);
+  padding-top: 0.9rem;
+}
+tr.group td {
+  background: var(--ground-raised);
+  border-bottom: 1px solid var(--rule);
+}
+
+/* At least `shift_threshold` points from this row's twelve-month reading.
+ * A dot, not a badge — the number is what the reader is here for. */
+.shift-dot {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-left: 0.6rem;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: 0.15em;
+}
+
+/* Fewer days behind this reading than the floor. A dotted underline rather than
+ * an icon: it sits on the number it qualifies and costs no width in a column
+ * that is already narrow. */
+.thin-mark {
+  text-decoration: underline dotted var(--ink-faint);
+  text-underline-offset: 0.35rem;
+  text-decoration-thickness: 2px;
+}
+
+/* Nothing to work a number out from. A dash, and the legend says a dash is not
+ * a zero — on a page of numbers that is the easiest of the two to misread. */
+td.score .absent { color: var(--ink-faint); }
+
+.legend {
+  margin: 1.25rem 0;
+  padding: 1rem 1.25rem;
+  background: var(--ground-sunken);
+  border: 1px solid var(--rule-soft);
+  border-radius: 3px;
+  font-size: 2rem;
+  color: var(--ink-quiet);
+}
+.legend p { margin: 0 0 0.6rem; }
+.legend p:last-child { margin-bottom: 0; }
+.legend .swatch-above,
+.legend .swatch-below {
+  display: inline-block;
+  width: 0.8rem;
+  height: 1.1rem;
+  vertical-align: -0.1em;
+  margin-right: 0.4rem;
+}
+.legend .swatch-above { background: var(--above); }
+.legend .swatch-below { background: var(--below); }
+
+/* The caveat every defined-outcome fund carries. Not a blocker — nothing is
+ * missing — so it reads as context rather than as a failure. */
+.caveat {
+  background: var(--ground-raised);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--accent);
+  border-radius: 3px;
+  padding: 1rem 1.25rem;
+  margin: 1.25rem 0;
+}
+.caveat h3 { margin: 0 0 0.5rem; font-size: 2.125rem; }
+.caveat p { margin: 0; color: var(--ink-quiet); }
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
+  align-items: flex-end;
+  margin: 1.25rem 0;
+}
+.controls > div { min-width: 0; }
+.controls label { margin-top: 0; }
+
+.benchmark-note { font-size: 1.875rem; color: var(--ink-faint); margin-top: 0.4rem; }

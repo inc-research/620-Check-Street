@@ -45,6 +45,37 @@ HORIZONS: tuple[str, ...] = ("12mo", "6mo", "13wk")
 
 MIN_OBSERVATIONS_PER_CELL = 20
 
+# Below this a quadrant produces no number at all, rather than a number with a
+# thin marker on it. Distinct from the floor above, which qualifies a reading
+# rather than withholding it.
+#
+# Six, because a covariance-to-variance ratio over two points is just the slope
+# of the line through them, and over three to five it is barely more. In the
+# first full archive run every reading outside a plausible range — 52 of them,
+# from -56 to +34 — came from a quadrant of five days or fewer, where the
+# benchmark's returns happened to be nearly equal and the divisor approached
+# zero. The absolute variance floor below was meant to catch that and was set
+# far too low to do it.
+MIN_OBSERVATIONS_TO_REPORT = 6
+
+# How far a shorter window has to sit from the 12-month reading, in ratio units,
+# before the report marks it as a shift (3F-O-01, settled).
+#
+# Chosen from the archive rather than guessed. Across 2,640 comparable cells the
+# gap has a median of 0.06 and a 90th percentile of 0.27, so 0.30 fires on about
+# one cell in twelve — often enough to be worth looking for, rare enough that a
+# dot still means something.
+#
+# This was first settled as 15 points on the bounded 0-100 score, which is the
+# same rule: that scale was 50 x ratio, so 15 points is 0.30. Re-expressed rather
+# than re-decided when the table moved to showing the ratio itself (3F D-12).
+#
+# Deliberately flat rather than scaled to the observation count. A scaled rule is
+# the more defensible statistic, but it would mark one cell and not another at
+# the same visible gap, for a reason the page cannot put into words this reader
+# has been given. The thin marker already says which cells rest on fewer days.
+SHIFT_THRESHOLD_RATIO = 0.30
+
 # Below this a quadrant's benchmark variance is zero as far as floating point is
 # concerned. Dividing by it produces a wild finite number that looks like a
 # reading, which is exactly what INV-2 forbids.
@@ -144,11 +175,19 @@ def normalise_score(raw: float | None) -> int | None:
     return max(0, min(100, int(scaled)))
 
 
+REPORTED_VALUE_PROSE = (
+    "The report shows raw_semibeta itself: for every 1% the benchmark moved on "
+    "days of this kind, the fund moved this much. A negative value means the "
+    "fund's move ran the other way."
+)
+
 SCORE_NORMALIZATION_FORMULA = "clamp(floor(50 * raw_semibeta + 0.5), 0, 100)"
 SCORE_NORMALIZATION_PROSE = (
-    "A raw semibeta of 1.0 — the fund moving one-for-one with its benchmark in "
-    "that combination of directions — is shown as 50. Moving twice as much is "
-    "shown as 100, and not moving at all is shown as 0."
+    "A bounded rendering of raw_semibeta, retained for compatibility and NOT what "
+    "the report shows (3F D-12). It cannot represent a negative reading — every "
+    "one clamps to 0 — and about a third of the two opposite-direction rows are "
+    "negative, so a score of 0 there is ambiguous by construction. Read "
+    "raw_semibeta."
 )
 
 
@@ -192,8 +231,11 @@ def quadrant_semibeta(
             ys.append(r_bench)
 
     n = len(xs)
-    if n < 2:
-        return Cell(state, None, n, None, None, "blocked", [quadrant_empty(state, n)])
+    if n < MIN_OBSERVATIONS_TO_REPORT:
+        return Cell(
+            state, None, n, None, None, "blocked",
+            [quadrant_empty(state, n, MIN_OBSERVATIONS_TO_REPORT)],
+        )
 
     mean_x = math.fsum(xs) / n
     mean_y = math.fsum(ys) / n

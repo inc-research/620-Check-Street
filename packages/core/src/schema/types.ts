@@ -108,6 +108,8 @@ export interface Coverage {
 }
 
 export interface Methodology {
+  /** What the report puts on the page: the ratio itself (3F D-12). */
+  reported_value: string;
   score_normalization: string;
   score_normalization_formula: string;
   shift_threshold: number | null;

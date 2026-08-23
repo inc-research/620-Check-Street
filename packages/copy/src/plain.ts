@@ -12,7 +12,7 @@
 // idea, never given the word for it. Every sentence here resolves toward that
 // person, and every one of them came to check something they already own.
 
-import type { Deck } from './types.ts';
+import type { Deck, TableCopy } from './types.ts';
 
 export const PLAIN: Deck = {
   overview: {
@@ -28,7 +28,7 @@ export const PLAIN: Deck = {
   participation: {
     title: 'When the fund and the market moved the same way',
     mechanism:
-      'These two rows cover the days when the fund and the market both went up, or both went down. A reading of 50 means the fund moved by about the same amount as the market on those days. Below 50 means it moved less. Above 50 means it moved more. The top row is the days both went up, and the bottom row is the days both went down.',
+      'These two rows cover the days when the fund and the market both went up, or both went down. The number is how far the fund moved for every 1% the market moved on those days. So 0.60 means the fund moved about six tenths as far as the market did, and 1.00 would mean it moved just as far.',
     whatWouldChangeIt:
       'Funds built around options often move less than the market in both directions, because the options they hold give away some of the gain in exchange for softening the fall. Where the fund sits between its cap and its floor at the time changes how much of each it does.',
     whenAbsent:
@@ -38,7 +38,7 @@ export const PLAIN: Deck = {
   resilience: {
     title: 'When the fund and the market moved in opposite directions',
     mechanism:
-      'These two rows cover the days when the fund and the market went different ways. The top row is days the fund rose while the market fell. The bottom row is days the fund fell while the market rose. Days like these are less common than the ones above, so these two rows are usually worked out from fewer days.',
+      'These two rows cover the days when the fund and the market went different ways. The top row is days the fund rose while the market fell. The bottom row is days the fund fell while the market rose. Days like these are less common, so these two rows usually rest on fewer of them, and the numbers in them sit closer to nought.',
     whatWouldChangeIt:
       'A fund holding a large options position can move against the market for reasons that have nothing to do with that day’s news — the value of the options themselves changes as time passes and as the market gets calmer or choppier.',
     whenAbsent:
@@ -103,5 +103,74 @@ export const PLAIN: Deck = {
       'Both funds have to have a report for the same month. Where one of them is newer, the earliest month they share is the earliest that can be compared.',
     whenAbsent:
       'These two funds have no month in common with a published report for both.',
+  },
+};
+
+/**
+ * The report table's own words.
+ *
+ * The build spec wrote these as `Participation` / `Resilience` over labels like
+ * “Fund and Benchmark: Price Increase”. The structure is kept exactly and the
+ * wording is not: those are terms this reader has not been given, and a heading
+ * here should be the situation being described, in their words.
+ */
+export const TABLE: TableCopy = {
+  participation: {
+    heading: 'When they moved the same way',
+    blurb:
+      'Days when the fund and the market both went up, or both went down. The number is how far the fund moved for every 1% the market moved: 0.60 is about six tenths as far, 1.00 is just as far.',
+  },
+  resilience: {
+    heading: 'When they moved in opposite directions',
+    blurb:
+      'Days when one went up and the other went down. These days are less common, so these two rows usually rest on fewer of them. A number below nought means the fund’s move ran the other way to the market’s size that day.',
+  },
+
+  rows: {
+    fund_up_bench_up: {
+      label: 'Both went up',
+      full: 'Days the fund rose and the market rose',
+      direction: 'sought',
+    },
+    fund_down_bench_down: {
+      label: 'Both went down',
+      full: 'Days the fund fell and the market fell',
+      direction: 'avoided',
+    },
+    fund_up_bench_down: {
+      label: 'Fund up, market down',
+      full: 'Days the fund rose while the market fell',
+      direction: 'sought',
+    },
+    fund_down_bench_up: {
+      label: 'Fund down, market up',
+      full: 'Days the fund fell while the market rose',
+      direction: 'avoided',
+    },
+  },
+
+  columns: {
+    '12mo': { short: '12 mo', full: 'the past twelve months' },
+    '6mo': { short: '6 mo', full: 'the past six months' },
+    '13wk': { short: '13 wk', full: 'the past thirteen weeks' },
+  },
+
+  reading: {
+    heading: 'How to read the numbers',
+    body:
+      'Each number answers the same question: for every 1% the market moved on days of that kind, how far did the fund move? A number near 1.00 means the fund kept pace. A smaller number means it moved less. A number below nought means the fund went the other way from the market’s size on those days — a bigger market move going with a smaller fund move, rather than a larger one.',
+  },
+
+  legend: {
+    tint:
+      'A green row is one where a bigger number is what the fund is built to do. A red row is one where a bigger number is what it is built to avoid. The tint marks the row, not the number in it.',
+    shift:
+      'An amber dot marks a reading at least 0.30 away from the twelve-month reading in the same row — a sign the fund has been behaving differently lately than it did over the year.',
+    thin:
+      'A dotted underline marks a reading that rests on fewer than 20 days. The number is still shown, and the number of days behind it is in the cell’s tooltip.',
+    blocked:
+      'A dash means there were fewer than six days of that kind, which is too few to work anything out from. It does not mean zero, and it does not mean nothing happened.',
+    noBaseline:
+      'This fund has not been trading for a full year yet, so there is no twelve-month reading to compare the shorter ones against. Nothing in this table is marked as a shift.',
   },
 };

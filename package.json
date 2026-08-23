@@ -20,7 +20,9 @@
     "check:notebook": "python3 scripts/build-notebook.py --check",
     "build:notebook": "python3 scripts/build-notebook.py",
     "ingest": "node scripts/ingest-snapshots.mjs",
-    "validate:data": "node scripts/validate-snapshots.mjs"
+    "validate:data": "node scripts/validate-snapshots.mjs",
+    "build:index": "node scripts/build-index.mjs",
+    "check:index": "node scripts/build-index.mjs --check"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

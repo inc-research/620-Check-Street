@@ -23,19 +23,21 @@ from typing import Any
 from .backfill import coverage_for
 from .registry import UNIVERSAL_ANCHOR, Fund
 from .semibeta import (
+    REPORTED_VALUE_PROSE,
     SCORE_NORMALIZATION_FORMULA,
     SCORE_NORMALIZATION_PROSE,
+    SHIFT_THRESHOLD_RATIO,
     Horizon,
 )
 
 SCHEMA_VERSION = "4.0"
 
 SHIFT_THRESHOLD_NOTE = (
-    "Not yet set. Whether the marker for a shifted reading should be a flat "
-    "number of points from the 12-month baseline, or scaled to how many days "
-    "sit behind each reading, is open (3F-O-01). Every snapshot carries the raw "
-    "semibeta and the observation counts either answer needs, so the marker can "
-    "be added without recomputing anything."
+    "A shorter window is marked as shifted when its ratio sits at least this far "
+    "from the same row's 12-month ratio. Chosen from the archive: the typical gap "
+    "is 0.06 and nine in ten are under 0.27, so 0.30 marks roughly one cell in "
+    "twelve. Where a fund has no 12-month reading yet, nothing is marked and the "
+    "report says why."
 )
 
 
@@ -77,9 +79,10 @@ def build_snapshot(
         "generated_at": generated.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "coverage": coverage,
         "methodology": {
+            "reported_value": REPORTED_VALUE_PROSE,
             "score_normalization": SCORE_NORMALIZATION_PROSE,
             "score_normalization_formula": SCORE_NORMALIZATION_FORMULA,
-            "shift_threshold": None,
+            "shift_threshold": SHIFT_THRESHOLD_RATIO,
             "shift_threshold_note": SHIFT_THRESHOLD_NOTE,
             "min_observations_per_cell": min_observations,
             "price_basis": price_basis,

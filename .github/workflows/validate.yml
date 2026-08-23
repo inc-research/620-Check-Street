@@ -50,6 +50,9 @@ jobs:
 
       # Every committed snapshot, against the schema and against the identities
       # a single document cannot check about itself.
+      - name: The archive index is not stale
+        run: npm run check:index
+
       - name: Validate the archive
         run: npm run validate:data
 

@@ -45,3 +45,50 @@ export interface Section {
 }
 
 export type Deck = Record<SectionKey, Section>;
+
+/**
+ * The report table's own words: the two group headings, the four row labels,
+ * the three column headings, and the legend.
+ *
+ * A record over every state and horizon, for the same reason `Deck` is a record
+ * over every section — adding a row without writing its label fails compilation
+ * rather than rendering an empty cell.
+ */
+export type StateKey =
+  | 'fund_up_bench_up'
+  | 'fund_down_bench_down'
+  | 'fund_up_bench_down'
+  | 'fund_down_bench_up';
+
+export type HorizonKey = '12mo' | '6mo' | '13wk';
+
+/**
+ * Whether a higher number in this row is the outcome the fund's own design is
+ * aiming at. A fixed property of the row, never of the value — the tint says
+ * which way to read the row, and never passes judgement on the number in it.
+ */
+export type RowDirection = 'sought' | 'avoided';
+
+export interface RowLabel {
+  /** What happened that day, in the reader's words. */
+  label: string;
+  /** The same thing spelled out, for a screen reader and the row's title. */
+  full: string;
+  direction: RowDirection;
+}
+
+export interface TableCopy {
+  participation: { heading: string; blurb: string };
+  resilience: { heading: string; blurb: string };
+  /** How to read a number at all, printed once above the table. */
+  reading: { heading: string; body: string };
+  rows: Record<StateKey, RowLabel>;
+  columns: Record<HorizonKey, { short: string; full: string }>;
+  legend: {
+    tint: string;
+    shift: string;
+    thin: string;
+    blocked: string;
+    noBaseline: string;
+  };
+}

@@ -121,8 +121,15 @@ test('an unset shift threshold must carry a note rather than a placeholder', () 
   const tampered = structuredClone(computed) as never as {
     methodology: Record<string, unknown>;
   };
+  // The threshold is set now (3F-O-01, settled at 15), so unset it first — the
+  // rule under test is that a null value never ships bare.
+  tampered.methodology['shift_threshold'] = null;
   delete tampered.methodology['shift_threshold_note'];
   ok(validateSnapshot(tampered).some((p) => p.path.endsWith('shift_threshold_note')));
+});
+
+test('the settled threshold is carried in the document, not hardcoded in the page', () => {
+  strictEqual((computed['methodology'] as Record<string, unknown>)['shift_threshold'], 0.3);
 });
 
 test('a baseline older than the archive itself is refused', () => {

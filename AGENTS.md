@@ -366,7 +366,12 @@ flag discriminates: roughly a third of `12mo` cells are thin, half of
 `13wk`. A column where it would have been on for every cell without
 exception was removed instead of shipped (3F D-10).
 
-**Score normalization — settled by 3F D-04.**
+**What the table prints — settled by 3F D-12.** The ratio itself, to two
+decimals, signed. Read as: for every 1% the benchmark moved on days of this
+kind, the fund moved this much. The bounded score below is retained in the
+document and is not shown.
+
+**Score normalization — settled by 3F D-04, superseded for display by 3F D-12.**
 `clamp(floor(50 * raw_semibeta + 0.5), 0, 100)`. Moving one-for-one with
 the benchmark shows as 50, twice as much as 100, not at all as 0. Linear
 and plainly explainable, which matters more for this reader than never
@@ -413,13 +418,22 @@ distinguishes nothing.
     "Fund and Benchmark: Price Decrease" (red)
   - **Resilience**: "Fund: Price Increase. Benchmark: Price Decrease."
     (green), "Fund: Price Decrease. Benchmark: Price Increase." (red)
-- **No magnitude bars.** Each cell shows only the numeric score; cell
-  background tint (light green/light red) carries the desirable/
-  undesirable read.
-- **Shift marker:** small amber dot on cells past the shift threshold from
-  the row's `12 mo` baseline — no text badge.
-- **Thin-data marker:** small info icon on cells below minimum observation
-  count.
+- **No magnitude bars.** Each cell shows only the number. The number is the
+  ratio itself to two decimals with an explicit sign, **not** the bounded
+  0-100 score — see 3F D-12: the score clamps every negative to zero, and
+  about a third of the two opposite-direction rows are negative. Row tint
+  (light green/light red) marks whether a bigger number in that row is what
+  the fund is built to do; it is a property of the row and never of the
+  value, so it never passes judgement on a number.
+- **Shift marker:** small amber dot on cells at least `0.30` from the row's
+  `12 mo` reading — no text badge. Where the `12 mo` row is blocked there is
+  nothing to measure from, so no cell is marked and the report says so once,
+  above the table (3F-O-02, closed).
+- **Thin-data marker:** dotted underline on cells resting on fewer than 20
+  days, with the count in the cell's tooltip. Distinct from the reporting
+  floor: below **six** days a cell produces no number at all and shows a
+  dash (3F D-11), because a ratio from fewer points is not a weak estimate
+  but not an estimate.
 - **Options-caveat banner:** for any ticker with `defined_outcome_caveat:
   true` (nearly the entire coverage set), a visible note that the reading
   reflects current position within the fund's outcome period, not purely

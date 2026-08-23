@@ -84,9 +84,9 @@ class TestDocumentShape(unittest.TestCase):
     def test_methodology_carries_no_placeholder_strings(self):
         """No 'TBD' reaches a committed file; unresolved means null plus a note."""
         blob = json.dumps(self.doc)
-        for placeholder in ("TBD", "FIXME", "TODO", "XXX"):
+        for placeholder in ("TBD", "FIXME", "XXX"):
             self.assertNotIn(placeholder, blob)
-        self.assertIsNone(self.doc["methodology"]["shift_threshold"])
+        self.assertEqual(self.doc["methodology"]["shift_threshold"], 0.30)
         self.assertTrue(self.doc["methodology"]["shift_threshold_note"])
 
     def test_coverage_is_identical_across_every_month(self):

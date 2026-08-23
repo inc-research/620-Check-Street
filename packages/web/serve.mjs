@@ -15,7 +15,7 @@ import { dirname, join, normalize } from 'node:path';
 
 const DIST = join(dirname(fileURLToPath(import.meta.url)), 'dist');
 const PORT = Number(process.env['PORT'] ?? 8080);
-const SUBPATH = '/second-floor';
+const SUBPATH = '/third-floor';
 
 const TYPES = {
   '.html': 'text/html; charset=utf-8',

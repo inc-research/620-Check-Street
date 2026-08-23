@@ -56,6 +56,9 @@ jobs:
           npm test
           python3 -m unittest discover notebook/test
 
+      - name: The archive index is not stale
+        run: npm run check:index
+
       - name: Validate the archive
         run: npm run validate:data
 

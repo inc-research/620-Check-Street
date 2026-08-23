@@ -11,7 +11,10 @@
  */
 
 export {
+  BASELINE,
   BLOCKERS,
+  buildLensA,
+  defaultBenchmark,
   HORIZONS,
   SCHEMA_VERSION,
   STATES,
@@ -26,11 +29,25 @@ export {
   type Horizon,
   type HorizonName,
   type Methodology,
+  type LensATable,
   type Problem,
   type Snapshot,
   type StateName,
+  type TableCell,
+  type TableRow,
 } from '@third-floor/core';
 
-export { PLAIN, type Deck, type Section, type SectionKey } from '@third-floor/copy';
+export {
+  PLAIN,
+  TABLE,
+  type Deck,
+  type HorizonKey,
+  type Section,
+  type SectionKey,
+  type StateKey,
+  type TableCopy,
+} from '@third-floor/copy';
 
-export { el, append, clear, table, copyText, download } from './dom.ts';
+// The widened `el` (see dom3f.ts). The vendored primitives come through it, so
+// there is still one import surface the views are allowed to touch.
+export { el, append, clear, table, copyText, download, type Attrs } from './dom3f.ts';

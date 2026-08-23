@@ -81,13 +81,23 @@ def window_not_covered(horizon: str, window_start, earliest) -> Blocker:
     )
 
 
-def quadrant_empty(state: str, count: int) -> Blocker:
+def quadrant_empty(state: str, count: int, needed: int) -> Blocker:
+    """Too few days in this quadrant to work a ratio out from.
+
+    The floor is not cosmetic. A ratio of covariance to variance over two points
+    is the slope of the line through them, which carries no information about
+    whether the relationship is real — and where those two benchmark returns
+    happen to be nearly equal, the divisor approaches zero and the ratio
+    explodes. Every reading outside a plausible range in the first full archive
+    run came from a quadrant of five days or fewer.
+    """
     return Blocker(
         code="quadrant_too_few_observations",
         message=(
             f"There were only {count} days in this window where the fund and "
-            "the benchmark moved in this particular combination of directions, "
-            "which is not enough days to work a number out from."
+            "the benchmark moved in this particular combination of directions. "
+            f"At least {needed} are needed before a number here would mean "
+            "anything."
         ),
         remedy=(
             "Read a longer window from the columns to the left, where more days "

@@ -254,16 +254,82 @@ is the whole reason 3F D-04 stores raw values.
 can produce a cell somebody should act on — which, at four days per quadrant,
 would mean lowering it past the point where the statistic means anything.
 
+## 3F D-11 · A quadrant needs six days before it reports anything
+
+The block threshold was `n < 2`, on the reasoning that two points are the
+minimum for a covariance. Rendering the first archive showed that was not a
+threshold at all.
+
+52 cells carried readings between −56.65 and +33.57. Every one came from a
+quadrant of five days or fewer where the benchmark's returns happened to be
+nearly equal — variance as low as 2×10⁻¹¹ — so the ratio was a division by
+almost nothing. The absolute variance floor of `1e-18` existed to catch exactly
+this and was set orders of magnitude too low to do it.
+
+The floor is now six observations, and it is a mathematical point rather than a
+tuned constant: a covariance-to-variance ratio over two points is the slope of
+the line through them and carries no information about whether the relationship
+is real; over three to five it is barely more. Six catches all 52 blowups and
+blocks 1,084 cells, 16.8% of those that previously carried a number. The
+resulting range across the whole archive is −2.59 to 2.61, with nothing outside
+it.
+
+This is distinct from `min_observations_per_cell` (3F D-07), which is 20 and
+*qualifies* a reading rather than withholding it. Two thresholds, two jobs:
+below six there is no number, between six and twenty there is a number with a
+marker saying how few days are behind it.
+
+*Reverses if:* never below six. A ratio from fewer points is not a weak estimate,
+it is not an estimate.
+
+## 3F D-12 · The table shows the ratio itself, not the bounded score
+
+3F D-04 set a 0–100 display score, `clamp(50 × ratio, 0, 100)`, chosen before
+there was any data to check it against. The first rendered table showed what it
+does to real readings: **every negative clamps to 0**, and negatives are not rare
+where it matters most — 32.7% of *fund up, market down* and 40.5% of *fund down,
+market up*. A ratio of −0.82 and a ratio of 0.001 printed as the same `0`.
+
+That is the failure INV-2 exists to prevent, wearing a different costume. A zero
+and an unknown are opposite claims; so are "the fund barely moved" and "the fund
+moved substantially the other way", and the scale collapsed them. It landed
+almost entirely in the two rows an app about downside behaviour most needs to
+read honestly.
+
+The rows were checked before being changed rather than assumed broken. Across
+overlapping 12-month and 6-month windows, once 3F D-11's blowups are removed, the
+opposite-direction rows track about as well as the same-direction ones —
+correlations of 0.51 and 0.78 against 0.69 and 0.74. There is real signal there,
+and the scale was flattening it.
+
+So the table prints `raw_semibeta` to two decimals with an explicit sign, and it
+has a reading that needs no scale at all: **for every 1% the market moved on days
+of this kind, the fund moved this much.** A negative reads as "the fund's move ran
+the other way".
+
+`score` stays in the document. It is not removed, because a field cannot be added
+back to files already committed and something may yet want a bounded rendering —
+but `methodology.score_normalization` now states plainly that it cannot represent
+a negative reading and is not what the report shows, and a new
+`methodology.reported_value` says what is.
+
+The shift threshold moved with it, and is the same rule rather than a new one:
+15 points on a scale of 50 × ratio is 0.30 in ratio units. It now marks 8.2% of
+comparable cells, against the 9.8% the points version marked.
+
+*Reverses if:* a bounded scale is found that represents the negative range
+honestly and reads more easily to a non-specialist than a two-decimal ratio.
+
 ---
 
 ## Open
 
 | # | Question | Blocking |
 |---|---|---|
-| 3F-O-01 | Shift threshold — a flat number of points from the 12-month baseline, or scaled to the observation count behind each reading? | Site, Lens A |
-| 3F-O-02 | What the shift marker does in a file whose 12mo baseline is blocked (3F D-09's consequence). | Site, Lens A |
+| ~~3F-O-01~~ | ~~Shift threshold.~~ **Closed:** a flat 0.30 in ratio units, chosen from the archive's own distribution. See 3F D-12. | — |
+| ~~3F-O-02~~ | ~~What the shift marker does with no 12-month baseline.~~ **Closed:** nothing is marked, and the report says why once above the table. About a fifth of the archive is in this state. | — |
 | 3F-O-03 | Which archived column Lens B compares against. The 12-month baseline is the likely answer, as the most statistically robust column. | Site, Lens B |
-| 3F-O-04 | The wording shown when someone searches a ticker outside the tracked set. | Site |
+| ~~3F-O-04~~ | ~~The wording shown for a ticker outside the tracked set.~~ **Closed:** a distinct view from the too-new one, because they are different facts. | — |
 | 3F-O-05 | Whether FGSI wants its own income-overlay caveat, distinct from `defined_outcome_caveat`. It writes calls for income rather than running a capped-and-buffered outcome period, so the existing caveat does not describe it. | Site |
 | 3F-O-06 | Whether LADM stays in the registry while it supports so little, or waits for history. | Next monthly run |
 

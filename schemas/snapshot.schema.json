@@ -47,9 +47,13 @@
 
     "methodology": {
       "type": "object",
-      "required": ["score_normalization", "score_normalization_formula", "shift_threshold", "min_observations_per_cell", "price_basis", "price_source", "return_frequency", "defined_outcome_caveat"],
+      "required": ["reported_value", "score_normalization", "score_normalization_formula", "shift_threshold", "min_observations_per_cell", "price_basis", "price_source", "return_frequency", "defined_outcome_caveat"],
       "additionalProperties": false,
       "properties": {
+        "reported_value": {
+          "description": "What the report actually puts on the page: raw_semibeta itself, read as 'for every 1% the benchmark moved on days of this kind, the fund moved this much'. Added by 3F D-12, when the first archive run showed the bounded score could not represent a negative reading and that about a third of the two opposite-direction rows are negative.",
+          "type": "string", "minLength": 1
+        },
         "score_normalization": { "type": "string", "minLength": 1 },
         "score_normalization_formula": {
           "description": "Stated so a reader can recompute any score from its own raw_semibeta, and so scripts/validate-snapshots.mjs can check that every committed score actually matches. That check is what makes 3F D-04's promise real: the transform can be changed and the whole archive regenerated from stored raw values with no network call.",

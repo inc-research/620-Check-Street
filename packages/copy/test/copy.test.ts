@@ -5,11 +5,11 @@
 import { deepStrictEqual, ok, strictEqual } from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { PLAIN } from '../src/plain.ts';
+import { PLAIN, TABLE } from '../src/plain.ts';
 import { lintDeepExtended } from '../src/lint3f.ts';
 import { lintDeep } from '../src/lint.ts';
 import { BANNED_WORDS } from '../src/banned.ts';
-import type { SectionKey } from '../src/types.ts';
+import type { HorizonKey, SectionKey, StateKey } from '../src/types.ts';
 
 const SECTIONS: SectionKey[] = [
   'overview',
@@ -78,4 +78,62 @@ test('the banned list keeps the family words and drops the holdings verdicts', (
   // Second Floor's weighting verdicts are about how much of a holding a fund
   // owns, and this app never looks at holdings at all.
   ok(!BANNED_WORDS.includes('overweight'));
+});
+
+const STATES: StateKey[] = [
+  'fund_up_bench_up',
+  'fund_down_bench_down',
+  'fund_up_bench_down',
+  'fund_down_bench_up',
+];
+const COLUMNS: HorizonKey[] = ['12mo', '6mo', '13wk'];
+
+test('the table copy passes both lints', () => {
+  deepStrictEqual(lintDeep(TABLE), []);
+  deepStrictEqual(lintDeepExtended(TABLE), [], JSON.stringify(lintDeepExtended(TABLE), null, 2));
+});
+
+test('every row has a label, a spelled-out form and a direction', () => {
+  for (const state of STATES) {
+    const row = TABLE.rows[state];
+    ok(row.label.trim().length > 0, `${state} has no label`);
+    ok(row.full.trim().length > 0, `${state} has no spelled-out form`);
+    ok(row.direction === 'sought' || row.direction === 'avoided', `${state} has no direction`);
+  }
+});
+
+test('the two rows in each group carry opposite directions', () => {
+  // Otherwise the tint would say the same thing about both rows of a pair,
+  // which is the one thing it exists to distinguish.
+  strictEqual(TABLE.rows.fund_up_bench_up.direction, 'sought');
+  strictEqual(TABLE.rows.fund_down_bench_down.direction, 'avoided');
+  strictEqual(TABLE.rows.fund_up_bench_down.direction, 'sought');
+  strictEqual(TABLE.rows.fund_down_bench_up.direction, 'avoided');
+});
+
+test('every shipping column has a heading and a spelled-out form', () => {
+  deepStrictEqual(Object.keys(TABLE.columns).sort(), [...COLUMNS].sort());
+  for (const c of COLUMNS) {
+    ok(TABLE.columns[c].short.trim().length > 0);
+    ok(TABLE.columns[c].full.trim().length > 0);
+  }
+});
+
+test('the legend explains every marker the table can draw', () => {
+  for (const key of ['tint', 'shift', 'thin', 'blocked', 'noBaseline'] as const) {
+    ok(TABLE.legend[key].length > 30, `legend.${key} is too short to explain anything`);
+  }
+});
+
+test('the legend says what a dash means, because a dash is not a zero', () => {
+  // A zero and an unknown are opposite claims (INV-2), and on a page of numbers
+  // an unexplained dash is the easiest of the two to misread.
+  ok(/not mean zero|does not mean zero/i.test(TABLE.legend.blocked));
+});
+
+test('the row labels avoid the spec’s own vocabulary', () => {
+  const blob = JSON.stringify(TABLE.rows).toLowerCase();
+  for (const jargon of ['participation', 'resilience', 'benchmark:', 'semibeta']) {
+    ok(!blob.includes(jargon), `row labels still say “${jargon}”`);
+  }
 });
