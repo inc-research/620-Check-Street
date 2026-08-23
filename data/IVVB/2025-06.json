@@ -173,53 +173,6 @@
             }
           },
           "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2025-06-02",
-          "window_end": "2025-06-30",
-          "observations_total": 20,
-          "observations_classified": 18,
-          "observations_unclassified": 2,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": 0.36798778151485084,
-              "score": 18,
-              "observation_count": 9,
-              "quadrant_cov": 4.281081537473246e-06,
-              "quadrant_var_bench": 1.163376001194886e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": 0.3576907414795961,
-              "score": 18,
-              "observation_count": 5,
-              "quadrant_cov": 6.500128692832332e-06,
-              "quadrant_var_bench": 1.8172482368272653e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": -0.3044594139921581,
-              "score": 0,
-              "observation_count": 2,
-              "quadrant_cov": -1.0030698524394332e-06,
-              "quadrant_var_bench": 3.2945929944714047e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": -0.13592612706168455,
-              "score": 0,
-              "observation_count": 2,
-              "quadrant_cov": -1.3748022198289412e-06,
-              "quadrant_var_bench": 1.0114333789596191e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            }
-          },
-          "blockers": []
         }
       ],
       "benchmark_note": "Fund's underlying reference is IVV, not VOO; both track the S&P 500."

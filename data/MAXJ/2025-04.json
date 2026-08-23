@@ -145,62 +145,6 @@
             }
           },
           "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2025-04-02",
-          "window_end": "2025-04-30",
-          "observations_total": 20,
-          "observations_classified": 18,
-          "observations_unclassified": 2,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": 0.17865254256575971,
-              "score": 9,
-              "observation_count": 9,
-              "quadrant_cov": 0.00013882689915489384,
-              "quadrant_var_bench": 0.0007770776567805825,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": 0.31137504477441247,
-              "score": 16,
-              "observation_count": 6,
-              "quadrant_cov": 0.00012094347870457264,
-              "quadrant_var_bench": 0.00038841737876648,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": null,
-              "score": null,
-              "observation_count": 1,
-              "quadrant_cov": null,
-              "quadrant_var_bench": null,
-              "data_sufficiency": "blocked",
-              "blockers": [
-                {
-                  "code": "quadrant_too_few_observations",
-                  "message": "There were only 1 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
-                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
-                  "subjects": [
-                    "fund_up_bench_down"
-                  ]
-                }
-              ]
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": 6.355848210666725,
-              "score": 100,
-              "observation_count": 2,
-              "quadrant_cov": 4.711315734819762e-08,
-              "quadrant_var_bench": 7.4125680454624135e-09,
-              "data_sufficiency": "thin",
-              "blockers": []
-            }
-          },
-          "blockers": []
         }
       ],
       "benchmark_note": "Fund's underlying reference is IVV, not VOO; both track the S&P 500."

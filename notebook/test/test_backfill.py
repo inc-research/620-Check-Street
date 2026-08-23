@@ -88,14 +88,14 @@ class TestSlicing(unittest.TestCase):
 
     def test_a_young_fund_degrades_rather_than_fabricating(self):
         """Several of the tracked set are 2025 launches; none may invent a past."""
-        fund = price_series(date(2026, 6, 26), 40, seed=25.0)
+        fund = price_series(date(2026, 1, 6), 145, seed=25.0)
         slices = build_ticker_slices(fund, {"VOO": self.bench}, self.dates, MIN_OBSERVATIONS_PER_CELL)
 
         self.assertTrue(slices, "a fund with 40 days of history should still yield a snapshot")
         self.assertLess(len(slices), 19)
         self.assertNotIn("2025-01", slices)
         for month, per_benchmark in slices.items():
-            self.assertGreaterEqual(month, "2026-06")
+            self.assertGreaterEqual(month, "2026-01")
             computed = [h for h in per_benchmark["VOO"] if h.states is not None]
             self.assertTrue(computed, month)          # 3F D-09: any horizon is enough
             for h in per_benchmark["VOO"]:
@@ -103,10 +103,18 @@ class TestSlicing(unittest.TestCase):
                     self.assertTrue(h.blockers[0].remedy)   # INV-2
 
     def test_a_month_before_the_fund_existed_produces_no_file_at_all(self):
+        fund = price_series(date(2026, 1, 6), 145, seed=25.0)
+        slices = build_ticker_slices(fund, {"VOO": self.bench}, self.dates, MIN_OBSERVATIONS_PER_CELL)
+        for month in ("2025-01", "2025-06", "2025-12"):
+            self.assertNotIn(month, slices)
+
+    def test_a_fund_too_new_for_even_the_shortest_window_yields_nothing(self):
+        """3F D-10 removed the 4wk column, so a fund with six weeks of history
+        now has no computable window at all and gets no file. LADM is this
+        case in the live archive."""
         fund = price_series(date(2026, 6, 26), 40, seed=25.0)
         slices = build_ticker_slices(fund, {"VOO": self.bench}, self.dates, MIN_OBSERVATIONS_PER_CELL)
-        for month in ("2025-01", "2025-06", "2026-01", "2026-05"):
-            self.assertNotIn(month, slices)
+        self.assertEqual(slices, {})
 
     def test_two_benchmarks_are_both_carried(self):
         fund = price_series(date(2023, 1, 2), 1250, seed=50.0)
@@ -133,10 +141,10 @@ class TestCoverage(unittest.TestCase):
 
     def test_a_fund_with_no_baseline_anywhere_records_null_not_a_guess(self):
         """3F D-09's consequence: a file can exist whose 12mo row is blocked."""
-        fund = price_series(date(2026, 6, 26), 40, seed=25.0)
+        fund = price_series(date(2026, 1, 6), 145, seed=25.0)
         slices = build_ticker_slices(fund, {"VOO": self.bench}, self.dates, MIN_OBSERVATIONS_PER_CELL)
         self.assertTrue(slices)
-        cov = coverage_for(slices, date(2026, 6, 26), 19, "VOO")
+        cov = coverage_for(slices, date(2026, 1, 6), 19, "VOO")
         self.assertTrue(cov["history_limited_by_inception"])
         self.assertIsNone(cov["earliest_full_baseline_snapshot"])
         self.assertIsNotNone(cov["earliest_available_snapshot"])

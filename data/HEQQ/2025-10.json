@@ -9,7 +9,7 @@
   "generated_at": "2026-08-23T19:18:31Z",
   "coverage": {
     "inception": "2025-03-27",
-    "earliest_available_snapshot": "2025-04",
+    "earliest_available_snapshot": "2025-06",
     "earliest_full_baseline_snapshot": "2026-03",
     "requested_backfill_depth_months": 19,
     "history_limited_by_inception": true
@@ -153,71 +153,6 @@
             }
           },
           "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2025-10-03",
-          "window_end": "2025-10-31",
-          "observations_total": 21,
-          "observations_classified": 20,
-          "observations_unclassified": 1,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": 0.47155913364263424,
-              "score": 24,
-              "observation_count": 13,
-              "quadrant_cov": 9.481459288237218e-06,
-              "quadrant_var_bench": 2.0106617838140814e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": 0.44492764500797877,
-              "score": 22,
-              "observation_count": 6,
-              "quadrant_cov": 3.8341893144188454e-05,
-              "quadrant_var_bench": 8.617556938612093e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": null,
-              "score": null,
-              "observation_count": 1,
-              "quadrant_cov": null,
-              "quadrant_var_bench": null,
-              "data_sufficiency": "blocked",
-              "blockers": [
-                {
-                  "code": "quadrant_too_few_observations",
-                  "message": "There were only 1 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
-                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
-                  "subjects": [
-                    "fund_up_bench_down"
-                  ]
-                }
-              ]
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": null,
-              "score": null,
-              "observation_count": 0,
-              "quadrant_cov": null,
-              "quadrant_var_bench": null,
-              "data_sufficiency": "blocked",
-              "blockers": [
-                {
-                  "code": "quadrant_too_few_observations",
-                  "message": "There were only 0 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
-                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
-                  "subjects": [
-                    "fund_down_bench_up"
-                  ]
-                }
-              ]
-            }
-          },
-          "blockers": []
         }
       ]
     },
@@ -325,62 +260,6 @@
               "observation_count": 6,
               "quadrant_cov": 4.2101776583133455e-07,
               "quadrant_var_bench": 3.7690599874824707e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": null,
-              "score": null,
-              "observation_count": 0,
-              "quadrant_cov": null,
-              "quadrant_var_bench": null,
-              "data_sufficiency": "blocked",
-              "blockers": [
-                {
-                  "code": "quadrant_too_few_observations",
-                  "message": "There were only 0 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
-                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
-                  "subjects": [
-                    "fund_down_bench_up"
-                  ]
-                }
-              ]
-            }
-          },
-          "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2025-10-03",
-          "window_end": "2025-10-31",
-          "observations_total": 21,
-          "observations_classified": 20,
-          "observations_unclassified": 1,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": 0.38574156766041445,
-              "score": 19,
-              "observation_count": 12,
-              "quadrant_cov": 1.009229885394925e-05,
-              "quadrant_var_bench": 2.616336869049579e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": 0.3780975857300255,
-              "score": 19,
-              "observation_count": 6,
-              "quadrant_cov": 5.091280058827901e-05,
-              "quadrant_var_bench": 0.00013465518561822418,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": -0.04867687785907048,
-              "score": 0,
-              "observation_count": 2,
-              "quadrant_cov": -3.793822141929487e-07,
-              "quadrant_var_bench": 7.793889642867766e-06,
               "data_sufficiency": "thin",
               "blockers": []
             },

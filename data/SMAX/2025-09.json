@@ -145,62 +145,6 @@
             }
           },
           "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2025-09-02",
-          "window_end": "2025-09-30",
-          "observations_total": 21,
-          "observations_classified": 18,
-          "observations_unclassified": 3,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": 0.0020009336785219325,
-              "score": 0,
-              "observation_count": 10,
-              "quadrant_cov": 5.900231080620512e-09,
-              "quadrant_var_bench": 2.9487389531965637e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": 0.415459326746554,
-              "score": 21,
-              "observation_count": 4,
-              "quadrant_cov": 2.988186516576775e-06,
-              "quadrant_var_bench": 7.192488708767592e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": 0.01637907643718041,
-              "score": 1,
-              "observation_count": 3,
-              "quadrant_cov": 9.494021456836034e-08,
-              "quadrant_var_bench": 5.796432719054085e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": null,
-              "score": null,
-              "observation_count": 1,
-              "quadrant_cov": null,
-              "quadrant_var_bench": null,
-              "data_sufficiency": "blocked",
-              "blockers": [
-                {
-                  "code": "quadrant_too_few_observations",
-                  "message": "There were only 1 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
-                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
-                  "subjects": [
-                    "fund_down_bench_up"
-                  ]
-                }
-              ]
-            }
-          },
-          "blockers": []
         }
       ],
       "benchmark_note": "Fund's underlying reference is IVV, not VOO; both track the S&P 500."

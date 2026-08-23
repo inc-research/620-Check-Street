@@ -2,8 +2,8 @@
 # # Third Floor — monthly run
 #
 # Run this once a month. It fetches daily prices for the tracked funds and the
-# benchmark anchors, works out the four-horizon semibeta table for each fund,
-# and packages the result as a zip you download in one click.
+# benchmark anchors, works out the semibeta table for each fund over three
+# trailing windows, and packages the result as a zip you download in one click.
 #
 # Nothing here is edited in place. The code this notebook runs lives in
 # `notebook/thirdfloor/` in the repository and is covered by a test suite, so

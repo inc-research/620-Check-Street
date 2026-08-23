@@ -9,10 +9,10 @@
   "generated_at": "2026-08-23T19:18:31Z",
   "coverage": {
     "inception": "2024-12-11",
-    "earliest_available_snapshot": "2025-01",
+    "earliest_available_snapshot": "2025-03",
     "earliest_full_baseline_snapshot": "2025-12",
     "requested_backfill_depth_months": 19,
-    "history_limited_by_inception": false
+    "history_limited_by_inception": true
   },
   "methodology": {
     "score_normalization": "A raw semibeta of 1.0 \u2014 the fund moving one-for-one with its benchmark in that combination of directions \u2014 is shown as 50. Moving twice as much is shown as 100, and not moving at all is shown as 0.",
@@ -168,53 +168,6 @@
               "observation_count": 6,
               "quadrant_cov": 1.4303619936865054e-07,
               "quadrant_var_bench": 6.977916568426745e-07,
-              "data_sufficiency": "thin",
-              "blockers": []
-            }
-          },
-          "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2026-01-02",
-          "window_end": "2026-01-30",
-          "observations_total": 20,
-          "observations_classified": 20,
-          "observations_unclassified": 0,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": 0.41872082756062645,
-              "score": 21,
-              "observation_count": 9,
-              "quadrant_cov": 3.240883480795206e-06,
-              "quadrant_var_bench": 7.739962446281609e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": 0.5453721793263938,
-              "score": 27,
-              "observation_count": 7,
-              "quadrant_cov": 2.5656455685231285e-05,
-              "quadrant_var_bench": 4.7043939272663984e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": -1.6155081001530345,
-              "score": 0,
-              "observation_count": 2,
-              "quadrant_cov": -3.69281852322122e-07,
-              "quadrant_var_bench": 2.285855776811893e-07,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": 0.5276767155528328,
-              "score": 26,
-              "observation_count": 2,
-              "quadrant_cov": 3.819673412176531e-07,
-              "quadrant_var_bench": 7.238662043624118e-07,
               "data_sufficiency": "thin",
               "blockers": []
             }

@@ -5,11 +5,11 @@
   "name": "Example Recent Launch ETF",
   "issuer": "Nobody Asset Management",
   "category": "options_integrated",
-  "as_of": "2026-07-31",
+  "as_of": "2026-07-24",
   "generated_at": "2026-08-01T00:00:00Z",
   "coverage": {
-    "inception": "2026-06-01",
-    "earliest_available_snapshot": "2026-06",
+    "inception": "2026-01-05",
+    "earliest_available_snapshot": "2026-04",
     "earliest_full_baseline_snapshot": null,
     "requested_backfill_depth_months": 19,
     "history_limited_by_inception": true
@@ -35,8 +35,8 @@
       "horizons": [
         {
           "horizon": "12mo",
-          "window_start": "2025-07-31",
-          "window_end": "2026-07-31",
+          "window_start": "2025-07-24",
+          "window_end": "2026-07-24",
           "observations_total": 0,
           "observations_classified": 0,
           "observations_unclassified": 0,
@@ -44,7 +44,7 @@
           "blockers": [
             {
               "code": "window_shorter_than_horizon",
-              "message": "This reading covers the 12 months up to this date, which means going back to 2025-07-31. This fund's price history only starts on 2026-06-02, so there is nothing to read for the earlier part of that period.",
+              "message": "This reading covers the 12 months up to this date, which means going back to 2025-07-24. This fund's price history only starts on 2026-01-06, so there is nothing to read for the earlier part of that period.",
               "remedy": "Read the shorter windows in this same table, which fit inside the history the fund does have. The 12 months reading becomes available once the fund has been trading that long.",
               "subjects": [
                 "12mo"
@@ -54,83 +54,92 @@
         },
         {
           "horizon": "6mo",
-          "window_start": "2026-01-31",
-          "window_end": "2026-07-31",
-          "observations_total": 0,
-          "observations_classified": 0,
-          "observations_unclassified": 0,
-          "states": null,
-          "blockers": [
-            {
-              "code": "window_shorter_than_horizon",
-              "message": "This reading covers the 6 months up to this date, which means going back to 2026-01-31. This fund's price history only starts on 2026-06-02, so there is nothing to read for the earlier part of that period.",
-              "remedy": "Read the shorter windows in this same table, which fit inside the history the fund does have. The 6 months reading becomes available once the fund has been trading that long.",
-              "subjects": [
-                "6mo"
-              ]
-            }
-          ]
-        },
-        {
-          "horizon": "13wk",
-          "window_start": "2026-05-01",
-          "window_end": "2026-07-31",
-          "observations_total": 0,
-          "observations_classified": 0,
-          "observations_unclassified": 0,
-          "states": null,
-          "blockers": [
-            {
-              "code": "window_shorter_than_horizon",
-              "message": "This reading covers the 13 weeks up to this date, which means going back to 2026-05-01. This fund's price history only starts on 2026-06-02, so there is nothing to read for the earlier part of that period.",
-              "remedy": "Read the shorter windows in this same table, which fit inside the history the fund does have. The 13 weeks reading becomes available once the fund has been trading that long.",
-              "subjects": [
-                "13wk"
-              ]
-            }
-          ]
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2026-07-03",
-          "window_end": "2026-07-31",
-          "observations_total": 21,
-          "observations_classified": 21,
+          "window_start": "2026-01-24",
+          "window_end": "2026-07-24",
+          "observations_total": 130,
+          "observations_classified": 130,
           "observations_unclassified": 0,
           "states": {
             "fund_up_bench_up": {
-              "raw_semibeta": -0.07847332228712872,
+              "raw_semibeta": 0.12987103265163216,
+              "score": 6,
+              "observation_count": 34,
+              "quadrant_cov": 3.23288272933841e-06,
+              "quadrant_var_bench": 2.489302397410159e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.22877649468753547,
+              "score": 11,
+              "observation_count": 37,
+              "quadrant_cov": 7.81018281651061e-06,
+              "quadrant_var_bench": 3.4138921601967075e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": -0.006568350780037575,
               "score": 0,
-              "observation_count": 8,
-              "quadrant_cov": -4.76972352105713e-07,
-              "quadrant_var_bench": 6.0781465369912925e-06,
+              "observation_count": 23,
+              "quadrant_cov": -2.941588308498101e-07,
+              "quadrant_var_bench": 4.478427549025134e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": -0.27327705269796687,
+              "score": 0,
+              "observation_count": 36,
+              "quadrant_cov": -1.079183546751794e-05,
+              "quadrant_var_bench": 3.9490456154199546e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            }
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "13wk",
+          "window_start": "2026-04-24",
+          "window_end": "2026-07-24",
+          "observations_total": 66,
+          "observations_classified": 66,
+          "observations_unclassified": 0,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": -0.3590357892177113,
+              "score": 0,
+              "observation_count": 18,
+              "quadrant_cov": -7.662960256845563e-06,
+              "quadrant_var_bench": 2.1343165464206453e-05,
               "data_sufficiency": "thin",
               "blockers": []
             },
             "fund_down_bench_down": {
-              "raw_semibeta": -1.3065975421777787,
-              "score": 0,
-              "observation_count": 3,
-              "quadrant_cov": -4.901182302810899e-06,
-              "quadrant_var_bench": 3.751103262173466e-06,
-              "data_sufficiency": "thin",
+              "raw_semibeta": 0.06584589622902268,
+              "score": 3,
+              "observation_count": 21,
+              "quadrant_cov": 1.877268669280077e-06,
+              "quadrant_var_bench": 2.851003292218292e-05,
+              "data_sufficiency": "ok",
               "blockers": []
             },
             "fund_up_bench_down": {
-              "raw_semibeta": 0.5857814768890374,
-              "score": 29,
-              "observation_count": 6,
-              "quadrant_cov": 4.267591831368877e-05,
-              "quadrant_var_bench": 7.285296650268224e-05,
+              "raw_semibeta": 0.20091710797477536,
+              "score": 10,
+              "observation_count": 10,
+              "quadrant_cov": 4.7596527682815064e-06,
+              "quadrant_var_bench": 2.3689634079737348e-05,
               "data_sufficiency": "thin",
               "blockers": []
             },
             "fund_down_bench_up": {
-              "raw_semibeta": 0.7386772751250185,
-              "score": 37,
-              "observation_count": 4,
-              "quadrant_cov": 1.1093207362166353e-05,
-              "quadrant_var_bench": 1.5017664324774128e-05,
+              "raw_semibeta": -0.5020195567446628,
+              "score": 0,
+              "observation_count": 17,
+              "quadrant_cov": -1.047779135944539e-05,
+              "quadrant_var_bench": 2.0871281245273487e-05,
               "data_sufficiency": "thin",
               "blockers": []
             }

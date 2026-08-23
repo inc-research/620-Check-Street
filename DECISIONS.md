@@ -150,10 +150,13 @@ days it rests on. The number is not withheld — a reader who can see the count 
 judge it — but it is never presented as though it were as solid as the column to
 its left.
 
-The consequence, stated rather than discovered later: a four-week window is about
-twenty trading days split four ways, so **nearly the whole 4wk column carries the
-marker**. That is correct disclosure. The alternative is presenting a
-three-observation regression as a finding.
+When this was written the consequence was recorded as "nearly the whole 4wk
+column carries the marker", and treated as acceptable disclosure. The first full
+archive run showed that was too generous: **zero** of 2,672 4wk cells cleared the
+bar, and 3F D-10 removed the column rather than the threshold.
+
+Across the three columns that remain, the marker discriminates properly — about
+a third of 12mo cells are thin, half of 13wk — which is what a flag is for.
 
 *Reverses if:* evidence that a lower floor still reads honestly to a
 non-specialist.
@@ -208,6 +211,48 @@ site enough to detect it rather than rendering a marker measured from nothing.
 
 *Reverses if:* the site finds a blocked baseline unrenderable in practice, at
 which point the write rule tightens to require one.
+
+## 3F D-10 · The 4wk horizon is removed; three columns ship
+
+The report table was specified with four columns — 12 mo, 6 mo, 13 wk, 4 wk. The
+first full archive run over all 31 tickers made the fourth indefensible.
+
+A four-week window holds about twenty trading days. Split across four sign
+quadrants that leaves a median of **four days per quadrant**, and the observation
+floor is twenty (3F D-07). So across 2,672 cells in that column, the number that
+cleared the bar was **zero** — 69% thin, 31% blocked outright. The threshold was
+unreachable by construction: a 4wk cell could only have been marked reliable if
+every single day in the window had landed in one quadrant.
+
+Two fixes were considered and both rejected. Scaling the floor per horizon would
+have made the marker discriminate within the column, but a semibeta from four
+observations is not more trustworthy for being called acceptable — that is
+relabelling the problem. Keeping the flat floor and moving the disclosure to the
+column header would have been honest, but it amounts to printing a column and
+telling the reader not to rely on any of it.
+
+Removing it costs little and the remaining three still answer the question the
+column set exists for: whether a fund's recent behaviour looks different from its
+own longer-run behaviour. 12 mo, 6 mo and 13 wk span a year down to a quarter,
+which is the range a buy-and-hold investor checking on a fund periodically can
+actually act on.
+
+**What it cost.** 22 of 545 snapshots lost their only computable horizon and were
+removed, leaving 523. **LADM** (first traded 2026-06-26) lost every snapshot it
+had and now carries none at all — it cannot reach even a thirteen-week window,
+and the site's "too new for historical analysis" state is the correct thing to
+show for it.
+
+**How the archive was migrated.** In place, from files already on disk: the 4wk
+entry dropped from each horizons array, snapshots left with nothing computable
+removed, coverage blocks recomputed. Every surviving number is byte-identical to
+what was measured. Nothing was refetched, so 3F D-08's append-only rule is
+untouched — this was a schema change, not a re-measurement, and the distinction
+is the whole reason 3F D-04 stores raw values.
+
+*Reverses if:* the observation floor is lowered enough that a four-week window
+can produce a cell somebody should act on — which, at four days per quadrant,
+would mean lowering it past the point where the statistic means anything.
 
 ---
 

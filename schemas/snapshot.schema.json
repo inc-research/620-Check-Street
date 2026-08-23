@@ -84,8 +84,8 @@
           "benchmark_source": { "type": ["string", "null"], "enum": ["prospectus_index", "marketing_language", "default_no_named_benchmark", null] },
           "benchmark_note": { "type": "string", "minLength": 1 },
           "horizons": {
-            "description": "An array, not an object, because its order is the report table's column order: 12 mo, 6 mo, 13 wk, 4 wk, left to right.",
-            "type": "array", "minItems": 4, "maxItems": 4,
+            "description": "An array, not an object, because its order is the report table's column order: 12 mo, 6 mo, 13 wk, left to right. A 4 wk column was removed by 3F D-10 — four weeks split across four sign quadrants leaves too few days in each for any cell to be trustworthy, and a column that can only ever report thin readings is noise with a label.",
+            "type": "array", "minItems": 3, "maxItems": 3,
             "items": { "$ref": "#/$defs/horizon" }
           }
         }
@@ -112,7 +112,7 @@
       "required": ["horizon", "window_start", "window_end", "observations_total", "observations_classified", "observations_unclassified", "states", "blockers"],
       "additionalProperties": false,
       "properties": {
-        "horizon": { "enum": ["12mo", "6mo", "13wk", "4wk"] },
+        "horizon": { "enum": ["12mo", "6mo", "13wk"] },
         "window_start": { "type": ["string", "null"], "format": "date" },
         "window_end": { "type": ["string", "null"], "format": "date" },
         "observations_total": {
@@ -153,7 +153,7 @@
         "quadrant_cov": { "type": ["number", "null"] },
         "quadrant_var_bench": { "type": ["number", "null"] },
         "data_sufficiency": {
-          "description": "thin marks a cell below min_observations_per_cell. Distinct from, and in addition to, the ticker-level history_limited_by_inception flag. Expect nearly the whole 4wk column to be thin: a 4-week window is about 20 trading days split four ways, and that is correct disclosure rather than a defect.",
+          "description": "thin marks a cell below min_observations_per_cell, and is distinct from — and in addition to — the ticker-level history_limited_by_inception flag. It discriminates within every column that ships: roughly a third of 12mo cells are thin, half of 13wk. The 4wk column, where it would have been on for every cell without exception, was removed instead (3F D-10).",
           "enum": ["ok", "thin", "blocked"]
         },
         "blockers": { "type": "array", "items": { "$ref": "#/$defs/blocker" } }

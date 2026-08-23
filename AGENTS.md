@@ -48,8 +48,8 @@ Colab notebook (manual, monthly)
   → fetches raw daily prices for all 31 tracked tickers + benchmark anchors
     (VOO, QQQ, IWM — one bulk pull per instrument, shared across all funds
     that reference it)
-  → computes the four-horizon table for each fund against (a) the
-    universal VOO anchor and (b) its own named benchmark, where one exists
+  → computes the horizon table for each fund against (a) the universal
+    VOO anchor and (b) its own named benchmark, where one exists
   → backfills historical snapshots as needed (see "Backfill" below)
   → packages everything into one zip, one-click download
   → owner unzips into the repo's /data structure, commits, pushes
@@ -226,13 +226,13 @@ def build_ticker_history(ticker, snapshot_count=7):
     schemas = {}
     for as_of in snapshot_dates:
         window = raw[raw.index <= as_of]
-        schemas[as_of] = compute_four_horizon_table(window, as_of)
+        schemas[as_of] = compute_horizon_table(window, as_of)
     return schemas
 ```
 
 **Graceful degradation for young funds:** if a ticker's actual inception
 date is more recent than the requested backfill depth,
-`compute_four_horizon_table` produces whatever the available data
+`compute_horizon_table` produces whatever the available data
 genuinely supports and skips — never fabricates — earlier snapshot dates.
 A window the fund's history does not reach back to is **blocked with a
 remedy**, never computed over a shortened period: a reading built from
@@ -299,9 +299,9 @@ history.
 ## Three lenses — keep these distinct
 
 **Lens A — within one snapshot, across trailing-window lengths.** The
-four-horizon table (12 mo / 6 mo / 13 wk / 4 wk), all computed as of the
-*same* current date. Answers "does this fund's recent behavior look
-different from its own longer-run baseline, right now."
+horizon table (12 mo / 6 mo / 13 wk), all computed as of the *same*
+current date. Answers "does this fund's recent behavior look different
+from its own longer-run baseline, right now."
 
 **Lens B — across actual archived snapshots, at one comparable reading.**
 Current snapshot vs. the archived snapshot closest to 6 months ago, and
@@ -348,13 +348,23 @@ benchmark variance within that same quadrant):
 | `fund_up_bench_down` | `r_fund > 0` and `r_bench < 0` | Resilience |
 | `fund_down_bench_up` | `r_fund < 0` and `r_bench > 0` | Resilience |
 
-**Horizons per snapshot:** `12mo`, `6mo`, `13wk`, `4wk`, all trailing from
-that snapshot's as-of date, daily-return frequency.
+**Horizons per snapshot:** `12mo`, `6mo`, `13wk`, all trailing from that
+snapshot's as-of date, daily-return frequency.
+
+A `4wk` horizon was specified and built, then **removed by 3F D-10** once the
+first full archive run showed what it produced. Four weeks is about twenty
+trading days; split across four sign quadrants that is a median of four days
+each, against an observation floor of twenty — so zero of 2,672 cells in that
+column were ever trustworthy. The three that remain span a year down to a
+quarter, which is the range this reader can act on.
 
 **Data sufficiency:** each horizon/state cell needs a minimum observation
 count in its quadrant to be considered reliable; flag any cell below that
 minimum as `thin`. Distinct from — and in addition to — the ticker-level
-`history_limited_by_inception` flag.
+`history_limited_by_inception` flag. Across the three shipping columns the
+flag discriminates: roughly a third of `12mo` cells are thin, half of
+`13wk`. A column where it would have been on for every cell without
+exception was removed instead of shipped (3F D-10).
 
 **Score normalization — settled by 3F D-04.**
 `clamp(floor(50 * raw_semibeta + 0.5), 0, 100)`. Moving one-for-one with
@@ -375,10 +385,12 @@ halves, making the validator fail on scattered cells for no visible
 reason.
 
 **Data sufficiency — settled by 3F D-07.** `min_observations_per_cell` is
-**20**. The consequence, stated rather than discovered later: a four-week
-window is about twenty trading days split four ways, so **nearly the
-entire `4wk` column carries the thin marker.** That is correct
-disclosure, not a defect.
+**20**. When that was set, the expected consequence was that "nearly the
+entire `4wk` column" would carry the marker, and that was accepted as
+disclosure. The first full run showed it was worse than that — *zero* 4wk
+cells cleared the bar — and the answer was to remove the column rather
+than lower the bar (3F D-10). A flag that is on for every cell in a column
+distinguishes nothing.
 
 > **Open decision — shift threshold (3F-O-01).** Whether the amber
 > "shifted" marker should be statistically scaled to sample size rather
@@ -395,7 +407,7 @@ disclosure, not a defect.
 
 ## Report table — UI spec
 
-- **Columns**, left to right: `12 mo`, `6 mo`, `13 wk`, `4 wk`.
+- **Columns**, left to right: `12 mo`, `6 mo`, `13 wk` (3F D-10 removed `4 wk`).
 - **Rows**, grouped under two headers:
   - **Participation**: "Fund and Benchmark: Price Increase" (green),
     "Fund and Benchmark: Price Decrease" (red)
@@ -457,7 +469,7 @@ and color values.
 }
 ```
 
-Each `horizons` array holds the four `{12mo, 6mo, 13wk, 4wk}` entries **in
+Each `horizons` array holds the three `{12mo, 6mo, 13wk}` entries **in
 that order** — the array's order is the report table's column order, and
 `schemas/snapshot.schema.json` enforces it. Each entry carries its window
 dates, three observation counts, and either a `states` object of four
@@ -544,17 +556,19 @@ Each step has a gate. Run the gate; do not assume the step.
    instruments. *Gate:* every source refusal falls through rather than
    returning a short series; the real Stooq challenge page is a committed
    test fixture.
-4. ✅ The semibeta core. *Gate:* property tests over algebra — scaling
+4. ✅ The semibeta core, over three horizons (3F D-10). *Gate:* property
+   tests over algebra — scaling
    either side, permuting row order, identical series giving unit
    participation — plus one frozen golden vector computed independently
    with `numpy.cov`.
 5. ✅ Backfill with graceful degradation. *Gate:* a 40-day fund yields
    snapshots with three horizons blocked and no fabricated months.
 6. ✅ Emit, packaging, manifest and log.
-7. ✅ `/data/<ticker>/<YYYY-MM>.json` for all 31 tickers, backfilled 19
-   months. *Gate:* every committed snapshot validates, and the append-only
-   ingest refuses a second pass.
-8. ✅ Methodology decisions closed (3F D-04, D-07, D-08, D-09).
+7. ✅ `/data/<ticker>/<YYYY-MM>.json`, backfilled 19 months — 523 snapshots
+   across 30 tickers. LADM is registered but too new for any window and
+   carries none. *Gate:* every committed snapshot validates, and the
+   append-only ingest refuses a second pass.
+8. ✅ Methodology decisions closed (3F D-04, D-07, D-08, D-09, D-10).
 
 **Still to build:**
 

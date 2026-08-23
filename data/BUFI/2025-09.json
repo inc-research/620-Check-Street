@@ -9,10 +9,10 @@
   "generated_at": "2026-08-23T19:18:31Z",
   "coverage": {
     "inception": "2024-12-10",
-    "earliest_available_snapshot": "2025-01",
+    "earliest_available_snapshot": "2025-03",
     "earliest_full_baseline_snapshot": "2025-12",
     "requested_backfill_depth_months": 19,
-    "history_limited_by_inception": false
+    "history_limited_by_inception": true
   },
   "methodology": {
     "score_normalization": "A raw semibeta of 1.0 \u2014 the fund moving one-for-one with its benchmark in that combination of directions \u2014 is shown as 50. Moving twice as much is shown as 100, and not moving at all is shown as 0.",
@@ -139,62 +139,6 @@
               "observation_count": 9,
               "quadrant_cov": 9.431025104661568e-07,
               "quadrant_var_bench": 5.184480365678219e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            }
-          },
-          "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2025-09-02",
-          "window_end": "2025-09-30",
-          "observations_total": 21,
-          "observations_classified": 20,
-          "observations_unclassified": 1,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": 0.251702502298131,
-              "score": 13,
-              "observation_count": 10,
-              "quadrant_cov": 9.37044142422113e-07,
-              "quadrant_var_bench": 3.7228241033226747e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": 0.47041973747229426,
-              "score": 24,
-              "observation_count": 7,
-              "quadrant_cov": 3.1773880417231607e-06,
-              "quadrant_var_bench": 6.7543680433057834e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": null,
-              "score": null,
-              "observation_count": 1,
-              "quadrant_cov": null,
-              "quadrant_var_bench": null,
-              "data_sufficiency": "blocked",
-              "blockers": [
-                {
-                  "code": "quadrant_too_few_observations",
-                  "message": "There were only 1 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
-                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
-                  "subjects": [
-                    "fund_up_bench_down"
-                  ]
-                }
-              ]
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": -0.04307514449488906,
-              "score": 0,
-              "observation_count": 2,
-              "quadrant_cov": -1.0740244591476773e-07,
-              "quadrant_var_bench": 2.49337401358018e-06,
               "data_sufficiency": "thin",
               "blockers": []
             }
@@ -330,71 +274,6 @@
                 {
                   "code": "quadrant_too_few_observations",
                   "message": "There were only 1 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
-                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
-                  "subjects": [
-                    "fund_down_bench_up"
-                  ]
-                }
-              ]
-            }
-          },
-          "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2025-09-02",
-          "window_end": "2025-09-30",
-          "observations_total": 21,
-          "observations_classified": 20,
-          "observations_unclassified": 1,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": 0.509774275134337,
-              "score": 25,
-              "observation_count": 11,
-              "quadrant_cov": 4.299438257596936e-06,
-              "quadrant_var_bench": 8.434003964723284e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": 0.611608930839028,
-              "score": 31,
-              "observation_count": 9,
-              "quadrant_cov": 3.7367959940735526e-06,
-              "quadrant_var_bench": 6.109779968299803e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": null,
-              "score": null,
-              "observation_count": 0,
-              "quadrant_cov": null,
-              "quadrant_var_bench": null,
-              "data_sufficiency": "blocked",
-              "blockers": [
-                {
-                  "code": "quadrant_too_few_observations",
-                  "message": "There were only 0 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
-                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
-                  "subjects": [
-                    "fund_up_bench_down"
-                  ]
-                }
-              ]
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": null,
-              "score": null,
-              "observation_count": 0,
-              "quadrant_cov": null,
-              "quadrant_var_bench": null,
-              "data_sufficiency": "blocked",
-              "blockers": [
-                {
-                  "code": "quadrant_too_few_observations",
-                  "message": "There were only 0 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
                   "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
                   "subjects": [
                     "fund_down_bench_up"

@@ -64,9 +64,7 @@ class TestDocumentShape(unittest.TestCase):
 
     def test_horizons_are_in_report_column_order(self):
         for block in self.doc["benchmarks"].values():
-            self.assertEqual(
-                [h["horizon"] for h in block["horizons"]], ["12mo", "6mo", "13wk", "4wk"]
-            )
+            self.assertEqual([h["horizon"] for h in block["horizons"]], ["12mo", "6mo", "13wk"])
 
     def test_the_universal_anchor_is_always_present(self):
         for doc in self.docs.values():
@@ -143,7 +141,7 @@ class TestCellsKeepTheirPromises(unittest.TestCase):
     def test_the_identity_holds_in_a_blocked_horizon_too(self):
         """A refused window publishes no count at all, rather than a count no
         number rests on. Found by the JavaScript validator, not by reading."""
-        docs = build_documents(fund_start=date(2026, 6, 1))
+        docs = build_documents(fund_start=date(2026, 2, 1))
         blocked = 0
         for doc in docs.values():
             for block in doc["benchmarks"].values():

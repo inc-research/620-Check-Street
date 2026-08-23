@@ -9,7 +9,7 @@
   "generated_at": "2026-08-23T19:18:31Z",
   "coverage": {
     "inception": "2025-06-26",
-    "earliest_available_snapshot": "2025-07",
+    "earliest_available_snapshot": "2025-09",
     "earliest_full_baseline_snapshot": "2026-06",
     "requested_backfill_depth_months": 19,
     "history_limited_by_inception": true
@@ -140,53 +140,6 @@
               "observation_count": 6,
               "quadrant_cov": 1.335150659337857e-07,
               "quadrant_var_bench": 7.3053932886521414e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            }
-          },
-          "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2026-05-01",
-          "window_end": "2026-05-29",
-          "observations_total": 20,
-          "observations_classified": 20,
-          "observations_unclassified": 0,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": -0.015306517785630452,
-              "score": 0,
-              "observation_count": 9,
-              "quadrant_cov": -2.3413048526553718e-07,
-              "quadrant_var_bench": 1.5296129958790214e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": -0.11796492662220943,
-              "score": 0,
-              "observation_count": 5,
-              "quadrant_cov": -2.395674495276836e-06,
-              "quadrant_var_bench": 2.030836252667832e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": 3.3643141817695583,
-              "score": 100,
-              "observation_count": 2,
-              "quadrant_cov": 3.729491672779495e-07,
-              "quadrant_var_bench": 1.1085444079476136e-07,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": 0.1392468556302667,
-              "score": 7,
-              "observation_count": 4,
-              "quadrant_cov": 9.274008286484484e-07,
-              "quadrant_var_bench": 6.660120434682682e-06,
               "data_sufficiency": "thin",
               "blockers": []
             }

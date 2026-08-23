@@ -172,62 +172,6 @@
             }
           },
           "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2025-06-02",
-          "window_end": "2025-06-30",
-          "observations_total": 20,
-          "observations_classified": 19,
-          "observations_unclassified": 1,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": 0.3321357342298832,
-              "score": 17,
-              "observation_count": 8,
-              "quadrant_cov": 3.918502516606839e-06,
-              "quadrant_var_bench": 1.1797894995227167e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": null,
-              "score": null,
-              "observation_count": 1,
-              "quadrant_cov": null,
-              "quadrant_var_bench": null,
-              "data_sufficiency": "blocked",
-              "blockers": [
-                {
-                  "code": "quadrant_too_few_observations",
-                  "message": "There were only 1 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
-                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
-                  "subjects": [
-                    "fund_down_bench_down"
-                  ]
-                }
-              ]
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": 0.22918719658229283,
-              "score": 11,
-              "observation_count": 5,
-              "quadrant_cov": 4.5220116199286556e-06,
-              "quadrant_var_bench": 1.9730646769811877e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": -0.05817656897680719,
-              "score": 0,
-              "observation_count": 5,
-              "quadrant_cov": -3.9943248684830904e-07,
-              "quadrant_var_bench": 6.865865310956164e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            }
-          },
-          "blockers": []
         }
       ],
       "benchmark_note": "Fund's own factsheet states it is 'not managed in relation to any benchmark.' Bloomberg US Aggregate appears only as one of two illustrative comparison lines in fund materials, alongside an SG CTA index \u2014 not a declared reference. Computed against VOO anchor only, which is informative here (shows diversification benefit vs. equities) even though it isn't a claimed-exposure match."

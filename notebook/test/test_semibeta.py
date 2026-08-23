@@ -20,7 +20,7 @@ from thirdfloor.semibeta import (  # noqa: E402
     STATES,
     Cell,
     classify,
-    compute_four_horizon_table,
+    compute_horizon_table,
     compute_horizon,
     daily_returns,
     horizon_start,
@@ -172,19 +172,24 @@ class TestObservationIdentity(unittest.TestCase):
 
 class TestHorizons(unittest.TestCase):
     def test_a_window_the_data_does_not_reach_back_to_is_blocked(self):
+        """A fund younger than every window produces no reading at all, rather
+        than a shortened one wearing a longer window's name."""
         pairs = synthetic_pairs(n=40, start=date(2026, 6, 1))
-        as_of = pairs[-1][0]
-        table = compute_four_horizon_table(pairs, as_of)
-        by_h = {h.horizon: h for h in table}
-        for h in ("12mo", "6mo", "13wk"):
-            self.assertIsNone(by_h[h].states, h)
-            self.assertEqual(by_h[h].blockers[0].code, "window_shorter_than_horizon", h)
-            self.assertTrue(by_h[h].blockers[0].remedy)
-        self.assertIsNotNone(by_h["4wk"].states)
+        table = compute_horizon_table(pairs, pairs[-1][0])
+        for h in table:
+            self.assertIsNone(h.states, h.horizon)
+            self.assertEqual(h.blockers[0].code, "window_shorter_than_horizon", h.horizon)
+            self.assertTrue(h.blockers[0].remedy)
+
+    def test_a_partly_covered_history_computes_the_windows_that_fit(self):
+        pairs = synthetic_pairs(n=200, start=date(2026, 1, 1))
+        by_h = {h.horizon: h for h in compute_horizon_table(pairs, pairs[-1][0])}
+        self.assertIsNone(by_h["12mo"].states)
+        self.assertIsNotNone(by_h["13wk"].states)
 
     def test_table_is_in_report_column_order(self):
         pairs = synthetic_pairs()
-        table = compute_four_horizon_table(pairs, pairs[-1][0])
+        table = compute_horizon_table(pairs, pairs[-1][0])
         self.assertEqual([h.horizon for h in table], list(HORIZONS))
 
     def test_month_arithmetic_survives_short_months(self):
@@ -193,7 +198,11 @@ class TestHorizons(unittest.TestCase):
         self.assertEqual(horizon_start(date(2025, 8, 31), "6mo"), date(2025, 2, 28))
         self.assertEqual(horizon_start(date(2024, 8, 31), "6mo"), date(2024, 2, 29))
         self.assertEqual(horizon_start(date(2026, 1, 15), "13wk"), date(2025, 10, 16))
-        self.assertEqual(horizon_start(date(2026, 1, 29), "4wk"), date(2026, 1, 1))
+
+    def test_a_removed_horizon_is_an_error_rather_than_a_silent_default(self):
+        """4wk was removed by 3F D-10; asking for it must fail loudly."""
+        with self.assertRaises(ValueError):
+            horizon_start(date(2026, 1, 29), "4wk")
 
 
 class TestReturns(unittest.TestCase):

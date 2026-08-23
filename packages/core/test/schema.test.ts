@@ -84,9 +84,14 @@ test('a blocked cell may not carry a number, and a number may not be null', () =
   const zeroed = structuredClone(blocked) as never as {
     benchmarks: Record<string, { horizons: { states: Record<string, unknown> | null }[] }>;
   };
-  const states = zeroed.benchmarks['VOO']!.horizons[3]!.states!;
+  // Find a horizon that was actually computed, rather than assuming an index —
+  // which column that is depends on how much history the fixture's fund has.
+  const computedHorizon = zeroed.benchmarks['VOO']!.horizons.find((h) => h.states !== null);
+  ok(computedHorizon, 'the fixture has no computed horizon to tamper with');
+
   // A zero and an unknown are opposite claims (INV-2).
-  (states[STATES[0]] as { raw_semibeta: number | null; data_sufficiency: string }).raw_semibeta = null;
+  const cell = computedHorizon.states![STATES[0]] as { raw_semibeta: number | null };
+  cell.raw_semibeta = null;
   ok(validateSnapshot(zeroed).some((p) => p.message.includes('not marked blocked')));
 });
 

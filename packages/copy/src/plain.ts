@@ -46,11 +46,11 @@ export const PLAIN: Deck = {
   },
 
   horizons: {
-    title: 'Why there are four columns',
+    title: 'Why there are three columns',
     mechanism:
-      'Each column covers a different length of time, all counted back from the same date. The left-hand column looks at the past twelve months, and the right-hand one at the past four weeks. Reading across the row shows whether the fund’s recent behaviour looks different from its own longer-run behaviour.',
+      'Each column covers a different length of time, all counted back from the same date. The left-hand column looks at the past twelve months, the middle one at the past six months, and the right-hand one at the past thirteen weeks. Reading across a row shows whether the fund’s recent behaviour looks different from its own longer-run behaviour, which is the question the columns exist to answer.',
     whatWouldChangeIt:
-      'The shorter the period, the fewer days sit behind the number, and the more a single unusual day moves it. The four-week column in particular rests on about twenty days split four ways, which is why most of its readings carry the small marker for thin data.',
+      'The shorter the period, the fewer days sit behind the number, and the more a single unusual day moves it. Readings resting on fewer than twenty days carry a small marker saying so.',
     whenAbsent:
       'This fund has not been trading long enough to fill this column.',
   },

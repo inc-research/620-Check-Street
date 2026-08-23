@@ -9,7 +9,7 @@
   "generated_at": "2026-08-23T19:18:31Z",
   "coverage": {
     "inception": "2025-07-14",
-    "earliest_available_snapshot": "2025-08",
+    "earliest_available_snapshot": "2025-10",
     "earliest_full_baseline_snapshot": "2026-07",
     "requested_backfill_depth_months": 19,
     "history_limited_by_inception": true
@@ -144,62 +144,6 @@
             }
           },
           "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2026-01-30",
-          "window_end": "2026-02-27",
-          "observations_total": 20,
-          "observations_classified": 19,
-          "observations_unclassified": 1,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": 0.20168243944362965,
-              "score": 10,
-              "observation_count": 8,
-              "quadrant_cov": 6.798486166571965e-06,
-              "quadrant_var_bench": 3.3708865210707377e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": -0.28616391955849335,
-              "score": 0,
-              "observation_count": 7,
-              "quadrant_cov": -7.096305112484287e-06,
-              "quadrant_var_bench": 2.4798042756168518e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": 0.002417216048172898,
-              "score": 0,
-              "observation_count": 3,
-              "quadrant_cov": 2.23248146428996e-08,
-              "quadrant_var_bench": 9.235754768289852e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": null,
-              "score": null,
-              "observation_count": 1,
-              "quadrant_cov": null,
-              "quadrant_var_bench": null,
-              "data_sufficiency": "blocked",
-              "blockers": [
-                {
-                  "code": "quadrant_too_few_observations",
-                  "message": "There were only 1 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
-                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
-                  "subjects": [
-                    "fund_down_bench_up"
-                  ]
-                }
-              ]
-            }
-          },
-          "blockers": []
         }
       ]
     },
@@ -316,53 +260,6 @@
               "observation_count": 5,
               "quadrant_cov": -7.019795735589143e-07,
               "quadrant_var_bench": 4.2810425859764497e-07,
-              "data_sufficiency": "thin",
-              "blockers": []
-            }
-          },
-          "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2026-01-30",
-          "window_end": "2026-02-27",
-          "observations_total": 20,
-          "observations_classified": 19,
-          "observations_unclassified": 1,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": 0.27648543901985734,
-              "score": 14,
-              "observation_count": 8,
-              "quadrant_cov": 1.600070015683754e-05,
-              "quadrant_var_bench": 5.7871764290951906e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": -0.2884017934545457,
-              "score": 0,
-              "observation_count": 5,
-              "quadrant_cov": -6.699529385159081e-06,
-              "quadrant_var_bench": 2.3229846475330528e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": 0.950858447782723,
-              "score": 48,
-              "observation_count": 3,
-              "quadrant_cov": 1.7188112330435578e-06,
-              "quadrant_var_bench": 1.8076415443871796e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": -2.491309808809168,
-              "score": 0,
-              "observation_count": 3,
-              "quadrant_cov": -1.2953548415742292e-06,
-              "quadrant_var_bench": 5.199493202306306e-07,
               "data_sufficiency": "thin",
               "blockers": []
             }

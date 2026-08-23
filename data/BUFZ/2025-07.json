@@ -182,62 +182,6 @@
             }
           },
           "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2025-07-03",
-          "window_end": "2025-07-31",
-          "observations_total": 20,
-          "observations_classified": 19,
-          "observations_unclassified": 1,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": 0.3125812634185787,
-              "score": 16,
-              "observation_count": 10,
-              "quadrant_cov": 2.4230679218283835e-06,
-              "quadrant_var_bench": 7.751801548590084e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": 0.1702253788456822,
-              "score": 9,
-              "observation_count": 7,
-              "quadrant_cov": 9.987740630182408e-07,
-              "quadrant_var_bench": 5.8673628444303785e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": -0.015602091655121072,
-              "score": 0,
-              "observation_count": 2,
-              "quadrant_cov": -3.4853915738423384e-10,
-              "quadrant_var_bench": 2.2339258420510104e-08,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": null,
-              "score": null,
-              "observation_count": 0,
-              "quadrant_cov": null,
-              "quadrant_var_bench": null,
-              "data_sufficiency": "blocked",
-              "blockers": [
-                {
-                  "code": "quadrant_too_few_observations",
-                  "message": "There were only 0 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
-                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
-                  "subjects": [
-                    "fund_down_bench_up"
-                  ]
-                }
-              ]
-            }
-          },
-          "blockers": []
         }
       ]
     }

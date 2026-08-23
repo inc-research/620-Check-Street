@@ -7,7 +7,16 @@
 /** Bumped on any change to the document's shape. Checked on MAJOR (SF-14). */
 export const SCHEMA_VERSION = '4.0';
 
-export const HORIZONS = ['12mo', '6mo', '13wk', '4wk'] as const;
+/**
+ * Column order of the report table, left to right.
+ *
+ * A `4wk` column was computed in the first build and removed by 3F D-10: four
+ * weeks is about twenty trading days, and split across four sign quadrants that
+ * leaves roughly four days in each, so no 4wk cell in a full archive run ever
+ * cleared the observation floor. A column whose every cell carries the same
+ * warning is not disclosure.
+ */
+export const HORIZONS = ['12mo', '6mo', '13wk'] as const;
 export type HorizonName = (typeof HORIZONS)[number];
 
 /**

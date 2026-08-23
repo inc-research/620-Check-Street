@@ -19,7 +19,7 @@ from dataclasses import dataclass
 from datetime import date
 from typing import Sequence
 
-from .semibeta import Horizon, compute_four_horizon_table, daily_returns, pair_returns
+from .semibeta import Horizon, compute_horizon_table, daily_returns, pair_returns
 
 DEFAULT_SNAPSHOT_COUNT = 19
 
@@ -102,7 +102,7 @@ def build_ticker_slices(
     snapshot_dates: Sequence[date],
     min_observations: int,
 ) -> dict[str, dict[str, list[Horizon]]]:
-    """Every month's four-horizon table, for every benchmark, from one fetch.
+    """Every month's horizon table, for every benchmark, from one fetch.
 
     Returns {month: {benchmark: horizons}}, carrying only months where at least
     one horizon against at least one benchmark was computable (3F D-09).
@@ -123,7 +123,7 @@ def build_ticker_slices(
             in_scope = [p for p in pairs if p[0] <= as_of]
             if not in_scope:
                 continue
-            per_benchmark[benchmark] = compute_four_horizon_table(
+            per_benchmark[benchmark] = compute_horizon_table(
                 in_scope, as_of, min_observations
             )
 

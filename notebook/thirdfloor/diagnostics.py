@@ -39,7 +39,6 @@ _HORIZON_WORDS = {
     "12mo": "12 months",
     "6mo": "6 months",
     "13wk": "13 weeks",
-    "4wk": "4 weeks",
 }
 
 

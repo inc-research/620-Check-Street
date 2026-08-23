@@ -31,7 +31,17 @@ STATES: tuple[str, ...] = (
 
 # Column order of the report table, left to right. The horizons array in the
 # emitted document preserves exactly this order.
-HORIZONS: tuple[str, ...] = ("12mo", "6mo", "13wk", "4wk")
+#
+# A 4wk horizon was computed in the first build and then removed (3F D-10). A
+# four-week window holds about twenty trading days, and splitting it across four
+# sign quadrants leaves roughly four days in each — so no 4wk cell in a full
+# archive run ever cleared the twenty-observation bar, and the marker that was
+# supposed to warn about thin cells was on for every one of them. A column that
+# cannot produce a trustworthy reading is not disclosure, it is noise with a
+# label. The three that remain still answer the question the column set exists
+# for: whether a fund's recent behaviour looks different from its longer-run
+# behaviour.
+HORIZONS: tuple[str, ...] = ("12mo", "6mo", "13wk")
 
 MIN_OBSERVATIONS_PER_CELL = 20
 
@@ -49,8 +59,6 @@ def horizon_start(as_of: date, horizon: str) -> date:
         return _minus_months(as_of, 6)
     if horizon == "13wk":
         return as_of - timedelta(weeks=13)
-    if horizon == "4wk":
-        return as_of - timedelta(weeks=4)
     raise ValueError(f"unknown horizon: {horizon!r}")
 
 
@@ -273,12 +281,12 @@ def compute_horizon(
     return Horizon(horizon, start, as_of, total, classified, unclassified, states, [])
 
 
-def compute_four_horizon_table(
+def compute_horizon_table(
     pairs: Sequence[tuple[date, float, float]],
     as_of: date,
     min_observations: int = MIN_OBSERVATIONS_PER_CELL,
 ) -> list[Horizon]:
-    """All four columns, in the report table's left-to-right order."""
+    """Every column, in the report table's left-to-right order."""
     earliest = pairs[0][0] if pairs else None
     return [
         compute_horizon(pairs, h, as_of, min_observations, earliest) for h in HORIZONS

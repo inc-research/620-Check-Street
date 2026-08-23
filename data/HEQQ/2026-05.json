@@ -9,7 +9,7 @@
   "generated_at": "2026-08-23T19:18:31Z",
   "coverage": {
     "inception": "2025-03-27",
-    "earliest_available_snapshot": "2025-04",
+    "earliest_available_snapshot": "2025-06",
     "earliest_full_baseline_snapshot": "2026-03",
     "requested_backfill_depth_months": 19,
     "history_limited_by_inception": true
@@ -172,53 +172,6 @@
             }
           },
           "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2026-05-01",
-          "window_end": "2026-05-29",
-          "observations_total": 20,
-          "observations_classified": 20,
-          "observations_unclassified": 0,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": 0.365460047902037,
-              "score": 18,
-              "observation_count": 9,
-              "quadrant_cov": 4.891062193337275e-06,
-              "quadrant_var_bench": 1.3383302009111386e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": 0.1980190111707335,
-              "score": 10,
-              "observation_count": 5,
-              "quadrant_cov": 3.6924716305578428e-06,
-              "quadrant_var_bench": 1.8647056202973187e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": 3.879325233909371,
-              "score": 100,
-              "observation_count": 2,
-              "quadrant_cov": 2.6939142005802646e-06,
-              "quadrant_var_bench": 6.944285508811246e-07,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": -0.08926979911641701,
-              "score": 0,
-              "observation_count": 4,
-              "quadrant_cov": -6.528951130967223e-07,
-              "quadrant_var_bench": 7.313728938106826e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            }
-          },
-          "blockers": []
         }
       ]
     },
@@ -363,53 +316,6 @@
               "observation_count": 6,
               "quadrant_cov": -2.10891152100155e-06,
               "quadrant_var_bench": 1.9028501385238027e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            }
-          },
-          "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2026-05-01",
-          "window_end": "2026-05-29",
-          "observations_total": 20,
-          "observations_classified": 20,
-          "observations_unclassified": 0,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": 0.0825598942024541,
-              "score": 4,
-              "observation_count": 9,
-              "quadrant_cov": 3.521518587050522e-06,
-              "quadrant_var_bench": 4.2654107312868195e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": 0.18445035961038556,
-              "score": 9,
-              "observation_count": 5,
-              "quadrant_cov": 5.771846361794349e-06,
-              "quadrant_var_bench": 3.129213938094899e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": 0.6224148998658509,
-              "score": 31,
-              "observation_count": 2,
-              "quadrant_cov": 1.6790358551105097e-05,
-              "quadrant_var_bench": 2.697615136579141e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": -0.08297728178097079,
-              "score": 0,
-              "observation_count": 4,
-              "quadrant_cov": -3.8654913879416367e-07,
-              "quadrant_var_bench": 4.658493632202967e-06,
               "data_sufficiency": "thin",
               "blockers": []
             }

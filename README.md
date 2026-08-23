@@ -5,9 +5,13 @@ rose, and the days it fell.
 
 Third Floor follows a fixed list of 31 Options-Integrated ETFs. Every month it
 works out, for each of them, how big its move was compared with the market's on
-each of the four combinations of directions the two can move in, over four
-different lengths of time. The reports are published as files in this repository
-and the site reads them.
+each of the four combinations of directions the two can move in — over the past
+twelve months, six months and thirteen weeks. The reports are published as files
+in this repository and the site reads them.
+
+A four-week window was computed at first and dropped: split across four
+combinations it leaves about four days in each, which is not enough to report
+anything anybody should act on. See 3F D-10.
 
 It is a descriptive tool. It does not give advice, rank funds, or say anything
 about what any of them does next.

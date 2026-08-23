@@ -144,53 +144,6 @@
             }
           },
           "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2025-05-02",
-          "window_end": "2025-05-30",
-          "observations_total": 20,
-          "observations_classified": 20,
-          "observations_unclassified": 0,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": 0.11965073029697629,
-              "score": 6,
-              "observation_count": 10,
-              "quadrant_cov": 1.1869659302550467e-05,
-              "quadrant_var_bench": 9.920256460691597e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": 0.722448632398087,
-              "score": 36,
-              "observation_count": 6,
-              "quadrant_cov": 1.9740320344910596e-05,
-              "quadrant_var_bench": 2.732418536025852e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": -0.2607556059363447,
-              "score": 0,
-              "observation_count": 2,
-              "quadrant_cov": -6.420644012854794e-07,
-              "quadrant_var_bench": 2.462322522194285e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": 8.308976243166246,
-              "score": 100,
-              "observation_count": 2,
-              "quadrant_cov": 1.9526049015676028e-07,
-              "quadrant_var_bench": 2.3499945654237867e-08,
-              "data_sufficiency": "thin",
-              "blockers": []
-            }
-          },
-          "blockers": []
         }
       ]
     },
@@ -309,62 +262,6 @@
               "quadrant_var_bench": 1.3028956301135798e-07,
               "data_sufficiency": "thin",
               "blockers": []
-            }
-          },
-          "blockers": []
-        },
-        {
-          "horizon": "4wk",
-          "window_start": "2025-05-02",
-          "window_end": "2025-05-30",
-          "observations_total": 20,
-          "observations_classified": 20,
-          "observations_unclassified": 0,
-          "states": {
-            "fund_up_bench_up": {
-              "raw_semibeta": 0.13406315133008773,
-              "score": 7,
-              "observation_count": 10,
-              "quadrant_cov": 1.894599104283397e-05,
-              "quadrant_var_bench": 0.0001413213911120552,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_down": {
-              "raw_semibeta": 0.44008220515645513,
-              "score": 22,
-              "observation_count": 8,
-              "quadrant_cov": 2.7595353405784023e-05,
-              "quadrant_var_bench": 6.270499711746696e-05,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_up_bench_down": {
-              "raw_semibeta": -0.4470954747527432,
-              "score": 0,
-              "observation_count": 2,
-              "quadrant_cov": -7.160952261166694e-07,
-              "quadrant_var_bench": 1.6016606442118228e-06,
-              "data_sufficiency": "thin",
-              "blockers": []
-            },
-            "fund_down_bench_up": {
-              "raw_semibeta": null,
-              "score": null,
-              "observation_count": 0,
-              "quadrant_cov": null,
-              "quadrant_var_bench": null,
-              "data_sufficiency": "blocked",
-              "blockers": [
-                {
-                  "code": "quadrant_too_few_observations",
-                  "message": "There were only 0 days in this window where the fund and the benchmark moved in this particular combination of directions, which is not enough days to work a number out from.",
-                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
-                  "subjects": [
-                    "fund_down_bench_up"
-                  ]
-                }
-              ]
             }
           },
           "blockers": []
