@@ -28,6 +28,7 @@ export interface ReportHandlers {
   onBenchmark: (benchmark: string) => void;
   onMonth: (month: string) => void;
   onHistory: (lookback: Lookback) => void;
+  onCompare: (ticker: string) => void;
   onBack: () => void;
 }
 
@@ -37,6 +38,18 @@ export interface ReportContext {
   months: readonly string[];
   /** Lookbacks the archive can answer for this month. Empty is common and fine. */
   history: readonly Lookback[];
+  /** Every other fund with a report for this same month. */
+  companions: readonly { ticker: string; name: string }[];
+  /**
+   * Why this fund's anchor is not an exact match, in the reader's words.
+   *
+   * Comes from the index rather than from the snapshot. The snapshot carries a
+   * provenance note naming prospectus and marketing sources, which is the right
+   * thing for an archive and the wrong thing for a page — it was written for
+   * whoever maintains the registry, and one of them ended by asking the builder
+   * an open question (3F D-15).
+   */
+  benchmarkNote?: string | undefined;
 }
 
 /** A month key as something a person says out loud. */
@@ -247,6 +260,47 @@ function historyOffer(ctx: ReportContext, handlers: ReportHandlers): HTMLElement
   return root;
 }
 
+/**
+ * The way through to Lens C.
+ *
+ * Only funds with a report for this same month are offered. Reading two funds a
+ * month apart would put the difference between two stretches of market into a
+ * table that says it is showing the difference between two funds, and nothing
+ * on the page would separate the two.
+ */
+function compareOffer(ctx: ReportContext, handlers: ReportHandlers): HTMLElement {
+  const root = el('section', {});
+  append(root, [el('h3', {}, PLAIN.comparing_funds.title)]);
+
+  if (ctx.companions.length === 0) {
+    append(root, [el('p', { class: 'quiet' }, PLAIN.comparing_funds.whenAbsent)]);
+    return root;
+  }
+
+  append(root, [el('p', {}, PLAIN.comparing_funds.mechanism)]);
+
+  const select = el('select', {
+    id: 'compare-with',
+    onchange: (e) => {
+      const picked = (e.target as HTMLSelectElement).value;
+      if (picked) handlers.onCompare(picked);
+    },
+  });
+  append(select, [el('option', { value: '' }, 'Pick a fund…')]);
+  for (const other of ctx.companions) {
+    append(select, [el('option', { value: other.ticker }, `${other.ticker} — ${other.name}`)]);
+  }
+
+  append(root, [
+    el(
+      'div',
+      { class: 'controls' },
+      el('div', {}, el('label', { for: 'compare-with' }, 'Set beside'), select),
+    ),
+  ]);
+  return root;
+}
+
 function controls(ctx: ReportContext, handlers: ReportHandlers): HTMLElement {
   const root = el('div', { class: 'controls' });
   const benchmarks = Object.keys(ctx.snapshot.benchmarks);
@@ -286,7 +340,6 @@ function controls(ctx: ReportContext, handlers: ReportHandlers): HTMLElement {
 
 export function renderReport(ctx: ReportContext, handlers: ReportHandlers): HTMLElement {
   const model = buildLensA(ctx.snapshot, ctx.benchmark);
-  const block = ctx.snapshot.benchmarks[ctx.benchmark]!;
   const root = el('section', {});
 
   append(root, [
@@ -296,8 +349,8 @@ export function renderReport(ctx: ReportContext, handlers: ReportHandlers): HTML
     controls(ctx, handlers),
   ]);
 
-  if (block.benchmark_note) {
-    append(root, [el('p', { class: 'benchmark-note' }, block.benchmark_note)]);
+  if (ctx.benchmarkNote) {
+    append(root, [el('p', { class: 'benchmark-note' }, ctx.benchmarkNote)]);
   }
 
   append(root, [
@@ -321,6 +374,7 @@ export function renderReport(ctx: ReportContext, handlers: ReportHandlers): HTML
 
   append(root, [legend(model)]);
   append(root, [historyOffer(ctx, handlers)]);
+  append(root, [compareOffer(ctx, handlers)]);
 
   const blocked = blockedNotes(model);
   if (blocked) append(root, [blocked]);

@@ -56,6 +56,13 @@ jobs:
       - name: Validate the archive
         run: npm run validate:data
 
+      # The registry's reader-facing notes are rendered on a fund's report just
+      # like a line from the deck, but they live in a data file the deck's own
+      # test never walks. They shipped as engineering prose until this ran
+      # (3F D-15).
+      - name: Registry prose passes the lint (INV-7)
+        run: npm run check:registry
+
       # Real issuer downloads are data, not repository content (FF D-31), and
       # the handover tree carries eighteen of them.
       - name: No handover tree in the history

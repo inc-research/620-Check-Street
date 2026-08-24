@@ -102,6 +102,34 @@ export const BLOCKERS = {
     subjects: [month],
   }),
 
+  sameFundTwice: (ticker: string): Blocker => ({
+    code: 'same_fund_twice',
+    message: `${ticker} would be set beside itself, which can only ever show that a fund behaves exactly like itself.`,
+    remedy: 'Pick a different fund for the other side of the comparison.',
+    subjects: [ticker],
+  }),
+
+  readingsFromDifferentMonths: (a: string, monthA: string, b: string, monthB: string): Blocker => ({
+    code: 'readings_from_different_months',
+    message: `The report for ${a} covers ${monthA} and the one for ${b} covers ${monthB}. Set side by side, the difference between them would be partly the two funds and partly the two stretches of market, with no way to tell which.`,
+    remedy: 'Compare the two funds in a month both of them have a report for.',
+    subjects: [a, monthA, b, monthB],
+  }),
+
+  noMonthInCommon: (a: string, b: string): Blocker => ({
+    code: 'no_month_in_common',
+    message: `${a} and ${b} have no month with a published report for both, so there is no point in time at which the two can be set side by side.`,
+    remedy: 'Compare one of them against a fund that has been running over the same months.',
+    subjects: [a, b],
+  }),
+
+  readingNotComparable: (ticker: string, why: string): Blocker => ({
+    code: 'reading_not_comparable',
+    message: `The reading for ${ticker} over this period could not be worked out. ${why}`,
+    remedy: 'Pick a longer period, which rests on more days, or read each fund’s own report on its own.',
+    subjects: [ticker],
+  }),
+
   tickerNotTracked: (ticker: string): Blocker => ({
     code: 'ticker_not_tracked',
     message: `${ticker} is not one of the funds this site follows.`,

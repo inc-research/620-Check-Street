@@ -362,6 +362,91 @@ periods genuinely differ more than overlapping windows within one report.
 comparison is unavailable more than it is available. At a third and a
 two-fifths, it is not there yet.
 
+## 3F D-14 · Lens C shows both readings, not only the gap between them
+
+`AGENTS.md` describes Lens C as "per state per horizon, the delta between their
+scores" — four rows by three columns of differences. Measured against the
+archive, a difference on its own does not say what was found.
+
+Taking every pair of tracked funds at their most recent shared month, on the
+twelve-month window against the universal anchor: a difference of +0.30 turns up
+with the higher fund sitting anywhere from +0.04 to +0.71, a spread of 0.67. The
+same gap is one fund moving nearly as far as the market and the other moving a
+little less, or one moving a little and the other not at all. Those are different
+findings and the delta cannot tell them apart.
+
+So the table is three columns — the first fund, the second fund, the difference —
+over one window length at a time, with a chooser for the other two. That is the
+shape Lens B already taught this reader, and it keeps INV-1: no figure without
+what it was worked out from.
+
+The cost is that all three windows are no longer on screen at once. It is small:
+every one of the 435 possible pairs can answer all three windows at their latest
+shared month, so the chooser never leads anywhere empty. Availability overall is
+better than either other lens — 3.3% of cells are not comparable, against Lens
+B's 33% and 43% — because both sides are read at the same date over the same
+window, and only a genuinely empty quadrant blocks a cell. 26.1% of cells clear
+the 0.30 threshold, so the marker is doing work without covering the table.
+
+Four things are refused rather than approximated, the first two being the
+constraints `AGENTS.md` asks this lens to enforce rather than support:
+
+- **The same month on both sides.** Otherwise the gap is partly the two funds
+  and partly two stretches of market, with nothing on the page separating them.
+- **The same benchmark on both sides**, defaulting to the universal anchor,
+  which is the only one every fund here carries and so the only one that makes
+  an arbitrary pair comparable at all.
+- **The same schema MAJOR**, as in Lens B and for the same reason.
+- **A fund set beside itself**, which can only ever show that a fund behaves
+  exactly like itself.
+
+A fifth: where the two documents disagree about the shift threshold, nothing is
+marked. One number for the reader to learn means it has to be the same number on
+both sides, and an unmarked table is honest where a mismarked one is not.
+
+*Reverses if:* readers are found to want all three windows at once more than
+they want the levels — at which point the difference-only grid is a second view,
+not a replacement for this one.
+
+## 3F D-15 · The registry's provenance notes are not reader copy
+
+`tickers.json` carries a `benchmark_note` for twelve funds, explaining why each
+one's anchor is what it is. Those notes were being rendered verbatim on the
+fund's report.
+
+They were written for whoever maintains the file, and they read like it. FGSI's
+ended "a separate income-overlay caveat may be worth adding" — an open question
+addressed to the builder, shown to a reader as though it were a caveat. It also
+printed the field name `defined_outcome_caveat`, and the phrase
+"path-dependent/capped". HOLA's, BUFY's and BUFI's cited `3F D-01`, an address in
+a file the reader has never seen. DBMF's said the comparison "shows
+diversification benefit vs. equities" — a verdict, which is the one thing the
+copy rules exist to keep off this page. Several carried straight apostrophes the
+deck's own typography lint would have caught.
+
+None of it was caught because the lint walks `packages/copy`, and this prose
+lives in a data file.
+
+So: `benchmark_note` stays exactly as it is and stops reaching the page. It
+names prospectus and marketing sources and does not simplify them, which is what
+makes it worth keeping in a registry and in an append-only archive. A second
+field, `benchmark_note_plain`, says the same thing in the reader's voice, and is
+the only one the site renders. The registry schema requires the second wherever
+the first is present, `registry.py` refuses to load a file that breaks that, and
+`scripts/lint-registry.mjs` runs the deck's own banned-word and typography lists
+over the plain notes in CI, plus checks for the four faults above. Run against
+the prose that was actually shipping, it produces six findings.
+
+No snapshot was rewritten. The archive keeps the provenance note it was
+published with, which is the right record for an audit trail; the page reads the
+reader-facing note from `data/index.json`, which is regenerated from the
+registry.
+
+*Reverses if:* a way is found to write one note that serves both purposes
+without losing the source names. Two readerships, two registers, is the honest
+reading of why the first attempt failed.
+
+
 ---
 
 ## Open
@@ -372,8 +457,14 @@ two-fifths, it is not there yet.
 | ~~3F-O-02~~ | ~~What the shift marker does with no 12-month baseline.~~ **Closed:** nothing is marked, and the report says why once above the table. About a fifth of the archive is in this state. | — |
 | ~~3F-O-03~~ | ~~Which archived column Lens B compares against.~~ **Closed:** matched to the lookback, so the two windows are disjoint. See 3F D-13. | — |
 | ~~3F-O-04~~ | ~~The wording shown for a ticker outside the tracked set.~~ **Closed:** a distinct view from the too-new one, because they are different facts. | — |
-| 3F-O-05 | Whether FGSI wants its own income-overlay caveat, distinct from `defined_outcome_caveat`. It writes calls for income rather than running a capped-and-buffered outcome period, so the existing caveat does not describe it. | Site |
-| 3F-O-06 | Whether LADM stays in the registry while it supports so little, or waits for history. | Next monthly run |
+| ~~3F-O-05~~ | ~~Whether FGSI wants its own income-overlay caveat.~~ **Closed: no.** The caveat's premise is that writing calls for income compresses upside participation. FGSI's readings say the opposite — its up-participation runs *above* its down-participation in both months it has (+0.05 and +0.06), putting it on the un-compressed side of a set whose most compressed member sits at −0.13. A caveat asserting something the archive does not show is the failure mode this app exists to check for. What FGSI actually needed was the thing every fund with an inexact anchor needs, and that is 3F D-15. | — |
+| ~~3F-O-06~~ | ~~Whether LADM stays in the registry with no snapshots.~~ **Closed: it stays.** Dropping it would make the site answer "LADM is not one of the funds followed here", which is false — it is followed, and it is too new. Those are different facts and the site already has separate views for them. Inception 2026-06-26 gives it a thirteen-week window around late September 2026, at which point it starts producing files on its own. | — |
 
-All six are render-time or cosmetic, and every snapshot already carries the raw
-numbers any answer would need.
+All six are now closed. Every one was render-time or cosmetic, and every
+snapshot already carried the raw numbers the answers needed — no question in
+this register ever cost a refetch.
+
+3F-O-05 is worth reading twice, because it closed the other way from the way it
+was posed. The question assumed a caveat was missing; the archive said the
+caveat would have been a claim. What was actually wrong was a note nobody had
+thought of as prose at all (3F D-15).

@@ -334,6 +334,23 @@ comparing similar OI products directly against each other. Requires no
 new computation, just a client-side subtraction between two already-
 fetched snapshot files.
 
+**Settled by 3F D-14, against this section's own shape.** The table is not a
+grid of differences. It shows the first fund's reading, the second fund's
+reading and the difference, over one window length at a time, with a chooser
+for the other two.
+
+Measured on the archive, a difference of +0.30 turns up with the higher fund
+anywhere from +0.04 to +0.71. The same gap is one fund nearly keeping pace and
+the other slightly behind, or one moving a little and the other not at all —
+different findings, which the delta alone cannot separate. Losing the levels
+would repeat the mistake the bounded score made (3F D-12).
+
+Availability is the best of the three lenses: every one of the 435 possible
+pairs can answer all three windows at their latest shared month, and 3.3% of
+cells are not comparable, against Lens B's 33% and 43%. Both sides are read at
+the same date over the same window, so only a genuinely empty quadrant blocks a
+cell.
+
 **Two constraints Lens C must enforce, not just support:**
 - **Same benchmark context on both sides.** With the universal VOO anchor
   now always present on every fund, Lens C should default to comparing
@@ -606,6 +623,15 @@ Each step has a gate. Run the gate; do not assume the step.
     lookbacks the archive can answer. *Gate:* the two windows are adjacent
     and disjoint; a version-mismatched or uncomputable pair is refused with
     a remedy rather than half-drawn.
-11. Static site: Lens C two-fund comparison, defaulting to the VOO anchor.
-12. `data/index.json` is generated and CI-checked — a static site cannot list
-    a directory. Done alongside step 9.
+11. ✅ Static site: Lens C two-fund comparison, defaulting to the VOO anchor.
+    *Gate:* the same month, the same benchmark and the same window length on
+    both sides, each enforced by a refusal rather than a convention; both
+    funds' readings on the page beside the difference, not the difference
+    alone (3F D-14).
+12. ✅ `data/index.json` is generated and CI-checked — a static site cannot list
+    a directory. Done alongside step 9. It also carries the reader-facing
+    benchmark note, which is what the report renders (3F D-15).
+
+**All twelve steps are built.** The two open questions the site was waiting on
+are closed: 3F-O-05 no (the archive contradicts the caveat's premise) and
+3F-O-06 yes, LADM stays.

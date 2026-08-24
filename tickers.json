@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.1",
+  "schema_version": "1.2",
   "locked_at": "2026-08-23",
   "note": "Locked coverage set of 31 individually-verified Options-Integrated (OI) and comparison tickers. Not organically grown — see AGENTS.md 'Coverage model'. Wrapper instruments preferred over individual monthly-dated rungs of the same strategy.",
   "benchmark_anchors": [
@@ -64,6 +64,7 @@
       "named_benchmark": "IWM",
       "benchmark_source": "marketing_language",
       "benchmark_note": "Prospectus references the Solactive United States 2000 Index; Innovator's own marketing describes the fund in Russell 2000 terms. IWM used as the practical, literature-aligned proxy.",
+      "benchmark_note_plain": "This fund is compared against a fund holding smaller US companies. Its own legal paperwork names one index of smaller US companies and its marketing describes another; the two cover much the same companies, and the comparison here uses the one this site tracks.",
       "wrapper": true
     },
     {
@@ -106,6 +107,7 @@
       "named_benchmark": "EFA",
       "benchmark_source": "prospectus_index",
       "benchmark_note": "References MSCI EAFE. Third Floor tracks that exposure through EFA (iShares MSCI EAFE ETF), added as a fourth anchor by 3F D-01. EFA is a practical, fee-bearing proxy for the index, not the index itself.",
+      "benchmark_note_plain": "This fund is built around large companies outside the US and Canada. The comparison here uses a fund that holds those companies, which is the closest thing this site tracks to the index the fund itself names. It is a fund with its own running costs rather than the index itself, so the two are close without being identical.",
       "wrapper": false
     },
     {
@@ -127,6 +129,7 @@
       "named_benchmark": "VOO",
       "benchmark_source": "prospectus_index",
       "benchmark_note": "Fund's underlying reference is IVV, not VOO; both track the S&P 500.",
+      "benchmark_note_plain": "This fund is built around a different US large-company fund from the one used here. Both hold the same 500 companies and move together closely, so the comparison is a near match rather than an exact one.",
       "wrapper": true
     },
     {
@@ -138,6 +141,7 @@
       "named_benchmark": "VOO",
       "benchmark_source": "prospectus_index",
       "benchmark_note": "Fund's underlying reference is IVV, not VOO; both track the S&P 500.",
+      "benchmark_note_plain": "This fund is built around a different US large-company fund from the one used here. Both hold the same 500 companies and move together closely, so the comparison is a near match rather than an exact one.",
       "wrapper": true
     },
     {
@@ -149,6 +153,7 @@
       "named_benchmark": "VOO",
       "benchmark_source": "prospectus_index",
       "benchmark_note": "Fund's underlying reference is IVV, not VOO; both track the S&P 500.",
+      "benchmark_note_plain": "This fund is built around a different US large-company fund from the one used here. Both hold the same 500 companies and move together closely, so the comparison is a near match rather than an exact one.",
       "wrapper": false
     },
     {
@@ -160,6 +165,7 @@
       "named_benchmark": "VOO",
       "benchmark_source": "prospectus_index",
       "benchmark_note": "Fund's underlying reference is IVV, not VOO; both track the S&P 500.",
+      "benchmark_note_plain": "This fund is built around a different US large-company fund from the one used here. Both hold the same 500 companies and move together closely, so the comparison is a near match rather than an exact one.",
       "wrapper": false
     },
     {
@@ -171,6 +177,7 @@
       "named_benchmark": "VOO",
       "benchmark_source": "prospectus_index",
       "benchmark_note": "Fund's underlying reference is IVV, not VOO; both track the S&P 500.",
+      "benchmark_note_plain": "This fund is built around a different US large-company fund from the one used here. Both hold the same 500 companies and move together closely, so the comparison is a near match rather than an exact one.",
       "wrapper": false
     },
     {
@@ -182,6 +189,7 @@
       "named_benchmark": "VOO",
       "benchmark_source": "prospectus_index",
       "benchmark_note": "Fund's underlying reference is IVV, not VOO; both track the S&P 500.",
+      "benchmark_note_plain": "This fund is built around a different US large-company fund from the one used here. Both hold the same 500 companies and move together closely, so the comparison is a near match rather than an exact one.",
       "wrapper": false
     },
     {
@@ -244,6 +252,7 @@
       "named_benchmark": "EFA",
       "benchmark_source": "prospectus_index",
       "benchmark_note": "References MSCI EAFE. Third Floor tracks that exposure through EFA (iShares MSCI EAFE ETF), added as a fourth anchor by 3F D-01. EFA is a practical, fee-bearing proxy for the index, not the index itself.",
+      "benchmark_note_plain": "This fund is built around large companies outside the US and Canada. The comparison here uses a fund that holds those companies, which is the closest thing this site tracks to the index the fund itself names. It is a fund with its own running costs rather than the index itself, so the two are close without being identical.",
       "wrapper": true
     },
     {
@@ -285,6 +294,7 @@
       "named_benchmark": "VOO",
       "benchmark_source": "prospectus_index",
       "benchmark_note": "Tracks a proprietary 'Growth Strength' equity index plus a call-writing income overlay, not a pure S&P 500 buffer/floor structure — VOO is the closest available anchor, not an exact match. Not path-dependent/capped in the way the buffer funds are, so defined_outcome_caveat is false; a separate income-overlay caveat may be worth adding.",
+      "benchmark_note_plain": "This fund holds a selection of US companies picked by its own set of rules, and sells options on them to bring in an income. It is not built around the 500 largest US companies, so the comparison here is the closest one this site tracks rather than the thing the fund itself follows.",
       "wrapper": false
     },
     {
@@ -347,6 +357,7 @@
       "named_benchmark": "EFA",
       "benchmark_source": "prospectus_index",
       "benchmark_note": "References MSCI EAFE. Third Floor tracks that exposure through EFA (iShares MSCI EAFE ETF), added as a fourth anchor by 3F D-01. EFA is a practical, fee-bearing proxy for the index, not the index itself.",
+      "benchmark_note_plain": "This fund is built around large companies outside the US and Canada. The comparison here uses a fund that holds those companies, which is the closest thing this site tracks to the index the fund itself names. It is a fund with its own running costs rather than the index itself, so the two are close without being identical.",
       "wrapper": false
     },
     {
@@ -358,6 +369,7 @@
       "named_benchmark": null,
       "benchmark_source": "marketing_language",
       "benchmark_note": "Fund's own factsheet states it is 'not managed in relation to any benchmark.' Bloomberg US Aggregate appears only as one of two illustrative comparison lines in fund materials, alongside an SG CTA index — not a declared reference. Computed against VOO anchor only, which is informative here (shows diversification benefit vs. equities) even though it isn't a claimed-exposure match.",
+      "benchmark_note_plain": "This fund states that it is not run in relation to any index at all. It is compared here against a US large-company index fund because that is what every fund on this site is compared against, and because the comparison shows how differently this one moves — not because the fund claims to follow it.",
       "wrapper": false,
       "notes": "Not options-based — included for diversification/comparison value, not as an OI fund. Uses futures across equities, bonds, commodities, currencies."
     }

@@ -27,7 +27,8 @@ FUND = Fund(
     defined_outcome_caveat=True,
     named_benchmark="EFA",
     benchmark_source="prospectus_index",
-    benchmark_note="A note.",
+    benchmark_note="A note about where the anchor came from.",
+    benchmark_note_plain="A sentence the reader is shown.",
 )
 
 
@@ -75,7 +76,7 @@ class TestDocumentShape(unittest.TestCase):
         self.assertEqual(self.doc["benchmarks"]["EFA"]["roles"], ["named_benchmark"])
 
     def test_a_fund_whose_named_benchmark_is_voo_gets_one_entry_with_both_roles(self):
-        fund = Fund("SFLR", "n", "i", "options_integrated", True, "VOO", "prospectus_index", None)
+        fund = Fund("SFLR", "n", "i", "options_integrated", True, "VOO", "prospectus_index", None, None)
         docs = build_documents(fund)
         doc = docs[max(docs)]
         self.assertEqual(list(doc["benchmarks"]), ["VOO"])

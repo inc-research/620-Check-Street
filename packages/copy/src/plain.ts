@@ -126,6 +126,23 @@ export const TABLE: TableCopy = {
       'Days when one went up and the other went down. These days are less common, so these two rows usually rest on fewer of them. A number below nought means the fund’s move ran the other way to the market’s size that day.',
   },
 
+  comparison: {
+    heading: 'How the two differ',
+    blurb:
+      'Both funds are read over the same stretch of days, against the same market, and sorted into the same four boxes. What is left between them is the difference between the two funds.',
+    difference: 'Difference',
+    sameEverythingElse:
+      'Both columns come from reports covering the same month, worked out over the same length of time and against the same market index. The only thing that differs between them is the fund.',
+    marked:
+      'An amber dot marks a difference of 0.30 or more, the same size of move the report marks anywhere else.',
+    alike:
+      'A difference near nought means the two funds responded to the market in much the same way on days of that kind.',
+    unavailable:
+      'A dash means one of the two funds had too few days of that kind to work a reading out from, so there is nothing to subtract. It does not mean the two were the same.',
+    window:
+      'The difference on its own does not say much. A gap of 0.30 could be one fund moving almost as far as the market and the other moving a little less, or one moving a little and the other not at all. Both readings are shown so the gap can be read against them.',
+  },
+
   rows: {
     fund_up_bench_up: {
       label: 'Both went up',

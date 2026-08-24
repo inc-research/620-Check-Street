@@ -92,6 +92,17 @@ export interface TableCopy {
     steady: string;
     unavailable: string;
   };
+  /** Lens C: two funds, one benchmark, one month, one window length. */
+  comparison: {
+    heading: string;
+    blurb: string;
+    difference: string;
+    sameEverythingElse: string;
+    marked: string;
+    alike: string;
+    unavailable: string;
+    window: string;
+  };
   rows: Record<StateKey, RowLabel>;
   columns: Record<HorizonKey, { short: string; full: string }>;
   legend: {

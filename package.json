@@ -22,7 +22,8 @@
     "ingest": "node scripts/ingest-snapshots.mjs",
     "validate:data": "node scripts/validate-snapshots.mjs",
     "build:index": "node scripts/build-index.mjs",
-    "check:index": "node scripts/build-index.mjs --check"
+    "check:index": "node scripts/build-index.mjs --check",
+    "check:registry": "node scripts/lint-registry.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

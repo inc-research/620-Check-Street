@@ -9,13 +9,18 @@
  */
 
 import {
+  COMPARISON_HORIZON,
   append,
   archivedMonthFor,
   buildLensA,
   canCompare,
   clear,
+  comparableHorizons,
   defaultBenchmark,
   el,
+  sharedBenchmarks,
+  sharedMonths,
+  type HorizonName,
   type Lookback,
   type Snapshot,
 } from './shim.ts';
@@ -23,6 +28,7 @@ import { findFund, loadIndex, loadSnapshot, state } from './state.ts';
 import { renderFunds } from './views/funds.ts';
 import { renderReport } from './views/report.ts';
 import { renderHistory } from './views/history.ts';
+import { renderCompare } from './views/compare.ts';
 import { renderNotTracked, renderTooNew } from './views/states.ts';
 
 function app(): HTMLElement | null {
@@ -52,20 +58,41 @@ function isLookback(value: string | undefined): value is Lookback {
   return value === '6mo' || value === '13wk';
 }
 
+function isHorizon(value: string | undefined): value is HorizonName {
+  return value === '12mo' || value === '6mo' || value === '13wk';
+}
+
+interface Route {
+  ticker: string | null;
+  month: string | null;
+  /** Lens B: how far back to reach for the earlier report. */
+  lookback: Lookback | null;
+  /** Lens C: the fund to set this one beside. */
+  other: string | null;
+  /** Lens C: the window length both funds are read over. */
+  horizon: HorizonName | null;
+}
+
 /**
- * `#/TICKER`, `#/TICKER/YYYY-MM`, or `#/TICKER/YYYY-MM/vs/6mo`.
+ * `#/TICKER`, `#/TICKER/YYYY-MM`, `#/TICKER/YYYY-MM/vs/6mo`, or
+ * `#/TICKER/YYYY-MM/with/OTHER[/over/12mo]`.
  *
  * Hash routing because a static site has nothing else to route with, and
  * because a reader should be able to link to a comparison and come back to it.
+ * The month is in the Lens C path rather than implied, because both sides being
+ * read in the same month is the thing that makes the comparison mean anything.
  */
-function parseHash(): { ticker: string | null; month: string | null; lookback: Lookback | null } {
+function parseHash(): Route {
   const raw = location.hash.replace(/^#\/?/, '');
-  if (!raw) return { ticker: null, month: null, lookback: null };
-  const [ticker, month, vs, lookback] = raw.split('/');
+  const empty: Route = { ticker: null, month: null, lookback: null, other: null, horizon: null };
+  if (!raw) return empty;
+  const [ticker, month, verb, subject, over, horizon] = raw.split('/');
   return {
     ticker: ticker ? ticker.toUpperCase() : null,
     month: month && /^\d{4}-\d{2}$/.test(month) ? month : null,
-    lookback: vs === 'vs' && isLookback(lookback) ? lookback : null,
+    lookback: verb === 'vs' && isLookback(subject) ? subject : null,
+    other: verb === 'with' && subject ? subject.toUpperCase() : null,
+    horizon: verb === 'with' && over === 'over' && isHorizon(horizon) ? horizon : null,
   };
 }
 
@@ -81,9 +108,21 @@ function goto(ticker: string | null, month?: string | null, lookback?: Lookback 
   location.hash = month ? `#/${ticker}/${month}` : `#/${ticker}`;
 }
 
+/** Lens C's address. The window length is only in the URL once it is chosen. */
+function gotoCompare(
+  ticker: string,
+  month: string,
+  other: string,
+  horizon?: HorizonName | null,
+): void {
+  location.hash = horizon
+    ? `#/${ticker}/${month}/with/${other}/over/${horizon}`
+    : `#/${ticker}/${month}/with/${other}`;
+}
+
 
 async function renderRoute(): Promise<void> {
-  const { ticker, month, lookback } = parseHash();
+  const { ticker, month, lookback, other, horizon } = parseHash();
 
   let index;
   try {
@@ -141,6 +180,88 @@ async function renderRoute(): Promise<void> {
     return;
   }
 
+  // Every other fund with a report for this same month. Worked out from the
+  // index, so the picker only ever offers comparisons that can be made.
+  const companions = index.funds
+    .filter((f) => f.ticker !== fund.ticker && f.months.includes(wanted))
+    .map((f) => ({ ticker: f.ticker, name: f.name }));
+
+  if (other) {
+    const partner = findFund(other);
+    if (!partner) {
+      show(renderNotTracked(other, { onBack: () => goto(fund.ticker, wanted) }));
+      return;
+    }
+
+    // Same month on both sides is the constraint that makes the difference
+    // mean the funds rather than the market. Enforced here by refusing to
+    // route, and again in buildLensC, which never trusts its caller.
+    const both = sharedMonths(fund.months, partner.months);
+    if (both.length === 0) {
+      show(
+        message(
+          `${fund.ticker} and ${partner.ticker} have no month with a published report for both, so there is no point in time at which the two can be set side by side.`,
+          'Compare one of them against a fund that has been running over the same months.',
+        ),
+      );
+      return;
+    }
+    if (!both.includes(wanted)) {
+      gotoCompare(fund.ticker, both[both.length - 1]!, partner.ticker, horizon);
+      return;
+    }
+
+    let opposite: Snapshot;
+    try {
+      opposite = await loadSnapshot(partner.ticker, wanted);
+    } catch (e) {
+      show(message((e as Error).message, 'Pick another fund to set this one beside.'));
+      return;
+    }
+
+    // The universal anchor leads, because it is the one thing every fund here
+    // is measured against and so the only benchmark that makes any two of them
+    // comparable. A shared named benchmark is the fallback; no shared benchmark
+    // at all is a refusal rather than a guess.
+    const shared = sharedBenchmarks(snapshot, opposite, index.universal_anchor);
+    const on = shared[0];
+    if (!on) {
+      show(
+        message(
+          `${fund.ticker} and ${partner.ticker} are not measured against the same thing, so putting their numbers side by side would compare two different questions.`,
+          'Compare two funds that share a benchmark. Every fund here is measured against the US large-company anchor.',
+        ),
+      );
+      return;
+    }
+
+    const usable = comparableHorizons(snapshot, opposite, on);
+    const over = horizon && usable.includes(horizon)
+      ? horizon
+      : (usable.includes(COMPARISON_HORIZON) ? COMPARISON_HORIZON : usable[0] ?? COMPARISON_HORIZON);
+
+    show(
+      renderCompare(
+        {
+          a: snapshot,
+          b: opposite,
+          benchmark: on,
+          horizon: over,
+          horizons: usable,
+          months: both,
+          others: companions,
+        },
+        {
+          onHorizon: (h) => gotoCompare(fund.ticker, wanted, partner.ticker, h),
+          onMonth: (m) => gotoCompare(fund.ticker, m, partner.ticker, over),
+          onOther: (t) => gotoCompare(fund.ticker, wanted, t, horizon),
+          onBack: () => goto(fund.ticker, wanted),
+        },
+      ),
+    );
+    return;
+  }
+
   // Which lookbacks this month can actually answer, worked out from the index
   // rather than by trying the fetch and handling the failure.
   const history = LOOKBACKS.filter((l) => canCompare(fund.months, wanted, l));
@@ -179,7 +300,14 @@ async function renderRoute(): Promise<void> {
 
   show(
     renderReport(
-      { snapshot, benchmark: state.benchmark, months: fund.months, history },
+      {
+        snapshot,
+        benchmark: state.benchmark,
+        months: fund.months,
+        history,
+        companions,
+        benchmarkNote: fund.benchmark_note,
+      },
       {
         onBenchmark: (b) => {
           state.benchmark = b;
@@ -187,6 +315,7 @@ async function renderRoute(): Promise<void> {
         },
         onMonth: (m) => goto(fund.ticker, m),
         onHistory: (l) => goto(fund.ticker, wanted, l),
+        onCompare: (t) => gotoCompare(fund.ticker, wanted, t),
         onBack: () => goto(null),
       },
     ),

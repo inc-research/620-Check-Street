@@ -32,6 +32,9 @@
       "items": {
         "type": "object",
         "required": ["ticker", "name", "issuer", "category", "defined_outcome_caveat", "named_benchmark", "benchmark_source"],
+        "dependentRequired": {
+          "benchmark_note": ["benchmark_note_plain"]
+        },
         "additionalProperties": true,
         "properties": {
           "ticker": { "type": "string", "pattern": "^[A-Z.]{1,6}$" },
@@ -53,7 +56,16 @@
             "description": "How confident the benchmark match is, recorded per ticker rather than assumed uniform, so the site can show how it was arrived at and not just what it is.",
             "enum": ["prospectus_index", "marketing_language", "default_no_named_benchmark"]
           },
-          "benchmark_note": { "type": "string", "minLength": 1 },
+          "benchmark_note": {
+            "description": "Provenance, written in the register of whoever maintains this file: which index the prospectus names, which the marketing names, why this anchor was chosen over another. It names sources and does not simplify them, and for that reason it is NOT shown to a reader — benchmark_note_plain is. Anything present here requires that one.",
+            "type": "string",
+            "minLength": 1
+          },
+          "benchmark_note_plain": {
+            "description": "The same fact in the reader's voice, and the only one of the two that reaches the page. Required wherever benchmark_note is present, because a fund whose anchor is not an exact match must say so to the person reading its report, and must say it in words they were given. Linted in CI against the same banned-word and typography rules as the copy deck (INV-7).",
+            "type": "string",
+            "minLength": 1
+          },
           "wrapper": { "type": "boolean" },
           "wrapper_note": { "type": "string" },
           "notes": { "type": "string" }

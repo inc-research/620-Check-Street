@@ -59,7 +59,11 @@ function build() {
       fund.benchmarks = Object.keys(doc.benchmarks);
       fund.coverage = doc.coverage;
     }
-    if (entry.benchmark_note) fund.benchmark_note = entry.benchmark_note;
+    // Only the reader-facing note travels to the site. The provenance note
+    // stays in the registry and in the archive, where it is an audit trail;
+    // rendered on a report it was engineering prose addressed to nobody the
+    // page has (3F D-15).
+    if (entry.benchmark_note_plain) fund.benchmark_note = entry.benchmark_note_plain;
     return fund;
   });
 

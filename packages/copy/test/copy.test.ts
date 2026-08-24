@@ -125,6 +125,38 @@ test('the legend explains every marker the table can draw', () => {
   }
 });
 
+test('the comparison copy explains every marker and every absence it can draw', () => {
+  for (const key of ['blurb', 'sameEverythingElse', 'marked', 'alike', 'unavailable', 'window'] as const) {
+    ok(
+      TABLE.comparison[key].length > 30,
+      `comparison.${key} is too short to explain anything`,
+    );
+  }
+});
+
+test('the comparison says a dash is not two funds agreeing', () => {
+  // The same trap as the report's own dash, one step further along: here a
+  // missing reading could be misread as the two funds having behaved alike,
+  // which is a claim rather than an absence (INV-2).
+  ok(/does not mean the two were the same/i.test(TABLE.comparison.unavailable));
+});
+
+test('the comparison states the constraint that makes it mean anything', () => {
+  // Same month, same window length, same market on both sides. If any of those
+  // moved, the gap in the table would be partly the funds and partly the
+  // conditions, with nothing on the page to separate them.
+  const blob = TABLE.comparison.sameEverythingElse.toLowerCase();
+  ok(blob.includes('same month'));
+  ok(blob.includes('same length of time'));
+  ok(blob.includes('same market'));
+});
+
+test('the comparison says why both readings are shown and not only the gap', () => {
+  // Measured on the archive: a gap of +0.30 turns up with the higher fund
+  // anywhere from +0.04 to +0.71 (3F D-14).
+  ok(TABLE.comparison.window.includes('0.30'));
+});
+
 test('the legend says what a dash means, because a dash is not a zero', () => {
   // A zero and an unknown are opposite claims (INV-2), and on a page of numbers
   // an unexplained dash is the easiest of the two to misread.

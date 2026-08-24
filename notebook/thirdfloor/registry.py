@@ -31,7 +31,14 @@ class Fund:
     defined_outcome_caveat: bool
     named_benchmark: str | None
     benchmark_source: str
+    #: Provenance, in the register of whoever maintains the registry. Never
+    #: shown to a reader — it names prospectus and marketing sources and does
+    #: not simplify them, which is exactly what makes it useful here and unfit
+    #: for the page.
     benchmark_note: str | None
+    #: The same fact in the reader's voice. This is the one the site renders,
+    #: and it is linted against the copy deck's own rules (3F D-15).
+    benchmark_note_plain: str | None
 
     @property
     def benchmarks(self) -> list[str]:
@@ -90,12 +97,21 @@ def load_registry(path: str | Path) -> Registry:
     for entry in raw["tickers"]:
         named = entry.get("named_benchmark")
         note = entry.get("benchmark_note")
+        plain = entry.get("benchmark_note_plain")
 
         if named is not None and named not in anchors:
             raise RegistryError(
                 f"{entry['ticker']} names {named} as its benchmark, which is not in "
                 "benchmark_anchors. A benchmark that is not fetched cannot be computed "
                 "against; add it as an anchor or record why it is absent."
+            )
+        if note and not plain:
+            raise RegistryError(
+                f"{entry['ticker']} has a benchmark_note but no benchmark_note_plain. "
+                "The provenance note is written for whoever maintains this file and "
+                "is not shown to a reader; a fund whose anchor is not an exact match "
+                "must still say so on its own report, in words the reader was given "
+                "(3F D-15)."
             )
         if named is None and not note:
             raise RegistryError(
@@ -114,6 +130,7 @@ def load_registry(path: str | Path) -> Registry:
                 named_benchmark=named,
                 benchmark_source=entry["benchmark_source"],
                 benchmark_note=note,
+                benchmark_note_plain=plain,
             )
         )
 

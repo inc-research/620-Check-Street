@@ -28,12 +28,20 @@ async function render(
   benchmark: string,
   months: string[] = ['2026-07'],
   history: ('6mo' | '13wk')[] = [],
+  companions: { ticker: string; name: string }[] = [],
+  benchmarkNote?: string,
 ) {
   installed = installDom();
   const { renderReport } = await import('../src/views/report.ts');
   const node = renderReport(
-    { snapshot: snapshot as never, benchmark, months, history },
-    { onBenchmark: () => {}, onMonth: () => {}, onHistory: () => {}, onBack: () => {} },
+    { snapshot: snapshot as never, benchmark, months, history, companions, benchmarkNote },
+    {
+      onBenchmark: () => {},
+      onMonth: () => {},
+      onHistory: () => {},
+      onCompare: () => {},
+      onBack: () => {},
+    },
   );
   return { node, text: node.textContent as string };
 }
@@ -123,9 +131,26 @@ test('the as-of date and benchmark travel with the numbers (INV-1)', async () =>
   ok(text.includes(String(computed['as_of'])));
 });
 
-test('a benchmark note from the registry is shown, not dropped', async () => {
+test('the benchmark note shown is the reader’s one, not the registry’s own', async () => {
+  // The snapshot carries a provenance note naming prospectus and marketing
+  // sources. That is the right thing for an archive and the wrong thing for a
+  // page: it was written for whoever maintains the registry, and one of them
+  // ended by asking the builder an open question (3F D-15). The page takes its
+  // sentence from the index instead.
+  const plain = 'The comparison here is a near match rather than an exact one.';
+  const { text } = await render(computed, 'EFA', ['2026-07'], [], [], plain);
+  ok(text.includes(plain), 'the reader-facing note is missing');
+
+  const provenance = (
+    (computed['benchmarks'] as Record<string, { benchmark_note?: string }>)['EFA'] ?? {}
+  ).benchmark_note;
+  ok(provenance, 'the fixture no longer carries a provenance note to be kept off the page');
+  ok(!text.includes(provenance), 'the registry’s own note reached the page');
+});
+
+test('no note at all leaves no empty line behind', async () => {
   const { text } = await render(computed, 'EFA');
-  ok(text.includes('A synthetic fund'), 'the benchmark note is missing');
+  ok(!text.includes('A synthetic fund'));
 });
 
 test('the way through to the history view is offered only where the archive can answer', async () => {
