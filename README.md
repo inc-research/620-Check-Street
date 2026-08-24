@@ -59,6 +59,20 @@ directions; below that it shows a dash, which is not a zero. Between six and
 twenty days it is printed with a dotted underline saying how few days are behind
 it. See 3F D-11 and 3F D-12.
 
+There are three ways to read a report, and each one holds everything still
+except the one thing it varies:
+
+| | Varies | Holds still |
+|---|---|---|
+| **The report** | the length of the window | the fund, the date, the benchmark |
+| **Has this fund changed?** | the date, across two real archived reports | the fund, the window length, the benchmark |
+| **Comparing two funds** | the fund | the date, the window length, the benchmark |
+
+Anything else that moved would be a second explanation for what the table shows,
+with nothing on the page to separate the two — so each one refuses rather than
+approximating. The two comparisons name what they could not compare, and why.
+See 3F D-13 and 3F D-14.
+
 ## Working on it
 
 ```sh
@@ -70,12 +84,19 @@ npm run check:vendored # vendored modules are still verbatim
 npm run check:notebook # third_floor.ipynb is not stale
 npm run check:index    # data/index.json matches what is on disk
 npm run validate:data  # every committed snapshot
+npm run check:registry # the registry's reader-facing prose passes the lint
 npm run build --workspace @third-floor/web
 node packages/web/serve.mjs
 ```
 
 Edit `notebook/third_floor.py`, never the `.ipynb` — the notebook is generated
 (3F D-05). Run `npm run build:notebook` after changing it.
+
+`tickers.json` carries two notes per fund where its benchmark is not an exact
+match. `benchmark_note` is provenance, written for whoever maintains the file,
+and never reaches a reader. `benchmark_note_plain` is what the report shows, and
+it is linted like any other copy (3F D-15). Adding the first without the second
+fails to load.
 
 `floor_foundations/` is a read-only handover tree from Second Floor. It is
 gitignored, not built, and not part of this repository's history; the modules
