@@ -27,10 +27,11 @@ from .backfill import (
     build_ticker_slices,
     fetch_start_for,
     monthly_snapshot_dates,
+    read_archive_state,
 )
 from .emit import build_all_snapshots
 from .fetch import FetchRefused, PriceSeries, SourceRecord, fetch_daily_prices
-from .registry import Registry, load_registry
+from .registry import UNIVERSAL_ANCHOR, Registry, load_registry
 from .semibeta import MIN_OBSERVATIONS_PER_CELL
 
 
@@ -48,9 +49,16 @@ def most_recent_completed_month_end(today: date) -> date:
 
 
 class Run:
-    def __init__(self, registry_path: str | Path, out_dir: str | Path, verbose: bool = True):
+    def __init__(
+        self,
+        registry_path: str | Path,
+        out_dir: str | Path,
+        verbose: bool = True,
+        archive_dir: str | Path | None = None,
+    ):
         self.registry: Registry = load_registry(registry_path)
         self.out_dir = Path(out_dir)
+        self.archive_dir = Path(archive_dir) if archive_dir is not None else None
         self.verbose = verbose
         self.lines: list[str] = []
         self.prices: dict[str, PriceSeries] = {}
@@ -120,6 +128,7 @@ class Run:
                 continue
 
             record = self.sources[fund.ticker]
+            prior = read_archive_state(self.archive_dir, fund.ticker, UNIVERSAL_ANCHOR)
             docs = build_all_snapshots(
                 fund,
                 slices,
@@ -129,6 +138,7 @@ class Run:
                 price_source=record.source,
                 min_observations=min_observations,
                 generated_at=self.started,
+                prior=prior,
             )
             documents[fund.ticker] = docs
 

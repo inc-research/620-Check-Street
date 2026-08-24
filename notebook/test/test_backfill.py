@@ -9,8 +9,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from thirdfloor.backfill import (  # noqa: E402
+    ArchiveState,
     build_ticker_slices,
     coverage_for,
+    read_archive_state,
     fetch_start_for,
     last_trading_date_on_or_before,
     month_end,
@@ -57,7 +59,21 @@ class TestSnapshotDates(unittest.TestCase):
 
     def test_fetch_reaches_a_full_horizon_behind_the_oldest_snapshot(self):
         dates = monthly_snapshot_dates(date(2026, 7, 31), 19)
-        self.assertEqual(fetch_start_for(dates), date(2024, 1, 31))
+        self.assertEqual(fetch_start_for(dates), date(2023, 12, 31))
+
+    def test_fetch_starts_before_the_deepest_window_not_on_it(self):
+        """A return needs the close before it, so the fetch cannot start on the
+        day the 12-month window opens — that leaves the horizon a day short."""
+        for count in (1, 2, 19):
+            dates = monthly_snapshot_dates(date(2026, 7, 31), count)
+            window_start = month_end(dates[0].year - 1, dates[0].month)
+            self.assertLess(fetch_start_for(dates), window_start)
+
+    def test_a_monthly_run_still_reaches_a_full_horizon_back(self):
+        """The single-snapshot case: the bug that blocked every 12mo reading."""
+        dates = monthly_snapshot_dates(date(2026, 7, 31), 1)
+        self.assertEqual(dates, [date(2026, 7, 31)])
+        self.assertEqual(fetch_start_for(dates), date(2025, 6, 30))
 
 
 class TestAsOf(unittest.TestCase):
@@ -160,6 +176,70 @@ class TestCoverage(unittest.TestCase):
                 self.assertGreaterEqual(
                     cov["earliest_full_baseline_snapshot"], cov["earliest_available_snapshot"]
                 )
+
+
+class TestArchiveState(unittest.TestCase):
+    """A monthly run slices one month but must describe the whole archive."""
+
+    def setUp(self):
+        import json
+        import tempfile
+
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.data = Path(self.tmp.name)
+        (self.data / "AAA").mkdir(parents=True)
+
+        def snap(month, baseline, inception="2024-01-31"):
+            states = {"fund_up_bench_up": {"score": 1}} if baseline else None
+            doc = {
+                "coverage": {"inception": inception},
+                "benchmarks": {
+                    "VOO": {"horizons": [{"horizon": "12mo", "states": states}]}
+                },
+            }
+            (self.data / "AAA" / f"{month}.json").write_text(json.dumps(doc))
+
+        snap("2025-01", False)
+        snap("2025-02", True)
+        snap("2025-03", True)
+
+    def test_reads_months_baselines_and_inception(self):
+        st = read_archive_state(self.data, "AAA", "VOO")
+        self.assertEqual(st.months, ("2025-01", "2025-02", "2025-03"))
+        self.assertEqual(st.baseline_months, ("2025-02", "2025-03"))
+        self.assertEqual(st.inception, date(2024, 1, 31))
+
+    def test_absent_archive_and_unknown_ticker_read_as_empty(self):
+        self.assertEqual(read_archive_state(None, "AAA", "VOO"), ArchiveState())
+        self.assertEqual(read_archive_state(self.data, "ZZZ", "VOO"), ArchiveState())
+
+    def test_monthly_run_reports_the_archive_not_its_own_slice(self):
+        """The bug that made monthly output not ingestible: a one-month run
+        named itself as the earliest snapshot, and validate-snapshots rejected
+        the file against the oldest month actually on disk."""
+        bench = price_series(date(2023, 1, 2), 1250)
+        fund = price_series(date(2023, 1, 2), 1250, seed=40.0)
+        dates = monthly_snapshot_dates(date(2026, 7, 31), 1)
+        slices = build_ticker_slices(fund, {"VOO": bench}, dates, MIN_OBSERVATIONS_PER_CELL)
+        prior = read_archive_state(self.data, "AAA", "VOO")
+
+        alone = coverage_for(slices, date(2025, 6, 30), 19, "VOO")
+        merged = coverage_for(slices, date(2025, 6, 30), 19, "VOO", prior)
+
+        self.assertEqual(alone["earliest_available_snapshot"], "2026-07")
+        self.assertEqual(merged["earliest_available_snapshot"], "2025-01")
+        self.assertEqual(merged["earliest_full_baseline_snapshot"], "2025-02")
+
+    def test_published_inception_wins_over_a_fetch_boundary(self):
+        """A bounded fetch cannot recover an inception that precedes it."""
+        prior = read_archive_state(self.data, "AAA", "VOO")
+        cov = coverage_for({}, date(2025, 6, 30), 19, "VOO", prior)
+        self.assertEqual(cov["inception"], "2024-01-31")
+
+    def test_a_new_ticker_keeps_the_inception_this_run_observed(self):
+        cov = coverage_for({}, date(2026, 6, 26), 19, "VOO", ArchiveState())
+        self.assertEqual(cov["inception"], "2026-06-26")
 
 
 if __name__ == "__main__":

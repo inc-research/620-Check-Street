@@ -20,7 +20,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from .backfill import coverage_for
+from .backfill import ArchiveState, coverage_for
 from .registry import UNIVERSAL_ANCHOR, Fund
 from .semibeta import (
     REPORTED_VALUE_PROSE,
@@ -106,6 +106,7 @@ def build_all_snapshots(
     price_source: str,
     min_observations: int,
     generated_at: datetime | None = None,
+    prior: ArchiveState | None = None,
 ) -> dict[str, dict[str, Any]]:
     """Every month's document for one ticker, keyed by YYYY-MM.
 
@@ -114,7 +115,7 @@ def build_all_snapshots(
     archive as a whole holds — the site fetches one file and must not have to
     read nineteen to know whether a comparison is possible.
     """
-    coverage = coverage_for(slices, inception, requested_depth, UNIVERSAL_ANCHOR)
+    coverage = coverage_for(slices, inception, requested_depth, UNIVERSAL_ANCHOR, prior)
     out: dict[str, dict[str, Any]] = {}
     for month, per_benchmark in sorted(slices.items()):
         any_horizons = next(iter(per_benchmark.values()))

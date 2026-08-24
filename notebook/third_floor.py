@@ -9,9 +9,11 @@
 # `notebook/thirdfloor/` in the repository and is covered by a test suite, so
 # what runs in Colab is what the tests cover — see 3F D-05.
 #
-# **What to do afterwards:** unzip the download into the repository, run
-# `node scripts/ingest-snapshots.mjs`, commit and push. The archive is
-# append-only (3F D-08): a routine run adds new files and rewrites none.
+# **What to do afterwards:** unzip the download somewhere outside the repository
+# — the zip is a transport format and is not tracked — then run
+# `node scripts/ingest-snapshots.mjs` against it, rebuild the index, commit and
+# push. The archive is append-only (3F D-08): a routine run adds new files and
+# rewrites none. Section 6 has the exact sequence.
 
 # %% [markdown]
 # ## 1 · Get the code
@@ -67,6 +69,7 @@ from thirdfloor.package import Run, most_recent_completed_month_end
 from thirdfloor.semibeta import MIN_OBSERVATIONS_PER_CELL
 
 REGISTRY = os.path.join(WORKDIR, "tickers.json")
+ARCHIVE = os.path.join(WORKDIR, "data")   # snapshots already published
 OUTPUT = "/content/third_floor_run"
 ZIP_PATH = "/content/third_floor_package.zip"
 
@@ -92,7 +95,7 @@ print(f"minimum observations per cell: {MIN_OBSERVATIONS_PER_CELL}")
 
 # %%
 os.makedirs(OUTPUT, exist_ok=True)
-run = Run(REGISTRY, OUTPUT)
+run = Run(REGISTRY, OUTPUT, archive_dir=ARCHIVE)
 run.log(f"Third Floor run — {'backfill' if BACKFILL else 'monthly'}, "
         f"{depth} snapshot(s) ending {snapshot_dates[-1]}")
 run.fetch_all(fetch_start_for(snapshot_dates), ONLY)
@@ -150,12 +153,21 @@ except ImportError:
 #
 # ```
 # unzip -o third_floor_package.zip -d /tmp/third-floor-run
+# node scripts/ingest-snapshots.mjs /tmp/third-floor-run --dry-run
 # node scripts/ingest-snapshots.mjs /tmp/third-floor-run
 # node scripts/validate-snapshots.mjs
-# git add data MANIFEST.json
+# npm run build:index
+# git add data
 # git commit -m "data: monthly run"
 # git push
 # ```
+#
+# `--dry-run` first: it names the months that would be added and writes nothing,
+# so a run that carries a month already published is caught before it touches
+# the tree. `git add data` is enough — the run manifest is written into
+# `data/_runs/`, and there is no MANIFEST.json at the repository root to add.
+# `build:index` regenerates `data/index.json`, which the page reads first and
+# which `npm run check:index` will otherwise flag as stale.
 #
 # `ingest-snapshots.mjs` refuses to overwrite a snapshot that is already
 # committed. That is the append-only rule (3F D-08) made mechanical: adjustment
