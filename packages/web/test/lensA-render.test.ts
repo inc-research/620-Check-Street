@@ -58,6 +58,12 @@ test('the table names every row and column in the reader’s words', async () =>
   ok(text.includes('When they moved in opposite directions'));
 });
 
+test('the benchmark ticker is told what it stands in for', async () => {
+  const { text } = await render(computed, 'VOO');
+  ok(text.includes('S&P 500'), 'the index VOO tracks never reaches the page');
+  ok(text.includes('VOO is used here as a proxy for'), 'the ticker is not tied to its index');
+});
+
 test('no spec vocabulary reaches the page', async () => {
   const { text } = await render(computed, 'VOO');
   for (const jargon of ['semibeta', 'quadrant', 'Participation', 'Resilience', 'covariance', 'horizon']) {

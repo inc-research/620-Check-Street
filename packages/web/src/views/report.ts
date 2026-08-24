@@ -13,6 +13,8 @@ import {
   PLAIN,
   TABLE,
   append,
+  benchmarkIndexNote,
+  benchmarkIndexShort,
   buildLensA,
   el,
   explain,
@@ -315,7 +317,11 @@ function controls(ctx: ReportContext, handlers: ReportHandlers): HTMLElement {
     for (const b of benchmarks) {
       const block = ctx.snapshot.benchmarks[b]!;
       const named = block.roles.includes('named_benchmark');
-      const option = el('option', { value: b }, named ? `${b} — the fund’s own choice` : `${b} — the shared yardstick`);
+      // The ticker alone does not say what it tracks, so the index travels
+      // with it in the option the reader is choosing between.
+      const index = benchmarkIndexShort(b);
+      const label = index ? `${b} (${index})` : b;
+      const option = el('option', { value: b }, named ? `${label} — the fund’s own choice` : `${label} — the shared yardstick`);
       if (b === ctx.benchmark) option.setAttribute('selected', 'selected');
       append(select, [option]);
     }
@@ -348,6 +354,13 @@ export function renderReport(ctx: ReportContext, handlers: ReportHandlers): HTML
     el('p', { class: 'quiet' }, `${ctx.snapshot.ticker} · ${ctx.snapshot.issuer}`),
     controls(ctx, handlers),
   ]);
+
+  // Shown whether or not a chooser was drawn: a fund with one benchmark still
+  // has its reading taken against a ticker the reader has to recognise.
+  const indexNote = benchmarkIndexNote(ctx.benchmark);
+  if (indexNote) {
+    append(root, [el('p', { class: 'benchmark-index' }, indexNote)]);
+  }
 
   if (ctx.benchmarkNote) {
     append(root, [el('p', { class: 'benchmark-note' }, ctx.benchmarkNote)]);

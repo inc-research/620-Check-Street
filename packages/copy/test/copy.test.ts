@@ -6,6 +6,7 @@ import { deepStrictEqual, ok, strictEqual } from 'node:assert/strict';
 import { test } from 'node:test';
 
 import { PLAIN, TABLE } from '../src/plain.ts';
+import { BENCHMARK_INDEX, benchmarkIndexNote, benchmarkIndexShort } from '../src/benchmarks.ts';
 import { lintDeepExtended } from '../src/lint3f.ts';
 import { lintDeep } from '../src/lint.ts';
 import { BANNED_WORDS } from '../src/banned.ts';
@@ -168,4 +169,27 @@ test('the row labels avoid the spec’s own vocabulary', () => {
   for (const jargon of ['participation', 'resilience', 'benchmark:', 'semibeta']) {
     ok(!blob.includes(jargon), `row labels still say “${jargon}”`);
   }
+});
+
+// --- the benchmark index lines ------------------------------------------------
+
+test('the benchmark index lines pass both lints', () => {
+  deepStrictEqual(lintDeep(BENCHMARK_INDEX), [], 'vendored lint');
+  deepStrictEqual(lintDeepExtended(BENCHMARK_INDEX), [], 'extended lint');
+});
+
+test('every declared anchor says which index it stands in for', () => {
+  // The four in tickers.json. A fifth anchor must be written up before it can
+  // be offered, which is why this list is stated and not derived.
+  for (const ticker of ['VOO', 'QQQ', 'IWM', 'EFA']) {
+    const entry = BENCHMARK_INDEX[ticker];
+    ok(entry, `no index line for ${ticker}`);
+    ok(entry.short.length > 0, `${ticker} has no short index name`);
+    ok(entry.note.includes(ticker), `${ticker}'s note does not name the ticker`);
+  }
+});
+
+test('a ticker with no line written returns nothing rather than a guess', () => {
+  strictEqual(benchmarkIndexNote('ZZZZ'), '');
+  strictEqual(benchmarkIndexShort('ZZZZ'), '');
 });

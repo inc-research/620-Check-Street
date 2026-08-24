@@ -80,7 +80,7 @@
   --below: #d98b7e;
 
   --measure: 68ch;
-  --body-size: 2.25rem;
+  --body-size: 1.6875rem;
   --body-leading: 1.6;
 
   --sans: 'Newsreader', Georgia, 'Times New Roman', serif;
@@ -142,7 +142,7 @@ header.masthead {
 .wordmark .floor { color: var(--ink); }
 
 .standfirst {
-  font-size: 2.125rem;
+  font-size: 1.59375rem;
   color: var(--ink-quiet);
   margin: 0.4rem 0 0;
   max-width: var(--measure);
@@ -157,20 +157,20 @@ h1, h2, h3 {
   color: var(--ink);
 }
 
-h1 { font-size: clamp(3rem, 8vw, 4rem); margin: 2.5rem 0 0.75rem; }
+h1 { font-size: clamp(2.25rem, 6vw, 3rem); margin: 2.5rem 0 0.75rem; }
 h2 {
-  font-size: clamp(2.5rem, 6vw, 3rem);
+  font-size: clamp(1.875rem, 4.5vw, 2.25rem);
   margin: 2.75rem 0 0.75rem;
   padding-top: 1rem;
   border-top: 1px solid var(--rule-soft);
 }
-h3 { font-size: 2.25rem; margin: 1.75rem 0 0.5rem; }
+h3 { font-size: 1.6875rem; margin: 1.75rem 0 0.5rem; }
 
 p { margin: 0 0 1rem; max-width: var(--measure); }
 
-.lede { font-size: 2.5rem; color: var(--ink); }
+.lede { font-size: 1.875rem; color: var(--ink); }
 .quiet { color: var(--ink-quiet); }
-.faint { color: var(--ink-faint); font-size: 2rem; }
+.faint { color: var(--ink-faint); font-size: 1.5rem; }
 
 /* The caveat that travels with a figure (INV-1). Not small print — it is set
  * at the same size as the body, because burying it would defeat the point. */
@@ -198,7 +198,7 @@ a:hover { text-decoration-thickness: 2px; }
 table {
   border-collapse: collapse;
   width: 100%;
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 th, td {
@@ -209,7 +209,7 @@ th, td {
 
 thead th {
   font-family: var(--display);
-  font-size: 1.875rem;
+  font-size: 1.40625rem;
   font-weight: 700;
   color: var(--ink-quiet);
   background: var(--ground-sunken);
@@ -219,7 +219,7 @@ thead th {
 }
 
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
-td.ticker { font-family: var(--mono); font-size: 1.875rem; letter-spacing: 0.01em; }
+td.ticker { font-family: var(--mono); font-size: 1.40625rem; letter-spacing: 0.01em; }
 
 tbody tr:hover { background: var(--ground-raised); }
 
@@ -246,7 +246,7 @@ td.below { color: var(--below); }
 }
 .card:hover { border-color: var(--accent); }
 .card h3 { margin: 0 0 0.35rem; }
-.card p { margin: 0; color: var(--ink-quiet); font-size: 2rem; }
+.card p { margin: 0; color: var(--ink-quiet); font-size: 1.5rem; }
 
 .cards { display: grid; gap: 1rem; grid-template-columns: 1fr; margin: 1.5rem 0; }
 @media (min-width: 46rem) {
@@ -255,7 +255,7 @@ td.below { color: var(--below); }
 
 button {
   font-family: var(--sans);
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: var(--ink);
   background: var(--ground-raised);
   border: 1px solid var(--rule);
@@ -271,9 +271,9 @@ button.primary {
   font-weight: 600;
 }
 
-select, input[type='text'], input[type='date'] {
+input[type='text'], input[type='date'] {
   font-family: var(--sans);
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: var(--ink);
   background: var(--ground-sunken);
   border: 1px solid var(--rule);
@@ -282,7 +282,31 @@ select, input[type='text'], input[type='date'] {
   max-width: 100%;
 }
 
-label { display: block; margin: 1rem 0 0.35rem; color: var(--ink-quiet); font-size: 2rem; }
+/* The selects carry the choices this app offers — which fund, which benchmark,
+ * which month, which window. On the sunken ground they read as chrome and the
+ * options go unnoticed, so they take the same filled accent as the primary
+ * button. Dark ink on --accent-solid is 5.7:1; --ink on it is 2.6:1, so the
+ * fill and the lettering move together or not at all. */
+select {
+  font-family: var(--sans);
+  font-size: 1.5rem;
+  color: #14151a;
+  background: var(--accent-solid);
+  border: 1px solid var(--accent-solid);
+  border-radius: 3px;
+  padding: 0.5rem 0.65rem;
+  max-width: 100%;
+  font-weight: 600;
+}
+
+/* The open list is painted by the platform from each option's own colours, not
+ * the select's, so they are stated again here. */
+select option {
+  background: var(--accent-solid);
+  color: #14151a;
+}
+
+label { display: block; margin: 1rem 0 0.35rem; color: var(--ink-quiet); font-size: 1.5rem; }
 
 /* Focus must be visible and must not rely on colour alone. */
 :focus-visible {
@@ -302,7 +326,7 @@ label { display: block; margin: 1rem 0 0.35rem; color: var(--ink-quiet); font-si
 .blocker p { margin: 0; }
 .blocker .remedy { margin-top: 0.5rem; color: var(--ink-quiet); }
 
-.ledger { color: var(--ink-quiet); font-size: 2rem; }
+.ledger { color: var(--ink-quiet); font-size: 1.5rem; }
 
 .toast {
   position: fixed;
@@ -323,7 +347,7 @@ footer {
   padding-top: 1.5rem;
   border-top: 3px double var(--rule);
   color: var(--ink-faint);
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 @media print {
@@ -361,14 +385,14 @@ td.score {
   text-align: right;
   font-variant-numeric: tabular-nums;
   font-family: var(--mono);
-  font-size: 2.125rem;
+  font-size: 1.59375rem;
   white-space: nowrap;
 }
 
 /* The group heading, spanning the table. */
 tr.group th {
   font-family: var(--display);
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--ink);
   background: var(--ground-raised);
@@ -411,7 +435,7 @@ td.score .absent { color: var(--ink-faint); }
   background: var(--ground-sunken);
   border: 1px solid var(--rule-soft);
   border-radius: 3px;
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: var(--ink-quiet);
 }
 .legend p { margin: 0 0 0.6rem; }
@@ -437,7 +461,7 @@ td.score .absent { color: var(--ink-faint); }
   padding: 1rem 1.25rem;
   margin: 1.25rem 0;
 }
-.caveat h3 { margin: 0 0 0.5rem; font-size: 2.125rem; }
+.caveat h3 { margin: 0 0 0.5rem; font-size: 1.59375rem; }
 .caveat p { margin: 0; color: var(--ink-quiet); }
 
 .controls {
@@ -450,7 +474,12 @@ td.score .absent { color: var(--ink-faint); }
 .controls > div { min-width: 0; }
 .controls label { margin-top: 0; }
 
-.benchmark-note { font-size: 1.875rem; color: var(--ink-faint); margin-top: 0.4rem; }
+.benchmark-note { font-size: 1.40625rem; color: var(--ink-faint); margin-top: 0.4rem; }
+
+/* What the benchmark ticker tracks. Quieter than the reading it qualifies, but
+ * not as faint as the fund's own caveat below it — a reader who does not know
+ * what VOO is cannot read the table at all. */
+.benchmark-index { font-size: 1.40625rem; color: var(--ink-quiet); margin-top: 0.5rem; }
 
 /* --- the history table (Lens B) ------------------------------------------- */
 

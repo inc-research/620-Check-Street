@@ -54,8 +54,12 @@ export {
 } from '@third-floor/core';
 
 export {
+  BENCHMARK_INDEX,
   PLAIN,
   TABLE,
+  benchmarkIndexNote,
+  benchmarkIndexShort,
+  type BenchmarkIndex,
   type Deck,
   type HorizonKey,
   type Section,
