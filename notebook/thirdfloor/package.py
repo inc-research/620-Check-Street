@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: MIT
 """The monthly run: fetch, compute, write, package.
 
-Two modes. `--backfill` produces the full requested depth and is the first run.
+Three modes. `--backfill` produces the full requested depth and is the first run.
 The default produces the current month only, which is what the monthly cadence
 needs — the archive is append-only (3F D-08), so a routine run adds one file per
-ticker and rewrites nothing.
+ticker and rewrites nothing. `--months N` is the same run after N-1 missed
+months: it adds the last N and leaves the recorded backfill depth alone.
 
 The zip carries a manifest and a log alongside the snapshots. A run whose
 provenance is not recoverable a year later is not auditable, and this archive is
@@ -228,20 +229,41 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--depth", type=int, default=DEFAULT_SNAPSHOT_COUNT)
     parser.add_argument(
+        "--months",
+        type=int,
+        help="produce the last N completed months, to catch up after missed runs; "
+        "--depth still records the archive's backfill depth",
+    )
+    parser.add_argument(
+        "--archive",
+        default="data",
+        help="the published archive, which coverage blocks are worked out against",
+    )
+    parser.add_argument(
         "--only", nargs="*", help="restrict to these tickers, for a dry run"
     )
     parser.add_argument("--today", help="override today's date, for reproducible runs")
     args = parser.parse_args(argv)
 
+    if args.backfill and args.months is not None:
+        parser.error("--backfill and --months are different runs; pass one")
+    if args.months is not None and args.months < 1:
+        parser.error("--months must be at least 1")
+    # An absent archive reads as empty, which is right for a first run and wrong
+    # for every other: the coverage block would describe this run alone and name
+    # the fetch boundary as the fund's inception. Refuse rather than guess.
+    if not args.backfill and not Path(args.archive).is_dir():
+        parser.error(f"no published archive at {args.archive}")
+
     today = date.fromisoformat(args.today) if args.today else date.today()
     end = most_recent_completed_month_end(today)
-    depth = args.depth if args.backfill else 1
+    depth = args.depth if args.backfill else (args.months or 1)
     snapshot_dates = monthly_snapshot_dates(end, depth)
 
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    run = Run(args.registry, out_dir)
+    run = Run(args.registry, out_dir, archive_dir=args.archive)
     run.log(
         f"Third Floor run — {'backfill' if args.backfill else 'monthly'}, "
         f"{depth} snapshot(s) ending {snapshot_dates[-1]}"

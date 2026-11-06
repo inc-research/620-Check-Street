@@ -48,6 +48,10 @@ signals.
 `ingest-snapshots.mjs` refuses to overwrite a month that is already published.
 The archive is append-only — see 3F D-08.
 
+If months were missed, run it locally from the repository root, with
+`PYTHONPATH=notebook python3 -m thirdfloor.package --months N`, which adds the
+last N completed months and nothing else. See 3F D-16.
+
 ## What the site shows
 
 `data/index.json` lists every fund and the months it has. Each

@@ -607,9 +607,10 @@ Each step has a gate. Run the gate; do not assume the step.
    snapshots with three horizons blocked and no fabricated months.
 6. ✅ Emit, packaging, manifest and log.
 7. ✅ `/data/<ticker>/<YYYY-MM>.json`, backfilled 19 months — 523 snapshots
-   across 30 tickers. LADM is registered but too new for any window and
-   carries none. *Gate:* every committed snapshot validates, and the
-   append-only ingest refuses a second pass.
+   across 30 tickers, with LADM then too new for any window. Extended to
+   2026-10 on 2026-11-06 (3F D-16): 615 snapshots across all 31, LADM's first
+   two among them, on the thirteen-week window only. *Gate:* every committed
+   snapshot validates, and the append-only ingest refuses a second pass.
 8. ✅ Methodology decisions closed (3F D-04, D-07, D-08, D-09, D-10).
 
 **Still to build:**

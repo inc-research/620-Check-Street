@@ -447,6 +447,31 @@ without losing the source names. Two readerships, two registers, is the honest
 reading of why the first attempt failed.
 
 
+## 3F D-16 · A missed month is added late, and adds to the archive only
+
+The run went unexecuted after August 2026, so three months had no report. A run
+could only ever produce the single most recent month, which would have left a
+permanent gap at 2026-08 and 2026-09, and `--backfill` overlaps months already
+published.
+
+`--months N` produces the last N completed months and nothing else. The missed
+reports were computed on 2026-11-06 at their own month-end dates, from a single
+pull made that day. So they differ from what a run on time would have published
+by whatever adjustment factors moved in between — the same drift 3F D-08
+accepts, and small: about 1e-6 between the two runs of 2026-07. Each file's
+`generated_at` shows it was produced late.
+
+The same pass corrected two faults in the path itself. The notebook cloned a
+repository URL that does not resolve, so its first cell failed. And the
+command-line run never passed the published archive, repeating the coverage
+fault 3d6a53f fixed only in the notebook. It now does, and refuses to start
+without an archive unless this is a backfill: an absent archive reads as empty,
+which would quietly report the fetch boundary as each fund's inception.
+
+*Reverses if:* never for the rule that a late report is dated by its own
+month-end. If adjusted-close drift is ever found to matter at this scale, the
+disclosure belongs on the page rather than in `generated_at`.
+
 ---
 
 ## Open
