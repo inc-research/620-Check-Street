@@ -1,0 +1,226 @@
+{
+  "app": "Third Floor",
+  "schema_version": "4.0",
+  "ticker": "BUFR",
+  "name": "FT Cboe Vest Fund of Buffer ETFs",
+  "issuer": "First Trust",
+  "category": "options_integrated",
+  "as_of": "2026-08-31",
+  "generated_at": "2026-11-06T19:55:30Z",
+  "coverage": {
+    "inception": "2024-01-31",
+    "earliest_available_snapshot": "2025-01",
+    "earliest_full_baseline_snapshot": "2025-02",
+    "requested_backfill_depth_months": 19,
+    "history_limited_by_inception": false
+  },
+  "methodology": {
+    "reported_value": "The report shows raw_semibeta itself: for every 1% the benchmark moved on days of this kind, the fund moved this much. A negative value means the fund's move ran the other way.",
+    "score_normalization": "A bounded rendering of raw_semibeta, retained for compatibility and NOT what the report shows (3F D-12). It cannot represent a negative reading \u2014 every one clamps to 0 \u2014 and about a third of the two opposite-direction rows are negative, so a score of 0 there is ambiguous by construction. Read raw_semibeta.",
+    "score_normalization_formula": "clamp(floor(50 * raw_semibeta + 0.5), 0, 100)",
+    "shift_threshold": 0.3,
+    "shift_threshold_note": "A shorter window is marked as shifted when its ratio sits at least this far from the same row's 12-month ratio. Chosen from the archive: the typical gap is 0.06 and nine in ten are under 0.27, so 0.30 marks roughly one cell in twelve. Where a fund has no 12-month reading yet, nothing is marked and the report says why.",
+    "min_observations_per_cell": 20,
+    "price_basis": "close_adjusted",
+    "price_source": "yfinance",
+    "return_frequency": "daily",
+    "defined_outcome_caveat": true
+  },
+  "benchmarks": {
+    "VOO": {
+      "roles": [
+        "universal_anchor",
+        "named_benchmark"
+      ],
+      "benchmark_source": "prospectus_index",
+      "horizons": [
+        {
+          "horizon": "12mo",
+          "window_start": "2025-08-31",
+          "window_end": "2026-08-31",
+          "observations_total": 251,
+          "observations_classified": 244,
+          "observations_unclassified": 7,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.5258658228184646,
+              "score": 26,
+              "observation_count": 133,
+              "quadrant_cov": 1.280729283654667e-05,
+              "quadrant_var_bench": 2.4354678096218293e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.5156812048913517,
+              "score": 26,
+              "observation_count": 95,
+              "quadrant_cov": 1.6202512398069146e-05,
+              "quadrant_var_bench": 3.1419629500522196e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": -0.0010027833596490611,
+              "score": 0,
+              "observation_count": 11,
+              "quadrant_cov": -2.0377494698467382e-10,
+              "quadrant_var_bench": 2.0320934230100097e-07,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": null,
+              "score": null,
+              "observation_count": 5,
+              "quadrant_cov": null,
+              "quadrant_var_bench": null,
+              "data_sufficiency": "blocked",
+              "blockers": [
+                {
+                  "code": "quadrant_too_few_observations",
+                  "message": "There were only 5 days in this window where the fund and the benchmark moved in this particular combination of directions. At least 6 are needed before a number here would mean anything.",
+                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
+                  "subjects": [
+                    "fund_down_bench_up"
+                  ]
+                }
+              ]
+            }
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "6mo",
+          "window_start": "2026-02-28",
+          "window_end": "2026-08-31",
+          "observations_total": 127,
+          "observations_classified": 123,
+          "observations_unclassified": 4,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.5390454542319966,
+              "score": 27,
+              "observation_count": 65,
+              "quadrant_cov": 1.7734446942872072e-05,
+              "quadrant_var_bench": 3.28997245105038e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.5364160823100661,
+              "score": 27,
+              "observation_count": 52,
+              "quadrant_cov": 1.6942456326587917e-05,
+              "quadrant_var_bench": 3.1584542084617484e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": null,
+              "score": null,
+              "observation_count": 4,
+              "quadrant_cov": null,
+              "quadrant_var_bench": null,
+              "data_sufficiency": "blocked",
+              "blockers": [
+                {
+                  "code": "quadrant_too_few_observations",
+                  "message": "There were only 4 days in this window where the fund and the benchmark moved in this particular combination of directions. At least 6 are needed before a number here would mean anything.",
+                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
+                  "subjects": [
+                    "fund_up_bench_down"
+                  ]
+                }
+              ]
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": null,
+              "score": null,
+              "observation_count": 2,
+              "quadrant_cov": null,
+              "quadrant_var_bench": null,
+              "data_sufficiency": "blocked",
+              "blockers": [
+                {
+                  "code": "quadrant_too_few_observations",
+                  "message": "There were only 2 days in this window where the fund and the benchmark moved in this particular combination of directions. At least 6 are needed before a number here would mean anything.",
+                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
+                  "subjects": [
+                    "fund_down_bench_up"
+                  ]
+                }
+              ]
+            }
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "13wk",
+          "window_start": "2026-06-01",
+          "window_end": "2026-08-31",
+          "observations_total": 64,
+          "observations_classified": 62,
+          "observations_unclassified": 2,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.43398954415478797,
+              "score": 22,
+              "observation_count": 31,
+              "quadrant_cov": 1.338247950536255e-05,
+              "quadrant_var_bench": 3.0835949127358507e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.4679762137138066,
+              "score": 23,
+              "observation_count": 29,
+              "quadrant_cov": 1.5606784033148896e-05,
+              "quadrant_var_bench": 3.33495241334922e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": null,
+              "score": null,
+              "observation_count": 1,
+              "quadrant_cov": null,
+              "quadrant_var_bench": null,
+              "data_sufficiency": "blocked",
+              "blockers": [
+                {
+                  "code": "quadrant_too_few_observations",
+                  "message": "There were only 1 days in this window where the fund and the benchmark moved in this particular combination of directions. At least 6 are needed before a number here would mean anything.",
+                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
+                  "subjects": [
+                    "fund_up_bench_down"
+                  ]
+                }
+              ]
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": null,
+              "score": null,
+              "observation_count": 1,
+              "quadrant_cov": null,
+              "quadrant_var_bench": null,
+              "data_sufficiency": "blocked",
+              "blockers": [
+                {
+                  "code": "quadrant_too_few_observations",
+                  "message": "There were only 1 days in this window where the fund and the benchmark moved in this particular combination of directions. At least 6 are needed before a number here would mean anything.",
+                  "remedy": "Read a longer window from the columns to the left, where more days have accumulated in this combination.",
+                  "subjects": [
+                    "fund_down_bench_up"
+                  ]
+                }
+              ]
+            }
+          },
+          "blockers": []
+        }
+      ]
+    }
+  }
+}

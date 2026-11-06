@@ -1,0 +1,182 @@
+{
+  "app": "Third Floor",
+  "schema_version": "4.0",
+  "ticker": "FGSI",
+  "name": "FT Vest Growth Strength & Target Income ETF",
+  "issuer": "First Trust",
+  "category": "options_integrated",
+  "as_of": "2026-08-31",
+  "generated_at": "2026-11-06T19:55:30Z",
+  "coverage": {
+    "inception": "2025-06-26",
+    "earliest_available_snapshot": "2025-09",
+    "earliest_full_baseline_snapshot": "2026-06",
+    "requested_backfill_depth_months": 19,
+    "history_limited_by_inception": true
+  },
+  "methodology": {
+    "reported_value": "The report shows raw_semibeta itself: for every 1% the benchmark moved on days of this kind, the fund moved this much. A negative value means the fund's move ran the other way.",
+    "score_normalization": "A bounded rendering of raw_semibeta, retained for compatibility and NOT what the report shows (3F D-12). It cannot represent a negative reading \u2014 every one clamps to 0 \u2014 and about a third of the two opposite-direction rows are negative, so a score of 0 there is ambiguous by construction. Read raw_semibeta.",
+    "score_normalization_formula": "clamp(floor(50 * raw_semibeta + 0.5), 0, 100)",
+    "shift_threshold": 0.3,
+    "shift_threshold_note": "A shorter window is marked as shifted when its ratio sits at least this far from the same row's 12-month ratio. Chosen from the archive: the typical gap is 0.06 and nine in ten are under 0.27, so 0.30 marks roughly one cell in twelve. Where a fund has no 12-month reading yet, nothing is marked and the report says why.",
+    "min_observations_per_cell": 20,
+    "price_basis": "close_adjusted",
+    "price_source": "yfinance",
+    "return_frequency": "daily",
+    "defined_outcome_caveat": false
+  },
+  "benchmarks": {
+    "VOO": {
+      "roles": [
+        "universal_anchor",
+        "named_benchmark"
+      ],
+      "benchmark_source": "prospectus_index",
+      "horizons": [
+        {
+          "horizon": "12mo",
+          "window_start": "2025-08-31",
+          "window_end": "2026-08-31",
+          "observations_total": 251,
+          "observations_classified": 248,
+          "observations_unclassified": 3,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.6410204193093163,
+              "score": 32,
+              "observation_count": 115,
+              "quadrant_cov": 1.748767713840524e-05,
+              "quadrant_var_bench": 2.7280998563583637e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.6383573694063305,
+              "score": 32,
+              "observation_count": 90,
+              "quadrant_cov": 2.1961592210689106e-05,
+              "quadrant_var_bench": 3.4403287661758e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": 0.017909571920543103,
+              "score": 1,
+              "observation_count": 19,
+              "quadrant_cov": 8.111363058301563e-08,
+              "quadrant_var_bench": 4.529065850534069e-06,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": 0.5841769898022148,
+              "score": 29,
+              "observation_count": 24,
+              "quadrant_cov": 2.8265817293011294e-06,
+              "quadrant_var_bench": 4.838570807552909e-06,
+              "data_sufficiency": "ok",
+              "blockers": []
+            }
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "6mo",
+          "window_start": "2026-02-28",
+          "window_end": "2026-08-31",
+          "observations_total": 127,
+          "observations_classified": 126,
+          "observations_unclassified": 1,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.5797331521767485,
+              "score": 29,
+              "observation_count": 55,
+              "quadrant_cov": 2.103966167858593e-05,
+              "quadrant_var_bench": 3.629197605758343e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.5129319163119621,
+              "score": 26,
+              "observation_count": 47,
+              "quadrant_cov": 1.746869191628856e-05,
+              "quadrant_var_bench": 3.40565509003425e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": -0.24043090405666628,
+              "score": 0,
+              "observation_count": 12,
+              "quadrant_cov": -6.555911877520873e-07,
+              "quadrant_var_bench": 2.726734278708087e-06,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": 0.5776043929588585,
+              "score": 29,
+              "observation_count": 12,
+              "quadrant_cov": 3.5001774954934735e-06,
+              "quadrant_var_bench": 6.059817996818427e-06,
+              "data_sufficiency": "thin",
+              "blockers": []
+            }
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "13wk",
+          "window_start": "2026-06-01",
+          "window_end": "2026-08-31",
+          "observations_total": 64,
+          "observations_classified": 63,
+          "observations_unclassified": 1,
+          "states": {
+            "fund_up_bench_up": {
+              "raw_semibeta": 0.31452161870946627,
+              "score": 16,
+              "observation_count": 25,
+              "quadrant_cov": 1.0631164303516978e-05,
+              "quadrant_var_bench": 3.380106063023072e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_down_bench_down": {
+              "raw_semibeta": 0.4262495028644503,
+              "score": 21,
+              "observation_count": 23,
+              "quadrant_cov": 1.5844018992727383e-05,
+              "quadrant_var_bench": 3.717076239679714e-05,
+              "data_sufficiency": "ok",
+              "blockers": []
+            },
+            "fund_up_bench_down": {
+              "raw_semibeta": -0.32521503895244724,
+              "score": 0,
+              "observation_count": 9,
+              "quadrant_cov": -1.1053676974366612e-06,
+              "quadrant_var_bench": 3.3988824778742397e-06,
+              "data_sufficiency": "thin",
+              "blockers": []
+            },
+            "fund_down_bench_up": {
+              "raw_semibeta": 1.3465836862128497,
+              "score": 67,
+              "observation_count": 6,
+              "quadrant_cov": 7.258542881492454e-06,
+              "quadrant_var_bench": 5.390339238333177e-06,
+              "data_sufficiency": "thin",
+              "blockers": []
+            }
+          },
+          "blockers": []
+        }
+      ],
+      "benchmark_note": "Tracks a proprietary 'Growth Strength' equity index plus a call-writing income overlay, not a pure S&P 500 buffer/floor structure \u2014 VOO is the closest available anchor, not an exact match. Not path-dependent/capped in the way the buffer funds are, so defined_outcome_caveat is false; a separate income-overlay caveat may be worth adding."
+    }
+  }
+}
