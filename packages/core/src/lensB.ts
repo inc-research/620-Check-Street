@@ -95,7 +95,7 @@ export function archivedMonthFor(month: string, lookback: Lookback): string {
 }
 
 /** The major component. Below 1.0 the family checks on MINOR (SF-14); this document is past it. */
-function major(version: string): string {
+export function major(version: string): string {
   return version.split('.')[0] ?? version;
 }
 

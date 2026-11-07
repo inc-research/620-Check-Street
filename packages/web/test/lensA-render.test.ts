@@ -45,6 +45,8 @@ async function render(
       snapshot: snapshot as never,
       benchmark,
       months,
+      earlier: new Map(),
+      trendColumn: '13wk',
       history,
       companions,
       benchmarkNote,
@@ -53,6 +55,7 @@ async function render(
       onBenchmark: () => {},
       onMonth: () => {},
       onHistory: () => {},
+      onTrendColumn: () => {},
       onCompare: () => {},
       onBack: () => {},
     },
@@ -122,9 +125,10 @@ test('nothing retired comes back', async () => {
 test('the detail section is closed, and holds only the two same-direction rows', async () => {
   const { node } = await render(computed, computedSnapshot, 'VOO');
   const details = node.findAll('details');
-  strictEqual(details.length, 1);
-  strictEqual(details[0]!.getAttribute('open'), null);
-  const text = details[0]!.textContent as string;
+  for (const d of details) strictEqual(d.getAttribute('open'), null);
+  const closer = details.filter((d) => (d.textContent as string).includes('A closer look'));
+  strictEqual(closer.length, 1);
+  const text = closer[0]!.textContent as string;
   ok(text.includes('Both went up'));
   ok(text.includes('Both went down'));
   ok(text.includes('A closer look'));

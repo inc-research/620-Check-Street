@@ -105,6 +105,16 @@ export const PLAIN: Deck = {
       'Every number in this table rests on at least twenty days.',
   },
 
+  capture_trend: {
+    title: 'How has this changed lately?',
+    mechanism:
+      'Each month’s report measures how much of the market’s rises and falls the fund carried. This reads those figures from one report to the next, for market-up days and market-down days separately. Each figure covers the same length of time, ending at that month’s close.',
+    whatWouldChangeIt:
+      'A change says the fund carried more or less of the market than it did before. It does not say why. The market moved differently across these periods, a fund can read differently without anything in it having changed, and the same days can sit in both of the figures being compared.',
+    whenAbsent:
+      'This fund is too new for this comparison. There is no report from far enough back to set beside the current one.',
+  },
+
   history: {
     title: 'Has this fund changed?',
     mechanism:
@@ -224,6 +234,51 @@ export const TABLE: TableCopy = {
     '12mo': { short: '12 mo', full: 'the past twelve months' },
     '6mo': { short: '6 mo', full: 'the past six months' },
     '13wk': { short: '13 wk', full: 'the past thirteen weeks' },
+  },
+
+  trend: {
+    window: 'Measured over',
+    columns: {
+      now: 'Now',
+      fromMonth: 'Since {month}',
+      three: 'Three months back',
+      six: 'Six months back',
+    },
+    upRow: { label: 'Market-up days', full: 'Share of the market’s rise carried, across every day the market rose' },
+    downRow: { label: 'Market-down days', full: 'Share of the market’s fall carried, across every day the market fell' },
+    marketRow: { label: '$100 in the market', full: 'What $100 in the market became over the same length of time' },
+    was: 'was {value}',
+    then: '{value} then',
+    higher: 'Higher',
+    lower: 'Lower',
+    same: 'About the same',
+    lowFit:
+      'Over {window}, {share}% of this fund’s daily movement lined up with {benchmark}. That is too little for these figures to describe the fund, so they are not shown.',
+    smallBase:
+      'The earlier figure was so close to nothing that a percentage would mostly be a small number divided by a smaller one, so the change is shown as a plain difference.',
+    signChanged:
+      'The figure went from one side of nought to the other, which a percentage cannot describe, so the change is shown as a plain difference.',
+    overlap: {
+      '13wk':
+        'From one month to the next, these thirteen-week periods share about two thirds of their days, so a month’s change is about one month coming in and one going out. Three months back they sit end to end and share none.',
+      '6mo':
+        'From one month to the next, these six-month periods share about five sixths of their days, so a month’s change is about one month coming in and one going out. Three months back they share about half, and six months back none.',
+      '12mo':
+        'From one month to the next, these twelve-month periods share about eleven twelfths of their days, so a month’s change is about one month coming in and one going out. Three months back they share about three quarters, and six months back about half.',
+    },
+    bands:
+      '“About the same” means within {three} of the figure three months back, or {six} of the figure six months back. Gaps that small turned up routinely when the same days were dealt out at random. Beyond that a gap is more likely to be real, but some of them are still chance.',
+    dash:
+      'A dash means there is no figure to read for that month, and the reason is in its tooltip. It does not mean nought.',
+    runSummary: 'Month by month',
+    runIntro: 'The same figures at each of the last six monthly reports, with the percentage change from the report before.',
+    runColumns: {
+      month: 'Report',
+      up: 'Market-up days',
+      down: 'Market-down days',
+      change: 'Change',
+      market: '$100 in the market',
+    },
   },
 
   history: {

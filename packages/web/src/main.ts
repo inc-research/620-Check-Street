@@ -21,6 +21,7 @@ import {
   el,
   sharedBenchmarks,
   sharedMonths,
+  trendMonths,
   type HorizonName,
   type Lookback,
   type ReportDocument,
@@ -310,6 +311,15 @@ async function renderRoute(): Promise<void> {
     return;
   }
 
+  // Each earlier month stands alone: one that fails to load leaves a dash in the
+  // capture section, and costs the reader nothing else on the page.
+  const reachable = trendMonths(wanted).filter((m) => fund.months.includes(m));
+  const settled = await Promise.allSettled(reachable.map((m) => loadReport(fund.ticker, m)));
+  const earlier = new Map<string, ReportDocument>();
+  settled.forEach((result, i) => {
+    if (result.status === 'fulfilled') earlier.set(reachable[i]!, result.value);
+  });
+
   show(
     renderReport(
       {
@@ -317,6 +327,8 @@ async function renderRoute(): Promise<void> {
         snapshot,
         benchmark: state.benchmark,
         months: fund.months,
+        earlier,
+        trendColumn: state.trendColumn,
         history,
         companions,
         benchmarkNote: fund.benchmark_note,
@@ -328,6 +340,12 @@ async function renderRoute(): Promise<void> {
         },
         onMonth: (m) => goto(fund.ticker, m),
         onHistory: (l) => goto(fund.ticker, wanted, l),
+        onTrendColumn: (column) => {
+          state.trendColumn = column;
+          // Redrawing the page should not lose the reader's place in it.
+          const y = window.scrollY;
+          void renderRoute().then(() => window.scrollTo(0, y));
+        },
         onCompare: (t) => gotoCompare(fund.ticker, wanted, t),
         onBack: () => goto(null),
       },

@@ -10,10 +10,12 @@
  */
 
 import {
+  DEFAULT_TREND_COLUMN,
   isReport,
   isSnapshot,
   validateReport,
   validateSnapshot,
+  type HorizonName,
   type ReportDocument,
   type Snapshot,
 } from './shim.ts';
@@ -52,6 +54,8 @@ export interface State {
   ticker: string | null;
   month: string | null;
   benchmark: string | null;
+  /** The window the capture-over-time section reads, kept across a change of month. */
+  trendColumn: HorizonName;
 }
 
 export const state: State = {
@@ -61,6 +65,7 @@ export const state: State = {
   ticker: null,
   month: null,
   benchmark: null,
+  trendColumn: DEFAULT_TREND_COLUMN,
 };
 
 export function snapshotKey(ticker: string, month: string): string {

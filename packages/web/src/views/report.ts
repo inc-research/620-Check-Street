@@ -33,11 +33,13 @@ import {
   type Snapshot,
   type TableCell,
 } from '../shim.ts';
+import { renderTrend } from './trend.ts';
 
 export interface ReportHandlers {
   onBenchmark: (benchmark: string) => void;
   onMonth: (month: string) => void;
   onHistory: (lookback: Lookback) => void;
+  onTrendColumn: (column: HorizonName) => void;
   onCompare: (ticker: string) => void;
   onBack: () => void;
 }
@@ -48,6 +50,9 @@ export interface ReportContext {
   snapshot: Snapshot;
   benchmark: string;
   months: readonly string[];
+  /** Earlier reports for the capture-over-time section. A month not here shows a dash. */
+  earlier: ReadonlyMap<string, ReportDocument>;
+  trendColumn: HorizonName;
   /** Lookbacks the archive can answer for this month. Empty is common and fine. */
   history: readonly Lookback[];
   /** Every other fund with a report for this same month. */
@@ -90,7 +95,7 @@ export function formatRatio(value: number): string {
 }
 
 /** A sign for what is printed, so a value that rounds to nothing reads as nothing. */
-function signOf(value: number, decimals: number): string {
+export function signOf(value: number, decimals: number): string {
   if (Number(Math.abs(value).toFixed(decimals)) === 0) return '';
   return value > 0 ? '+' : '\u2212';
 }
@@ -119,7 +124,7 @@ export function formatGap(value: number, kind: MeasureKind): string {
 }
 
 /** Fill a {placeholder} sentence from the deck. */
-function fill(template: string, values: Record<string, string>): string {
+export function fill(template: string, values: Record<string, string>): string {
   return template.replace(/\{(\w+)\}/g, (_, key: string) => values[key] ?? '');
 }
 
@@ -532,6 +537,12 @@ export function renderReport(ctx: ReportContext, handlers: ReportHandlers): HTML
   if (blocked) append(root, [blocked]);
 
   append(root, [limits()]);
+  append(root, [
+    renderTrend(
+      { report: ctx.report, earlier: ctx.earlier, benchmark: ctx.benchmark, column: ctx.trendColumn },
+      handlers.onTrendColumn,
+    ),
+  ]);
   append(root, [detailSection(ctx.snapshot, ctx.benchmark)]);
   append(root, [historyOffer(ctx, handlers)]);
   append(root, [compareOffer(ctx, handlers)]);

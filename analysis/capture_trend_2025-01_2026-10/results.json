@@ -1,0 +1,375 @@
+{
+  "app": "Third Floor",
+  "analysis": "capture_trend",
+  "generated_at": "2026-11-07T13:33:51+00:00",
+  "prices_fetched_at": "2026-11-07T13:32:30+00:00",
+  "price_sources": [
+    "yfinance"
+  ],
+  "method": {
+    "resamples": 200,
+    "block_days": 5,
+    "seed": 20261107,
+    "excluded": "windows below the report's fit floor or its six-day floor, as on the page"
+  },
+  "reproduces_archive": {
+    "cells": 2019,
+    "median_gap": 0.0,
+    "max_gap": 7e-06
+  },
+  "residual_lag1_autocorrelation": {
+    "median": -0.201,
+    "min": -0.419,
+    "max": 0.029
+  },
+  "by_window": {
+    "12mo": {
+      "1mo_back": {
+        "comparisons": 512,
+        "band_exact": 0.0218,
+        "band": 0.03,
+        "beats_shuffle": {
+          "up": 0.176,
+          "down": 0.199,
+          "spread": 0.051
+        },
+        "week_split_rank_r": {
+          "up": 0.437,
+          "down": 0.521,
+          "spread": -0.068
+        },
+        "legs_move_together_rank_r": 0.735,
+        "beyond_band_real": {
+          "up": 0.092,
+          "down": 0.15
+        },
+        "beyond_band_shuffled": {
+          "up": 0.035,
+          "down": 0.047
+        },
+        "states": {
+          "about_the_same": 0.879,
+          "higher": 0.062,
+          "lower": 0.059
+        },
+        "median_abs_change": {
+          "up": 0.009,
+          "down": 0.01,
+          "spread": 0.005
+        },
+        "percent": {
+          "small_base_share": 0.008,
+          "sign_flip_share": 0.0
+        }
+      },
+      "3mo_back": {
+        "comparisons": 440,
+        "band_exact": 0.0379,
+        "band": 0.04,
+        "beats_shuffle": {
+          "up": 0.33,
+          "down": 0.28,
+          "spread": 0.075
+        },
+        "week_split_rank_r": {
+          "up": 0.662,
+          "down": 0.65,
+          "spread": -0.063
+        },
+        "legs_move_together_rank_r": 0.823,
+        "beyond_band_real": {
+          "up": 0.27,
+          "down": 0.325
+        },
+        "beyond_band_shuffled": {
+          "up": 0.073,
+          "down": 0.134
+        },
+        "states": {
+          "about_the_same": 0.702,
+          "higher": 0.142,
+          "lower": 0.156
+        },
+        "median_abs_change": {
+          "up": 0.022,
+          "down": 0.022,
+          "spread": 0.011
+        },
+        "percent": {
+          "small_base_share": 0.006,
+          "sign_flip_share": 0.0
+        }
+      },
+      "6mo_back": {
+        "comparisons": 338,
+        "band_exact": 0.0551,
+        "band": 0.06,
+        "beats_shuffle": {
+          "up": 0.402,
+          "down": 0.364,
+          "spread": 0.047
+        },
+        "week_split_rank_r": {
+          "up": 0.703,
+          "down": 0.777,
+          "spread": -0.064
+        },
+        "legs_move_together_rank_r": 0.918,
+        "beyond_band_real": {
+          "up": 0.322,
+          "down": 0.396
+        },
+        "beyond_band_shuffled": {
+          "up": 0.05,
+          "down": 0.086
+        },
+        "states": {
+          "about_the_same": 0.641,
+          "higher": 0.148,
+          "lower": 0.212
+        },
+        "median_abs_change": {
+          "up": 0.041,
+          "down": 0.044,
+          "spread": 0.019
+        },
+        "percent": {
+          "small_base_share": 0.001,
+          "sign_flip_share": 0.0
+        }
+      }
+    },
+    "6mo": {
+      "1mo_back": {
+        "comparisons": 642,
+        "band_exact": 0.0389,
+        "band": 0.04,
+        "beats_shuffle": {
+          "up": 0.227,
+          "down": 0.234,
+          "spread": 0.093
+        },
+        "week_split_rank_r": {
+          "up": 0.47,
+          "down": 0.521,
+          "spread": -0.043
+        },
+        "legs_move_together_rank_r": 0.674,
+        "beyond_band_real": {
+          "up": 0.217,
+          "down": 0.304
+        },
+        "beyond_band_shuffled": {
+          "up": 0.107,
+          "down": 0.154
+        },
+        "states": {
+          "about_the_same": 0.74,
+          "higher": 0.132,
+          "lower": 0.129
+        },
+        "median_abs_change": {
+          "up": 0.017,
+          "down": 0.023,
+          "spread": 0.014
+        },
+        "percent": {
+          "small_base_share": 0.016,
+          "sign_flip_share": 0.0
+        }
+      },
+      "3mo_back": {
+        "comparisons": 570,
+        "band_exact": 0.0702,
+        "band": 0.08,
+        "beats_shuffle": {
+          "up": 0.347,
+          "down": 0.358,
+          "spread": 0.077
+        },
+        "week_split_rank_r": {
+          "up": 0.679,
+          "down": 0.634,
+          "spread": 0.038
+        },
+        "legs_move_together_rank_r": 0.794,
+        "beyond_band_real": {
+          "up": 0.291,
+          "down": 0.342
+        },
+        "beyond_band_shuffled": {
+          "up": 0.082,
+          "down": 0.123
+        },
+        "states": {
+          "about_the_same": 0.683,
+          "higher": 0.146,
+          "lower": 0.17
+        },
+        "median_abs_change": {
+          "up": 0.045,
+          "down": 0.056,
+          "spread": 0.026
+        },
+        "percent": {
+          "small_base_share": 0.013,
+          "sign_flip_share": 0.0
+        }
+      },
+      "6mo_back": {
+        "comparisons": 459,
+        "band_exact": 0.1014,
+        "band": 0.11,
+        "beats_shuffle": {
+          "up": 0.366,
+          "down": 0.377,
+          "spread": 0.052
+        },
+        "week_split_rank_r": {
+          "up": 0.668,
+          "down": 0.64,
+          "spread": 0.08
+        },
+        "legs_move_together_rank_r": 0.822,
+        "beyond_band_real": {
+          "up": 0.346,
+          "down": 0.397
+        },
+        "beyond_band_shuffled": {
+          "up": 0.098,
+          "down": 0.111
+        },
+        "states": {
+          "about_the_same": 0.629,
+          "higher": 0.161,
+          "lower": 0.21
+        },
+        "median_abs_change": {
+          "up": 0.073,
+          "down": 0.081,
+          "spread": 0.038
+        },
+        "percent": {
+          "small_base_share": 0.01,
+          "sign_flip_share": 0.0
+        }
+      }
+    },
+    "13wk": {
+      "1mo_back": {
+        "comparisons": 698,
+        "band_exact": 0.0688,
+        "band": 0.07,
+        "beats_shuffle": {
+          "up": 0.203,
+          "down": 0.222,
+          "spread": 0.093
+        },
+        "week_split_rank_r": {
+          "up": 0.402,
+          "down": 0.418,
+          "spread": 0.038
+        },
+        "legs_move_together_rank_r": 0.635,
+        "beyond_band_real": {
+          "up": 0.235,
+          "down": 0.328
+        },
+        "beyond_band_shuffled": {
+          "up": 0.126,
+          "down": 0.133
+        },
+        "states": {
+          "about_the_same": 0.718,
+          "higher": 0.15,
+          "lower": 0.131
+        },
+        "median_abs_change": {
+          "up": 0.033,
+          "down": 0.043,
+          "spread": 0.031
+        },
+        "percent": {
+          "small_base_share": 0.032,
+          "sign_flip_share": 0.002
+        }
+      },
+      "3mo_back": {
+        "comparisons": 623,
+        "band_exact": 0.1278,
+        "band": 0.13,
+        "beats_shuffle": {
+          "up": 0.305,
+          "down": 0.324,
+          "spread": 0.066
+        },
+        "week_split_rank_r": {
+          "up": 0.593,
+          "down": 0.551,
+          "spread": -0.011
+        },
+        "legs_move_together_rank_r": 0.747,
+        "beyond_band_real": {
+          "up": 0.319,
+          "down": 0.395
+        },
+        "beyond_band_shuffled": {
+          "up": 0.124,
+          "down": 0.165
+        },
+        "states": {
+          "about_the_same": 0.643,
+          "higher": 0.178,
+          "lower": 0.179
+        },
+        "median_abs_change": {
+          "up": 0.081,
+          "down": 0.106,
+          "spread": 0.051
+        },
+        "percent": {
+          "small_base_share": 0.03,
+          "sign_flip_share": 0.002
+        }
+      },
+      "6mo_back": {
+        "comparisons": 515,
+        "band_exact": 0.1327,
+        "band": 0.14,
+        "beats_shuffle": {
+          "up": 0.357,
+          "down": 0.375,
+          "spread": 0.054
+        },
+        "week_split_rank_r": {
+          "up": 0.617,
+          "down": 0.604,
+          "spread": 0.001
+        },
+        "legs_move_together_rank_r": 0.783,
+        "beyond_band_real": {
+          "up": 0.322,
+          "down": 0.41
+        },
+        "beyond_band_shuffled": {
+          "up": 0.085,
+          "down": 0.175
+        },
+        "states": {
+          "about_the_same": 0.634,
+          "higher": 0.166,
+          "lower": 0.2
+        },
+        "median_abs_change": {
+          "up": 0.091,
+          "down": 0.106,
+          "spread": 0.045
+        },
+        "percent": {
+          "small_base_share": 0.025,
+          "sign_flip_share": 0.002
+        }
+      }
+    }
+  }
+}

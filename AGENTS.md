@@ -473,6 +473,16 @@ distinguishes nothing.
   that it confirms the capture figures.
 - **Not on the page:** the opposite-direction rows, any up-minus-down figure, the
   bounded score, row tint.
+- **Capture over time (3F D-20):** after the limits box, for one window at a time
+  (`13 wk` by default, with a chooser): up and down capture now, the percentage
+  change since last month's report beside the earlier level, and higher, lower or
+  about the same against three and six months back, each with its level. The
+  market's own result sits in the same table. A closed section gives the last six
+  reports. Each side on its own: changes in the gap between them could not be told
+  from noise. The percentage is over the earlier reading's size and is withheld
+  below 0.10 or across a change of sign. Direction uses the per-window bands in
+  `packages/core/src/captureTrend.ts`. No dot, no colour, no cause, no list across
+  funds.
 - **Shift marker:** small amber dot, no text badge, only in the detail section:
   at least `0.30` from the row's `12 mo` reading. Where that row is blocked no cell
   is marked and the section says so once (3F-O-02, closed). Lens C carries a dot on
@@ -657,6 +667,10 @@ Each step has a gate. Run the gate; do not assume the step.
     files before any page work; the 615 snapshots byte-identical; every report
     validates against its snapshot's month, date and benchmarks.
 
-**All thirteen steps are built.** The two open questions the site was waiting on
+14. ✅ Capture over time on the report (3F D-20). *Gate:* each side's change clears
+    week-shuffled days on the archive's own windows, and the spread's is shown not
+    to; no archive file touched; every report month is read exactly, never bridged.
+
+**All fourteen steps are built.** The two open questions the site was waiting on
 are closed: 3F-O-05 no (the archive contradicts the caveat's premise) and
 3F-O-06 yes, LADM stays.

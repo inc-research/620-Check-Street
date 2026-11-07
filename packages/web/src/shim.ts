@@ -18,6 +18,7 @@ export {
   archivedMonthFor,
   buildLensA,
   buildLensB,
+  buildCaptureTrend,
   buildLensC,
   buildReportTable,
   canCompare,
@@ -27,6 +28,10 @@ export {
   sharedBenchmarks,
   sharedMonths,
   COMPARISON_HORIZON,
+  DEFAULT_TREND_COLUMN,
+  TREND_BANDS,
+  trendColumns,
+  trendMonths,
   HORIZONS,
   SCHEMA_VERSION,
   STATES,
@@ -38,6 +43,7 @@ export {
   validateSnapshot,
   type BenchmarkBlock,
   type Blocker,
+  type CaptureTrend,
   type Cell,
   type Coverage,
   type Horizon,
@@ -61,6 +67,8 @@ export {
   type StateName,
   type TableCell,
   type TableRow,
+  type TrendReading,
+  type TrendStep,
 } from '@third-floor/core';
 
 export {

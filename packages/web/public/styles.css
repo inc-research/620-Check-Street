@@ -497,3 +497,14 @@ td.score span.below { color: var(--below); }
 /* The two periods being compared are not the row tint's business — a change of
  * −0.37 is not "bad" — so the history table keeps the row tint off its numeric
  * cells and leaves it on the row label alone. */
+
+/* --- capture over time ----------------------------------------------------- */
+
+/* The earlier level sits under its change in the same cell, so the difference
+ * is never on the page without the two readings it came from (3F D-14). */
+.trend-then {
+  display: block;
+  font-size: 0.8em;
+  color: var(--ink-quiet);
+  white-space: nowrap;
+}

@@ -26,6 +26,7 @@ export type SectionKey =
   | 'benchmark_choice'
   | 'outcome_period'
   | 'thin_data'
+  | 'capture_trend'
   | 'history'
   | 'comparing_funds';
 
@@ -112,6 +113,28 @@ export interface TableCopy {
     disjoint: string;
     steady: string;
     unavailable: string;
+  };
+  /** Net capture across recent month-end reports (3F D-20). {placeholders} are filled by the view. */
+  trend: {
+    window: string;
+    columns: { now: string; fromMonth: string; three: string; six: string };
+    upRow: RowLabel;
+    downRow: RowLabel;
+    marketRow: RowLabel;
+    was: string;
+    then: string;
+    higher: string;
+    lower: string;
+    same: string;
+    lowFit: string;
+    smallBase: string;
+    signChanged: string;
+    overlap: Record<HorizonKey, string>;
+    bands: string;
+    dash: string;
+    runSummary: string;
+    runIntro: string;
+    runColumns: { month: string; up: string; down: string; change: string; market: string };
   };
   /** Lens C: two funds, one benchmark, one month, one window length. */
   comparison: {

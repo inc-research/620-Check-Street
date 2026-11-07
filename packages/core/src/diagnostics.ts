@@ -95,6 +95,27 @@ export const BLOCKERS = {
     subjects: [older, newer],
   }),
 
+  trendMonthMissing: (ticker: string, month: string): Blocker => ({
+    code: 'trend_month_missing',
+    message: `There is no report for ${ticker} from ${month} to read this against. The fund may be too new, or that report could not be loaded.`,
+    remedy: 'Read the months that are shown, or the report on its own.',
+    subjects: [ticker, month],
+  }),
+
+  trendLowFit: (month: string, benchmark: string): Blocker => ({
+    code: 'trend_low_fit',
+    message: `In ${month}, ${benchmark} explained too little of this fund’s daily movement for this figure to describe the fund.`,
+    remedy: 'Read a month where the fund followed this benchmark more closely, or try another benchmark.',
+    subjects: [month, benchmark],
+  }),
+
+  trendWindowBlocked: (month: string, why: string): Blocker => ({
+    code: 'trend_window_blocked',
+    message: `This window could not be worked out for ${month}. ${why}`,
+    remedy: 'Pick a shorter window.',
+    subjects: [month],
+  }),
+
   periodNotComparable: (month: string, why: string): Blocker => ({
     code: 'period_not_comparable',
     message: `The reading for the earlier period could not be worked out. ${why}`,

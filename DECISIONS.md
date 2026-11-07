@@ -591,6 +591,65 @@ the data.
 
 *Reverses if:* never. These are corrections of fact.
 
+## 3F D-20 · Capture over time reports each side, not the gap between them
+
+The owner asked for month-over-month capture: the latest month's percentage
+change, and whether the spread between up and down capture had widened or
+narrowed over three and six months, to see how these funds are responding to the
+current market against earlier ones.
+
+**Each side, no spread.** Measured in `analysis/capture_trend.py` over 4,797
+comparisons on the archive's own windows, reproducing it to within 0.000007. A
+change in up or down capture beat the same days shuffled by the week 18% to 40%
+of the time, against 5% by chance, with week-split reliability of 0.40 to 0.78. A
+change in up-minus-down beat them 4.7% to 9.3% of the time, with reliability of
+−0.07 to +0.08. The two sides move together (rank correlation 0.63 to 0.92), so
+what shifts is how much of the market a fund carries, not the gap between its two
+sides. This extends what 3F D-17 found of the level to its change. The page says
+whether each side is higher or lower, and the gap stays off it.
+
+**Why weeks, not days.** A fund's residual against its benchmark bounces from one
+close to the next, with a median lag-1 autocorrelation of −0.20. Summing alternate
+days cancels part of it, so a single-day shuffle runs too wide and an odd/even
+split comes out negatively correlated by construction. The first pass read −0.30
+to −0.67 and that was the bounce, not the funds.
+
+**No new archive.** Reports have no one-month window, and a one-month capture
+would rest on 9 to 11 days a side, all below the floor of 3F D-07, with the weakest
+reliability of anything tested (0.28 to 0.36). The section reads the 13wk, 6mo and
+12mo columns already published, opening on thirteen weeks as the closest to the
+current market. Nothing in the notebook, the schemas or the archives changes. The
+price is overlap: a thirteen-week reading a month apart shares about two thirds of
+its days, and the page says so for the window chosen.
+
+**The percentage has a guard.** It is taken over the earlier reading's size, so
+that a negative reading falling shows as a fall. It is withheld below an earlier
+reading of 0.10 and across a change of sign, where the plain difference shows
+instead: 0.1% to 3.2% and 0% to 0.2% of comparisons.
+
+**Direction has a band.** Inside it the page says "about the same": 0.13 and 0.14
+at thirteen weeks, 0.08 and 0.11 at six months, 0.04 and 0.06 at twelve, for three
+and six months back. Each is the median across fund-months of the 95th percentile
+of the shuffled change, rounded up. Reports store sums and not squares, so a
+fund's own noise cannot be worked out on the page, and the band is flat. That
+leaves it imperfect: at these lookbacks 27% to 41% of real changes clear it, and
+5% to 18% of shuffled ones do. The legend says some of what clears it is chance.
+63% to 70% of readings land on "about the same", which is the honest answer for
+those funds. Still no dot (3F D-17).
+
+**No colour.** Lens B's green and red would read as good and bad, and a rise in down
+capture means the fund took more of the market's falls. The sign and the word
+carry it, in neutral type.
+
+**Nothing says why.** The market's own result travels with every row, and the copy
+never attributes a change to the fund's instruments or its outcome period, which
+3F-O-07 leaves untested. No list across funds: per-fund only, under the scope
+boundary.
+
+*Reverses if:* the spread's change clears shuffled weeks as the archive grows, so
+rerun the script. Storing squared returns in a future report version would allow
+a band per fund.
+
 ---
 
 ## Open
