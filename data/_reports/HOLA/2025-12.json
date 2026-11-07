@@ -1,0 +1,251 @@
+{
+  "app": "Third Floor",
+  "report_schema_version": "1.0",
+  "ticker": "HOLA",
+  "name": "JPMorgan International Hedged Equity Laddered Overlay ETF",
+  "issuer": "JPMorgan",
+  "category": "options_integrated",
+  "as_of": "2025-12-31",
+  "generated_at": "2026-11-07T02:34:01Z",
+  "coverage": {
+    "inception": "2025-07-14",
+    "earliest_available_snapshot": "2025-10",
+    "earliest_full_baseline_snapshot": "2026-07",
+    "requested_backfill_depth_months": 19,
+    "history_limited_by_inception": true
+  },
+  "methodology": {
+    "measures": "capture_up is the fund's summed daily return over the benchmark's, across every day the benchmark rose; capture_down likewise for every day it fell. Not compounded, and equal to the ratio of the two average days. growth is the compounded return on all paired days, so 1.094 is $100 becoming $109.40.",
+    "low_fit_r_squared": 0.25,
+    "price_basis": "close_adjusted",
+    "price_source": "yfinance",
+    "return_frequency": "daily",
+    "defined_outcome_caveat": true
+  },
+  "benchmarks": {
+    "VOO": {
+      "roles": [
+        "universal_anchor"
+      ],
+      "benchmark_source": null,
+      "horizons": [
+        {
+          "horizon": "12mo",
+          "window_start": "2024-12-31",
+          "window_end": "2025-12-31",
+          "first_day": null,
+          "days_total": 0,
+          "market_up_days": 0,
+          "market_down_days": 0,
+          "market_flat_days": 0,
+          "growth": null,
+          "up": null,
+          "down": null,
+          "worst_fall": null,
+          "fit": null,
+          "blockers": [
+            {
+              "code": "window_shorter_than_horizon",
+              "message": "This reading covers the 12 months up to this date, which means going back to 2024-12-31. This fund's price history only starts on 2025-07-15, so there is nothing to read for the earlier part of that period.",
+              "remedy": "Read the shorter windows in this same table, which fit inside the history the fund does have. The 12 months reading becomes available once the fund has been trading that long.",
+              "subjects": [
+                "12mo"
+              ]
+            }
+          ]
+        },
+        {
+          "horizon": "6mo",
+          "window_start": "2025-06-30",
+          "window_end": "2025-12-31",
+          "first_day": null,
+          "days_total": 0,
+          "market_up_days": 0,
+          "market_down_days": 0,
+          "market_flat_days": 0,
+          "growth": null,
+          "up": null,
+          "down": null,
+          "worst_fall": null,
+          "fit": null,
+          "blockers": [
+            {
+              "code": "window_shorter_than_horizon",
+              "message": "This reading covers the 6 months up to this date, which means going back to 2025-06-30. This fund's price history only starts on 2025-07-15, so there is nothing to read for the earlier part of that period.",
+              "remedy": "Read the shorter windows in this same table, which fit inside the history the fund does have. The 6 months reading becomes available once the fund has been trading that long.",
+              "subjects": [
+                "6mo"
+              ]
+            }
+          ]
+        },
+        {
+          "horizon": "13wk",
+          "window_start": "2025-10-01",
+          "window_end": "2025-12-31",
+          "first_day": "2025-10-01",
+          "days_total": 64,
+          "market_up_days": 39,
+          "market_down_days": 25,
+          "market_flat_days": 0,
+          "growth": {
+            "fund": 1.0435848056877737,
+            "benchmark": 1.0269845476946058
+          },
+          "up": {
+            "days": 39,
+            "sum_fund": 0.12183913256257972,
+            "sum_benchmark": 0.20368272653135588,
+            "capture": 0.5981809780213406,
+            "average_fund": 0.0031240803221174286,
+            "average_benchmark": 0.00522263401362451,
+            "against_days": 9,
+            "against_share": 0.23076923076923078,
+            "blockers": []
+          },
+          "down": {
+            "days": 25,
+            "sum_fund": -0.07832954691743688,
+            "sum_benchmark": -0.17509302215956546,
+            "capture": 0.44735961462846724,
+            "average_fund": -0.003133181876697475,
+            "average_benchmark": -0.007003720886382618,
+            "against_days": 8,
+            "against_share": 0.32,
+            "blockers": []
+          },
+          "worst_fall": {
+            "fund": {
+              "depth": -0.03173969438750046,
+              "peak_date": "2025-11-12",
+              "trough_date": "2025-11-20"
+            },
+            "benchmark": {
+              "depth": -0.05062106063946903,
+              "peak_date": "2025-10-29",
+              "trough_date": "2025-11-20"
+            }
+          },
+          "fit": {
+            "r_squared": 0.5278856849574813,
+            "beta": 0.4748083824623222,
+            "blockers": []
+          },
+          "blockers": []
+        }
+      ]
+    },
+    "EFA": {
+      "roles": [
+        "named_benchmark"
+      ],
+      "benchmark_source": "prospectus_index",
+      "horizons": [
+        {
+          "horizon": "12mo",
+          "window_start": "2024-12-31",
+          "window_end": "2025-12-31",
+          "first_day": null,
+          "days_total": 0,
+          "market_up_days": 0,
+          "market_down_days": 0,
+          "market_flat_days": 0,
+          "growth": null,
+          "up": null,
+          "down": null,
+          "worst_fall": null,
+          "fit": null,
+          "blockers": [
+            {
+              "code": "window_shorter_than_horizon",
+              "message": "This reading covers the 12 months up to this date, which means going back to 2024-12-31. This fund's price history only starts on 2025-07-15, so there is nothing to read for the earlier part of that period.",
+              "remedy": "Read the shorter windows in this same table, which fit inside the history the fund does have. The 12 months reading becomes available once the fund has been trading that long.",
+              "subjects": [
+                "12mo"
+              ]
+            }
+          ]
+        },
+        {
+          "horizon": "6mo",
+          "window_start": "2025-06-30",
+          "window_end": "2025-12-31",
+          "first_day": null,
+          "days_total": 0,
+          "market_up_days": 0,
+          "market_down_days": 0,
+          "market_flat_days": 0,
+          "growth": null,
+          "up": null,
+          "down": null,
+          "worst_fall": null,
+          "fit": null,
+          "blockers": [
+            {
+              "code": "window_shorter_than_horizon",
+              "message": "This reading covers the 6 months up to this date, which means going back to 2025-06-30. This fund's price history only starts on 2025-07-15, so there is nothing to read for the earlier part of that period.",
+              "remedy": "Read the shorter windows in this same table, which fit inside the history the fund does have. The 6 months reading becomes available once the fund has been trading that long.",
+              "subjects": [
+                "6mo"
+              ]
+            }
+          ]
+        },
+        {
+          "horizon": "13wk",
+          "window_start": "2025-10-01",
+          "window_end": "2025-12-31",
+          "first_day": "2025-10-01",
+          "days_total": 64,
+          "market_up_days": 38,
+          "market_down_days": 25,
+          "market_flat_days": 1,
+          "growth": {
+            "fund": 1.0435848056877737,
+            "benchmark": 1.0471254212222034
+          },
+          "up": {
+            "days": 38,
+            "sum_fund": 0.1501654791782281,
+            "sum_benchmark": 0.20801115380763213,
+            "capture": 0.7219107073320717,
+            "average_fund": 0.00395172313626916,
+            "average_benchmark": 0.005473977731779793,
+            "against_days": 4,
+            "against_share": 0.10526315789473684,
+            "blockers": []
+          },
+          "down": {
+            "days": 25,
+            "sum_fund": -0.10325709366912328,
+            "sum_benchmark": -0.16039216995276795,
+            "capture": 0.6437788933183601,
+            "average_fund": -0.004130283746764931,
+            "average_benchmark": -0.006415686798110718,
+            "against_days": 4,
+            "against_share": 0.16,
+            "blockers": []
+          },
+          "worst_fall": {
+            "fund": {
+              "depth": -0.03173969438750046,
+              "peak_date": "2025-11-12",
+              "trough_date": "2025-11-20"
+            },
+            "benchmark": {
+              "depth": -0.05509525916646563,
+              "peak_date": "2025-11-12",
+              "trough_date": "2025-11-20"
+            }
+          },
+          "fit": {
+            "r_squared": 0.650382836213998,
+            "beta": 0.5909668078545703,
+            "blockers": []
+          },
+          "blockers": []
+        }
+      ]
+    }
+  }
+}

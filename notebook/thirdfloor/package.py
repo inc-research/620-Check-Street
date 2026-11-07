@@ -30,10 +30,11 @@ from .backfill import (
     monthly_snapshot_dates,
     read_archive_state,
 )
-from .emit import build_all_snapshots
+from .emit import build_all_snapshots, build_report
+from .exposure import compute_readings
 from .fetch import FetchRefused, PriceSeries, SourceRecord, fetch_daily_prices
 from .registry import UNIVERSAL_ANCHOR, Registry, load_registry
-from .semibeta import MIN_OBSERVATIONS_PER_CELL
+from .semibeta import MIN_OBSERVATIONS_PER_CELL, daily_returns, pair_returns
 
 
 def most_recent_completed_month_end(today: date) -> date:
@@ -56,10 +57,13 @@ class Run:
         out_dir: str | Path,
         verbose: bool = True,
         archive_dir: str | Path | None = None,
+        reports_only: bool = False,
     ):
         self.registry: Registry = load_registry(registry_path)
         self.out_dir = Path(out_dir)
         self.archive_dir = Path(archive_dir) if archive_dir is not None else None
+        self.reports_only = reports_only
+        self.reports: dict[str, dict[str, dict[str, Any]]] = {}
         self.verbose = verbose
         self.lines: list[str] = []
         self.prices: dict[str, PriceSeries] = {}
@@ -143,6 +147,27 @@ class Run:
             )
             documents[fund.ticker] = docs
 
+            # One report per snapshot month, so the two archives cannot disagree
+            # about which months exist. Slices the same pull; no further fetch.
+            fund_returns = daily_returns(fund_series)
+            paired = {
+                b: pair_returns(fund_returns, daily_returns(s))
+                for b, s in benchmark_series.items()
+            }
+            self.reports[fund.ticker] = {
+                month: build_report(
+                    fund,
+                    doc,
+                    {
+                        b: compute_readings(pairs, date.fromisoformat(doc["as_of"]))
+                        for b, pairs in paired.items()
+                        if b in doc["benchmarks"]
+                    },
+                    self.started,
+                )
+                for month, doc in docs.items()
+            }
+
             blocked = sum(
                 1
                 for doc in docs.values()
@@ -161,12 +186,16 @@ class Run:
     # --- write --------------------------------------------------------------
 
     def write(self, documents: dict[str, dict[str, dict[str, Any]]]) -> list[Path]:
-        from .emit import write_snapshot
+        from .emit import write_report, write_snapshot
 
         paths: list[Path] = []
-        for ticker, months in documents.items():
-            for month, doc in months.items():
-                paths.append(write_snapshot(self.out_dir / "data", doc, month))
+        if not self.reports_only:
+            for months in documents.values():
+                for month, doc in months.items():
+                    paths.append(write_snapshot(self.out_dir / "data", doc, month))
+        for months in self.reports.values():
+            for month, report in months.items():
+                paths.append(write_report(self.out_dir / "data", report, month))
         return paths
 
     def manifest(
@@ -194,7 +223,10 @@ class Run:
             "coverage": {
                 t: months[max(months)]["coverage"] for t, months in sorted(documents.items())
             },
-            "total_snapshot_files": sum(len(m) for m in documents.values()),
+            "total_snapshot_files": (
+                0 if self.reports_only else sum(len(m) for m in documents.values())
+            ),
+            "total_report_files": sum(len(m) for m in self.reports.values()),
         }
 
     def package(self, documents, snapshot_dates, depth, zip_path: str | Path) -> Path:
@@ -213,7 +245,7 @@ class Run:
             zf.write(self.out_dir / "MANIFEST.json", "MANIFEST.json")
             zf.write(self.out_dir / "run.log", "run.log")
 
-        self.log(f"packaged {len(paths)} snapshots into {zip_path}")
+        self.log(f"packaged {len(paths)} files into {zip_path}")
         return zip_path
 
 
@@ -242,6 +274,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--only", nargs="*", help="restrict to these tickers, for a dry run"
     )
+    parser.add_argument(
+        "--reports-only",
+        action="store_true",
+        help="write report files and no snapshots: the one-off backfill of "
+        "data/_reports over months already published (3F D-18)",
+    )
     parser.add_argument("--today", help="override today's date, for reproducible runs")
     args = parser.parse_args(argv)
 
@@ -263,7 +301,7 @@ def main(argv: list[str] | None = None) -> int:
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    run = Run(args.registry, out_dir, archive_dir=args.archive)
+    run = Run(args.registry, out_dir, archive_dir=args.archive, reports_only=args.reports_only)
     run.log(
         f"Third Floor run — {'backfill' if args.backfill else 'monthly'}, "
         f"{depth} snapshot(s) ending {snapshot_dates[-1]}"

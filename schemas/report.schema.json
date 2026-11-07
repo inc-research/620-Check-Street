@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://third-floor.example/schemas/report.schema.json",
+  "title": "Third Floor report",
+  "description": "One ticker, one month: what happened to the money, how much of the market the fund carried, and how closely it follows. What the page reads first (3F D-17). Kept beside the snapshot archive rather than in it, because a committed snapshot is not rewritten (3F D-08) and these figures need full-window returns a snapshot does not hold (3F D-18). Month set matches the snapshots one for one. Append-only.",
+  "type": "object",
+  "required": ["app", "report_schema_version", "ticker", "name", "issuer", "category", "as_of", "generated_at", "coverage", "methodology", "benchmarks"],
+  "additionalProperties": false,
+  "properties": {
+    "app": { "const": "Third Floor" },
+    "report_schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+    "ticker": { "type": "string", "pattern": "^[A-Z.]{1,6}$" },
+    "name": { "type": "string", "minLength": 1 },
+    "issuer": { "type": "string", "minLength": 1 },
+    "category": { "enum": ["options_integrated", "managed_futures"] },
+    "as_of": { "type": "string", "format": "date" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "coverage": { "$ref": "snapshot.schema.json#/properties/coverage" },
+    "methodology": {
+      "type": "object",
+      "required": ["measures", "low_fit_r_squared", "price_basis", "price_source", "return_frequency", "defined_outcome_caveat"],
+      "additionalProperties": false,
+      "properties": {
+        "measures": { "type": "string", "minLength": 1 },
+        "low_fit_r_squared": {
+          "description": "Below this the benchmark explains too little of the fund's daily movement for a per-1% figure to describe it, and the report says so in place of that sentence.",
+          "type": "number", "minimum": 0, "maximum": 1
+        },
+        "price_basis": { "enum": ["close_adjusted", "close_unadjusted"] },
+        "price_source": { "enum": ["yfinance", "stooq", "yahoo_chart"] },
+        "return_frequency": { "const": "daily" },
+        "defined_outcome_caveat": { "type": "boolean" }
+      }
+    },
+    "benchmarks": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["roles", "benchmark_source", "horizons"],
+        "additionalProperties": false,
+        "properties": {
+          "roles": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["universal_anchor", "named_benchmark"] } },
+          "benchmark_source": { "type": ["string", "null"], "enum": ["prospectus_index", "marketing_language", "default_no_named_benchmark", null] },
+          "horizons": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "$ref": "#/$defs/horizon" } }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "blocker": { "$ref": "snapshot.schema.json#/$defs/blocker" },
+    "horizon": {
+      "description": "One window. A window the fund's history does not reach is blocked, never shortened (3F D-09): every measure is null, the day counts are zero, and a blocker says why.",
+      "type": "object",
+      "required": ["horizon", "window_start", "window_end", "first_day", "days_total", "market_up_days", "market_down_days", "market_flat_days", "growth", "up", "down", "worst_fall", "fit", "blockers"],
+      "additionalProperties": false,
+      "properties": {
+        "horizon": { "enum": ["12mo", "6mo", "13wk"] },
+        "window_start": { "type": "string", "format": "date" },
+        "window_end": { "type": "string", "format": "date" },
+        "first_day": { "type": ["string", "null"], "format": "date" },
+        "days_total": { "description": "INV-3: equals market_up_days + market_down_days + market_flat_days.", "type": "integer", "minimum": 0 },
+        "market_up_days": { "type": "integer", "minimum": 0 },
+        "market_down_days": { "type": "integer", "minimum": 0 },
+        "market_flat_days": { "type": "integer", "minimum": 0 },
+        "growth": {
+          "description": "Compounded over every paired day: 1.094 is $100 becoming $109.40.",
+          "type": ["object", "null"],
+          "required": ["fund", "benchmark"],
+          "additionalProperties": false,
+          "properties": { "fund": { "type": "number", "exclusiveMinimum": 0 }, "benchmark": { "type": "number", "exclusiveMinimum": 0 } }
+        },
+        "up": { "oneOf": [{ "$ref": "#/$defs/side" }, { "type": "null" }] },
+        "down": { "oneOf": [{ "$ref": "#/$defs/side" }, { "type": "null" }] },
+        "worst_fall": {
+          "type": ["object", "null"],
+          "required": ["fund", "benchmark"],
+          "additionalProperties": false,
+          "properties": { "fund": { "$ref": "#/$defs/fall" }, "benchmark": { "$ref": "#/$defs/fall" } }
+        },
+        "fit": {
+          "type": ["object", "null"],
+          "required": ["r_squared", "beta", "blockers"],
+          "additionalProperties": false,
+          "properties": {
+            "r_squared": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+            "beta": { "type": ["number", "null"] },
+            "blockers": { "type": "array", "items": { "$ref": "#/$defs/blocker" } }
+          }
+        },
+        "blockers": { "type": "array", "items": { "$ref": "#/$defs/blocker" } }
+      }
+    },
+    "side": {
+      "description": "Every day the market moved one way, whatever the fund did. capture is sum_fund / sum_benchmark and is not compounded; compounding daily returns manufactures a downside asymmetry that does not exist (3F D-17). Below six days the sums and counts stay and everything derived from them is null, with a blocker (3F D-11).",
+      "type": "object",
+      "required": ["days", "sum_fund", "sum_benchmark", "capture", "average_fund", "average_benchmark", "against_days", "against_share", "blockers"],
+      "additionalProperties": false,
+      "properties": {
+        "days": { "type": "integer", "minimum": 0 },
+        "sum_fund": { "type": "number" },
+        "sum_benchmark": { "type": "number" },
+        "capture": { "type": ["number", "null"] },
+        "average_fund": { "type": ["number", "null"] },
+        "average_benchmark": { "type": ["number", "null"] },
+        "against_days": { "type": "integer", "minimum": 0 },
+        "against_share": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "blockers": { "type": "array", "items": { "$ref": "#/$defs/blocker" } }
+      }
+    },
+    "fall": {
+      "description": "Deepest peak-to-trough fall in the window, as a negative fraction. 0 is measured: no fall happened, and both dates are null.",
+      "type": "object",
+      "required": ["depth", "peak_date", "trough_date"],
+      "additionalProperties": false,
+      "properties": {
+        "depth": { "type": "number", "maximum": 0 },
+        "peak_date": { "type": ["string", "null"], "format": "date" },
+        "trough_date": { "type": ["string", "null"], "format": "date" }
+      }
+    }
+  }
+}

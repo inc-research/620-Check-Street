@@ -1,0 +1,309 @@
+{
+  "app": "Third Floor",
+  "report_schema_version": "1.0",
+  "ticker": "BUFI",
+  "name": "AB International Buffer ETF",
+  "issuer": "AllianceBernstein",
+  "category": "options_integrated",
+  "as_of": "2025-11-28",
+  "generated_at": "2026-11-07T02:34:01Z",
+  "coverage": {
+    "inception": "2024-12-10",
+    "earliest_available_snapshot": "2025-03",
+    "earliest_full_baseline_snapshot": "2025-12",
+    "requested_backfill_depth_months": 19,
+    "history_limited_by_inception": false
+  },
+  "methodology": {
+    "measures": "capture_up is the fund's summed daily return over the benchmark's, across every day the benchmark rose; capture_down likewise for every day it fell. Not compounded, and equal to the ratio of the two average days. growth is the compounded return on all paired days, so 1.094 is $100 becoming $109.40.",
+    "low_fit_r_squared": 0.25,
+    "price_basis": "close_adjusted",
+    "price_source": "yfinance",
+    "return_frequency": "daily",
+    "defined_outcome_caveat": true
+  },
+  "benchmarks": {
+    "VOO": {
+      "roles": [
+        "universal_anchor"
+      ],
+      "benchmark_source": null,
+      "horizons": [
+        {
+          "horizon": "12mo",
+          "window_start": "2024-11-28",
+          "window_end": "2025-11-28",
+          "first_day": null,
+          "days_total": 0,
+          "market_up_days": 0,
+          "market_down_days": 0,
+          "market_flat_days": 0,
+          "growth": null,
+          "up": null,
+          "down": null,
+          "worst_fall": null,
+          "fit": null,
+          "blockers": [
+            {
+              "code": "window_shorter_than_horizon",
+              "message": "This reading covers the 12 months up to this date, which means going back to 2024-11-28. This fund's price history only starts on 2024-12-11, so there is nothing to read for the earlier part of that period.",
+              "remedy": "Read the shorter windows in this same table, which fit inside the history the fund does have. The 12 months reading becomes available once the fund has been trading that long.",
+              "subjects": [
+                "12mo"
+              ]
+            }
+          ]
+        },
+        {
+          "horizon": "6mo",
+          "window_start": "2025-05-28",
+          "window_end": "2025-11-28",
+          "first_day": "2025-05-28",
+          "days_total": 129,
+          "market_up_days": 75,
+          "market_down_days": 53,
+          "market_flat_days": 1,
+          "growth": {
+            "fund": 1.0576114448890255,
+            "benchmark": 1.1634570476320907
+          },
+          "up": {
+            "days": 75,
+            "sum_fund": 0.18354934184432714,
+            "sum_benchmark": 0.42038773281525854,
+            "capture": 0.43661916729855865,
+            "average_fund": 0.002447324557924362,
+            "average_benchmark": 0.0056051697708701135,
+            "against_days": 16,
+            "against_share": 0.21333333333333335,
+            "blockers": []
+          },
+          "down": {
+            "days": 53,
+            "sum_fund": -0.12948857102838263,
+            "sum_benchmark": -0.2658746625810704,
+            "capture": 0.48702862383097156,
+            "average_fund": -0.0024431805854411817,
+            "average_benchmark": -0.005016503067567366,
+            "against_days": 13,
+            "against_share": 0.24528301886792453,
+            "blockers": []
+          },
+          "worst_fall": {
+            "fund": {
+              "depth": -0.029815527392292318,
+              "peak_date": "2025-11-12",
+              "trough_date": "2025-11-20"
+            },
+            "benchmark": {
+              "depth": -0.05062106063946925,
+              "peak_date": "2025-10-29",
+              "trough_date": "2025-11-20"
+            }
+          },
+          "fit": {
+            "r_squared": 0.5223704117114595,
+            "beta": 0.4339599512504345,
+            "blockers": []
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "13wk",
+          "window_start": "2025-08-29",
+          "window_end": "2025-11-28",
+          "first_day": "2025-08-29",
+          "days_total": 64,
+          "market_up_days": 40,
+          "market_down_days": 24,
+          "market_flat_days": 0,
+          "growth": {
+            "fund": 1.023308324664465,
+            "benchmark": 1.0564727080615255
+          },
+          "up": {
+            "days": 40,
+            "sum_fund": 0.09732413178624688,
+            "sum_benchmark": 0.21723398770379898,
+            "capture": 0.4480152153674472,
+            "average_fund": 0.002433103294656172,
+            "average_benchmark": 0.005430849692594974,
+            "against_days": 6,
+            "against_share": 0.15,
+            "blockers": []
+          },
+          "down": {
+            "days": 24,
+            "sum_fund": -0.07377142015506277,
+            "sum_benchmark": -0.16040103586247323,
+            "capture": 0.4599186018867976,
+            "average_fund": -0.0030738091731276154,
+            "average_benchmark": -0.006683376494269718,
+            "against_days": 4,
+            "against_share": 0.16666666666666666,
+            "blockers": []
+          },
+          "worst_fall": {
+            "fund": {
+              "depth": -0.02981552739229254,
+              "peak_date": "2025-11-12",
+              "trough_date": "2025-11-20"
+            },
+            "benchmark": {
+              "depth": -0.05062106063946892,
+              "peak_date": "2025-10-29",
+              "trough_date": "2025-11-20"
+            }
+          },
+          "fit": {
+            "r_squared": 0.6228206949076278,
+            "beta": 0.41135461958610753,
+            "blockers": []
+          },
+          "blockers": []
+        }
+      ]
+    },
+    "EFA": {
+      "roles": [
+        "named_benchmark"
+      ],
+      "benchmark_source": "prospectus_index",
+      "horizons": [
+        {
+          "horizon": "12mo",
+          "window_start": "2024-11-28",
+          "window_end": "2025-11-28",
+          "first_day": null,
+          "days_total": 0,
+          "market_up_days": 0,
+          "market_down_days": 0,
+          "market_flat_days": 0,
+          "growth": null,
+          "up": null,
+          "down": null,
+          "worst_fall": null,
+          "fit": null,
+          "blockers": [
+            {
+              "code": "window_shorter_than_horizon",
+              "message": "This reading covers the 12 months up to this date, which means going back to 2024-11-28. This fund's price history only starts on 2024-12-11, so there is nothing to read for the earlier part of that period.",
+              "remedy": "Read the shorter windows in this same table, which fit inside the history the fund does have. The 12 months reading becomes available once the fund has been trading that long.",
+              "subjects": [
+                "12mo"
+              ]
+            }
+          ]
+        },
+        {
+          "horizon": "6mo",
+          "window_start": "2025-05-28",
+          "window_end": "2025-11-28",
+          "first_day": "2025-05-28",
+          "days_total": 129,
+          "market_up_days": 71,
+          "market_down_days": 57,
+          "market_flat_days": 1,
+          "growth": {
+            "fund": 1.0576114448890255,
+            "benchmark": 1.0841752829790197
+          },
+          "up": {
+            "days": 71,
+            "sum_fund": 0.24053249782798658,
+            "sum_benchmark": 0.43136920990472705,
+            "capture": 0.5576023793657201,
+            "average_fund": 0.0033877816595491066,
+            "average_benchmark": 0.006075622674714466,
+            "against_days": 2,
+            "against_share": 0.028169014084507043,
+            "blockers": []
+          },
+          "down": {
+            "days": 57,
+            "sum_fund": -0.1832849143138281,
+            "sum_benchmark": -0.34691668577012935,
+            "capture": 0.5283254505529164,
+            "average_fund": -0.0032155248125233,
+            "average_benchmark": -0.006086257645089989,
+            "against_days": 2,
+            "against_share": 0.03508771929824561,
+            "blockers": []
+          },
+          "worst_fall": {
+            "fund": {
+              "depth": -0.029815527392292318,
+              "peak_date": "2025-11-12",
+              "trough_date": "2025-11-20"
+            },
+            "benchmark": {
+              "depth": -0.055095259166465516,
+              "peak_date": "2025-11-12",
+              "trough_date": "2025-11-20"
+            }
+          },
+          "fit": {
+            "r_squared": 0.944575878703776,
+            "beta": 0.534101004805639,
+            "blockers": []
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "13wk",
+          "window_start": "2025-08-29",
+          "window_end": "2025-11-28",
+          "first_day": "2025-08-29",
+          "days_total": 64,
+          "market_up_days": 36,
+          "market_down_days": 28,
+          "market_flat_days": 0,
+          "growth": {
+            "fund": 1.023308324664465,
+            "benchmark": 1.0344491364027915
+          },
+          "up": {
+            "days": 36,
+            "sum_fund": 0.11447121796189397,
+            "sum_benchmark": 0.2096948858541463,
+            "capture": 0.5458941809459037,
+            "average_fund": 0.0031797560544970546,
+            "average_benchmark": 0.005824857940392953,
+            "against_days": 1,
+            "against_share": 0.027777777777777776,
+            "blockers": []
+          },
+          "down": {
+            "days": 28,
+            "sum_fund": -0.09091850633070986,
+            "sum_benchmark": -0.17417367490860058,
+            "capture": 0.5219991274710157,
+            "average_fund": -0.0032470895118110665,
+            "average_benchmark": -0.006220488389592878,
+            "against_days": 1,
+            "against_share": 0.03571428571428571,
+            "blockers": []
+          },
+          "worst_fall": {
+            "fund": {
+              "depth": -0.02981552739229254,
+              "peak_date": "2025-11-12",
+              "trough_date": "2025-11-20"
+            },
+            "benchmark": {
+              "depth": -0.05509525916646563,
+              "peak_date": "2025-11-12",
+              "trough_date": "2025-11-20"
+            }
+          },
+          "fit": {
+            "r_squared": 0.94007349592618,
+            "beta": 0.5390457443986612,
+            "blockers": []
+          },
+          "blockers": []
+        }
+      ]
+    }
+  }
+}

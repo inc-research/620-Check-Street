@@ -14,10 +14,10 @@ import {
   type LensBRow,
   type LensBTable,
   type Lookback,
-  type Snapshot,
-  type StateName,
+  type MeasureKind,
+  type ReportDocument,
 } from '../shim.ts';
-import { formatRatio, monthLabel } from './report.ts';
+import { formatGap, formatMeasure, groupHeadingRow, monthLabel } from './report.ts';
 
 export interface HistoryHandlers {
   onLookback: (lookback: Lookback) => void;
@@ -25,8 +25,8 @@ export interface HistoryHandlers {
 }
 
 export interface HistoryContext {
-  current: Snapshot;
-  previous: Snapshot;
+  current: ReportDocument;
+  previous: ReportDocument;
   benchmark: string;
   lookback: Lookback;
   /** Which lookbacks the archive can actually answer for this month. */
@@ -38,19 +38,14 @@ const HEADING: Record<Lookback, keyof typeof TABLE.history> = {
   '13wk': 'thirteenWeek',
 };
 
-/** A signed change, with the sign spelled out so colour is never the only channel. */
-function changeText(change: number): string {
-  return `${change > 0 ? '+' : change < 0 ? '−' : ''}${Math.abs(change).toFixed(2)}`;
-}
-
-function cell(value: number | null, thin: boolean, title: string): HTMLElement {
+function cell(value: number | null, kind: MeasureKind, thin: boolean, title: string): HTMLElement {
   const td = el('td', { class: 'score' });
   if (value === null) {
     append(td, [el('span', { class: 'absent' }, '—')]);
     return td;
   }
   append(td, [
-    el('span', { class: thin ? 'thin-mark' : undefined, title }, formatRatio(value)),
+    el('span', { class: thin ? 'thin-mark' : undefined, title }, formatMeasure(value, kind)),
   ]);
   return td;
 }
@@ -61,26 +56,15 @@ function changeCell(row: LensBRow): HTMLElement {
     append(td, [el('span', { class: 'absent', title: TABLE.history.unavailable }, '—')]);
     return td;
   }
-
-  const parts: (HTMLElement | string)[] = [
-    // The sign is in the text, so the reading survives greyscale and readers
-    // who do not separate red from green (SF-21).
+  // The sign is in the text, so the reading survives greyscale and readers who
+  // do not separate red from green (SF-21). No dot here (3F D-17).
+  append(td, [
     el(
       'span',
       { class: row.change > 0 ? 'above' : row.change < 0 ? 'below' : undefined },
-      changeText(row.change),
+      formatGap(row.change, row.kind),
     ),
-  ];
-  if (row.changed) {
-    parts.push(
-      el('span', {
-        class: 'shift-dot',
-        title: TABLE.history.marked,
-        'aria-label': 'a change of 0.30 or more',
-      }),
-    );
-  }
-  append(td, parts);
+  ]);
   return td;
 }
 
@@ -88,7 +72,7 @@ function tableFor(model: LensBTable): HTMLElement {
   const head = el(
     'tr',
     {},
-    el('th', {}, 'On days when…'),
+    el('th', {}, ''),
     el('th', { class: 'num' }, `${TABLE.history.columns.then} · ${monthLabel(model.thenMonth)}`),
     el('th', { class: 'num' }, `${TABLE.history.columns.now} · ${monthLabel(model.nowMonth)}`),
     el('th', { class: 'num' }, TABLE.history.columns.change),
@@ -100,18 +84,15 @@ function tableFor(model: LensBTable): HTMLElement {
   for (const row of model.rows) {
     if (row.group !== group) {
       group = row.group;
-      const copy = group === 'participation' ? TABLE.participation : TABLE.resilience;
-      append(body, [
-        el('tr', { class: 'group' }, el('th', { colspan: '4' }, copy.heading)),
-      ]);
+      append(body, [groupHeadingRow(row.group, 4)]);
     }
 
-    const label = TABLE.rows[row.state as StateName];
-    const tr = el('tr', { class: label.direction });
+    const label = TABLE.measures[row.measure];
+    const tr = el('tr', {});
     append(tr, [
       el('th', { class: 'row-label', scope: 'row', title: label.full }, label.label),
-      cell(row.then, row.thenThin, `${label.full}, in the earlier period.`),
-      cell(row.now, row.nowThin, `${label.full}, in the current period.`),
+      cell(row.then, row.kind, row.thenThin, `${label.full}, in the earlier period.`),
+      cell(row.now, row.kind, row.nowThin, `${label.full}, in the current period.`),
       changeCell(row),
     ]);
     append(body, [tr]);
@@ -185,7 +166,6 @@ export function renderHistory(ctx: HistoryContext, handlers: HistoryHandlers): H
     el(
       'div',
       { class: 'legend' },
-      el('p', {}, TABLE.history.marked),
       el('p', {}, TABLE.history.steady),
       el('p', {}, TABLE.history.unavailable),
     ),

@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Any
 
 from .backfill import ArchiveState, coverage_for
+from .exposure import LOW_FIT_R_SQUARED, Reading, capture_prose
 from .registry import UNIVERSAL_ANCHOR, Fund
 from .semibeta import (
     REPORTED_VALUE_PROSE,
@@ -31,6 +32,10 @@ from .semibeta import (
 )
 
 SCHEMA_VERSION = "4.0"
+
+# The report file's own version, separate from the snapshot's: the two archives
+# answer different questions and move independently (3F D-18).
+REPORT_SCHEMA_VERSION = "1.0"
 
 SHIFT_THRESHOLD_NOTE = (
     "A shorter window is marked as shifted when its ratio sits at least this far "
@@ -136,4 +141,59 @@ def write_snapshot(root: str | Path, snapshot: dict[str, Any], month: str) -> Pa
     directory.mkdir(parents=True, exist_ok=True)
     path = directory / f"{month}.json"
     path.write_text(json.dumps(snapshot, indent=2) + "\n", encoding="utf-8")
+    return path
+
+
+def build_report(
+    fund: Fund,
+    snapshot: dict[str, Any],
+    per_benchmark: dict[str, list[Reading]],
+    generated_at: datetime | None = None,
+) -> dict[str, Any]:
+    """What the page reads first (3F D-17). Beside its snapshot, never inside it.
+
+    A committed snapshot is the record of its month and is not rewritten (3F
+    D-08), and it cannot hold these figures: they need full-window returns, which
+    a snapshot does not carry. So this is a second archive of the same months,
+    keyed the same way, and the month set follows the snapshot's by construction.
+    """
+    generated = generated_at or datetime.now(timezone.utc)
+    methodology = snapshot["methodology"]
+    return {
+        "app": "Third Floor",
+        "report_schema_version": REPORT_SCHEMA_VERSION,
+        "ticker": fund.ticker,
+        "name": fund.name,
+        "issuer": fund.issuer,
+        "category": fund.category,
+        "as_of": snapshot["as_of"],
+        "generated_at": generated.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "coverage": snapshot["coverage"],
+        "methodology": {
+            "measures": capture_prose(),
+            "low_fit_r_squared": LOW_FIT_R_SQUARED,
+            "price_basis": methodology["price_basis"],
+            "price_source": methodology["price_source"],
+            "return_frequency": "daily",
+            "defined_outcome_caveat": fund.defined_outcome_caveat,
+        },
+        "benchmarks": {
+            b: {
+                "roles": fund.roles_for(b),
+                "benchmark_source": (
+                    fund.benchmark_source if b == fund.named_benchmark else None
+                ),
+                "horizons": [r.to_json() for r in readings],
+            }
+            for b, readings in per_benchmark.items()
+        },
+    }
+
+
+def write_report(root: str | Path, report: dict[str, Any], month: str) -> Path:
+    """`/data/_reports/<TICKER>/<YYYY-MM>.json`, beside the snapshot archive."""
+    directory = Path(root) / "_reports" / report["ticker"]
+    directory.mkdir(parents=True, exist_ok=True)
+    path = directory / f"{month}.json"
+    path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     return path

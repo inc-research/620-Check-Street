@@ -472,6 +472,125 @@ which would quietly report the fetch boundary as each fund's inception.
 month-end. If adjusted-close drift is ever found to matter at this scale, the
 disclosure belongs on the page rather than in `generated_at`.
 
+## 3F D-17 · The report leads with the money, then exposure and fit
+
+The table printed `raw_semibeta` and called it "for every 1% the market moved,
+this fund moved this much" (3F D-12). A survey on 2026-11-06 tested that, and it
+isn't what the number is. `raw_semibeta` is a slope about a quadrant's own means.
+On the same-direction rows it lands near the real size ratio (median gap 0.07 to
+0.09). On the opposite-direction rows the median gap is 0.36 to 0.43.
+
+The owner's aim for capture was to show what happened to the money invested. So
+the page now answers that first, then explains it:
+
+- **What $100 became**, fund and market, with distributions reinvested, and the
+  deepest fall from a high inside the window, which a good end result can hide.
+- **An average day, per $100**, fund and market, across market-up and market-down
+  days.
+- **The per-1% sentence**, now true: net capture, the fund's summed daily return
+  over the market's, across every day the market moved that way.
+- **Fit**: the share of daily movement lining up with the benchmark, plus how
+  often the fund went the other way.
+- **Same-direction semibeta**, in a closed detail section, as a second way of
+  measuring those days. The owner kept it because it firms up the capture values.
+  The page does not claim it confirms them.
+
+**Net capture, not quadrant capture.** The quadrant version in
+`analysis/capture_quadrants.py` drops the days a fund went against the market, so
+it is a volatility ratio: rank correlation 0.996 to 0.998 with fund volatility
+over benchmark volatility. DBMF showed 0.93 and 0.86 against a net 0.18 and 0.05.
+
+**Summed, not compounded.** Compounding a year of up days takes the market to
+about +130% and its down days to about -51%, and that curvature falls on the
+market far more than on a fund carrying a fraction of it. A fund holding exactly
+40% of every move would read about 0.30 up and 0.42 down, an asymmetry that does
+not exist. The sum is also exactly the ratio of the two average days, so the
+sentence and the dollars are one fact. For the same reason the $100 is not split
+into up-day and down-day totals: "the market made 130% on its up days" is true
+and misleading.
+
+**Growth earns its own row.** BUFZ's capture of 0.40 and 0.34 does not imply its
+result. Exposure does not give the money.
+
+**Fit gates the sentence.** Below an R² of 0.25 the per-1% sentence is replaced by
+one saying the benchmark explains too little to describe the fund. The money rows
+stay. The rule sits in the gap the set has: DBMF reads 0.00 to 0.05 on its own
+anchor and the next lowest fund 0.37. BUFY against VOO at 13wk also trips it,
+once, which is the rule working: VOO isn't that fund's benchmark.
+
+**Retired from the page.** The opposite-direction rows (reliability 0.37 and
+0.00, disjoint-window persistence 0.43 and −0.10), any up-minus-down figure
+(reliability 0.00 to 0.06), and the green and red row tint, which marked what a
+row was built to do and has no meaning on these rows. Computation is unchanged,
+so all of it stays in the snapshots.
+
+**Dots, measured against shuffled days.** Lens A on same-direction rows stays
+(7.5% real, 1.7% shuffled). Lens A on opposite-direction rows goes with the rows
+(10.1% and 15.2%). Lens B goes entirely: at six months a dot fired as often on
+shuffled days (3.3% and 3.5%). Lens C stays, on the two per-1% rows only: on the
+real report files, all 309 gaps of 0.30 or more across 435 pairs were beyond two
+standard errors.
+
+Measured on the committed report files: capture reliability 0.969 both ways,
+disjoint six-month persistence 0.91 up and 0.95 down, 0.82 and 0.89 at thirteen
+weeks. Days against the market are weaker: 0.61 at six months and 0.28 at
+thirteen weeks, so read that row at the longer windows.
+
+*Reverses if:* a measure is found that says more about the money than these do,
+or the fund-level asymmetry this report does not show turns out to be separable
+with more history. Neither the capture figures nor the dots are permanent: rerun
+the shuffle test as the archive grows.
+
+## 3F D-18 · The report's figures live in a second archive
+
+Net capture, growth and fit need full-window returns, and a snapshot stores only
+quadrant moments. 3F D-04's closing line said this would come: a field cannot be
+added retroactively to files already committed.
+
+Rewriting 615 snapshots would have reversed 3F D-08, even though the semibeta
+cells reproduced from a fresh pull to within 0.00014. Adding the fields to new
+months only would have left the page with nothing to show until December, and the
+six-month history empty for half a year after.
+
+So `data/_reports/<TICKER>/<YYYY-MM>.json` sits beside the snapshot archive. The
+snapshots stay byte-identical and go on being written, and every run writes one
+report per snapshot month, which keeps the month sets equal by construction.
+Reports have their own schema version, `schemas/report.schema.json`.
+`scripts/validate-reports.mjs` checks both archives agree on month, date and
+benchmarks. Reports are append-only, by the same mechanism as snapshots.
+
+The 615 historical reports came from one pull on 2026-11-06 and 07, so their
+`generated_at` is later than the months they describe, as in 3F D-16. Adjusted
+closes drift the same small amount that decision accepts, and the fund page reads
+the report and its snapshot together, so a gap that size cannot be seen.
+
+The one-off backfill surfaced a fault in the path: `ingest-snapshots.mjs` wrote
+each run's manifest to `data/_runs/<date>.json`, so a second run on one day would
+have replaced the first run's record. It now takes the next free name.
+
+*Reverses if:* the two archives are ever merged at a schema break, at which point
+3F D-08 has to be argued again on its own terms.
+
+## 3F D-19 · Two earlier readings, corrected
+
+Appended rather than edited, as this file requires.
+
+**3F D-12** read `raw_semibeta` as how far the fund moved, which 3F D-17 corrects.
+It also said the opposite-direction rows "track about as well" as the
+same-direction ones, on correlations of 0.51 and 0.78. Those came from 12-month
+and 6-month windows that overlap by half, so much of the agreement was the same
+days counted twice. On disjoint six-month windows the two rows persist at 0.43
+and −0.10.
+
+**3F-O-05** closed on FGSI's up-participation sitting +0.05 and +0.06 above its
+down-participation. Differences that size can't be told from nothing: at the
+latest twelve months the same difference is −0.04 with a standard error of 0.12.
+The decision not to add an income caveat still stands, because it needed only the
+absence of evidence for the caveat's claim. The stated reason was stronger than
+the data.
+
+*Reverses if:* never. These are corrections of fact.
+
 ---
 
 ## Open
@@ -483,11 +602,12 @@ disclosure belongs on the page rather than in `generated_at`.
 | ~~3F-O-03~~ | ~~Which archived column Lens B compares against.~~ **Closed:** matched to the lookback, so the two windows are disjoint. See 3F D-13. | — |
 | ~~3F-O-04~~ | ~~The wording shown for a ticker outside the tracked set.~~ **Closed:** a distinct view from the too-new one, because they are different facts. | — |
 | ~~3F-O-05~~ | ~~Whether FGSI wants its own income-overlay caveat.~~ **Closed: no.** The caveat's premise is that writing calls for income compresses upside participation. FGSI's readings say the opposite — its up-participation runs *above* its down-participation in both months it has (+0.05 and +0.06), putting it on the un-compressed side of a set whose most compressed member sits at −0.13. A caveat asserting something the archive does not show is the failure mode this app exists to check for. What FGSI actually needed was the thing every fund with an inexact anchor needs, and that is 3F D-15. | — |
+| 3F-O-07 | Whether the outcome-period caveat is true of these funds. It says a reading reflects where a fund sits in its current stretch as much as how it behaves in general. That premise has never been tested, and most of this set is laddered, which would dilute it. Testable on the dated rungs (MAXJ, SMAX, DMAX, MMAX) against their reset months. | No |
 | ~~3F-O-06~~ | ~~Whether LADM stays in the registry with no snapshots.~~ **Closed: it stays.** Dropping it would make the site answer "LADM is not one of the funds followed here", which is false — it is followed, and it is too new. Those are different facts and the site already has separate views for them. Inception 2026-06-26 gives it a thirteen-week window around late September 2026, at which point it starts producing files on its own. | — |
 
-All six are now closed. Every one was render-time or cosmetic, and every
+Those six are closed. Every one was render-time or cosmetic, and every
 snapshot already carried the raw numbers the answers needed — no question in
-this register ever cost a refetch.
+that group ever cost a refetch. 3F-O-07 is open.
 
 3F-O-05 is worth reading twice, because it closed the other way from the way it
 was posed. The question assumed a caveat was missing; the archive said the

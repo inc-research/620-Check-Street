@@ -1,0 +1,140 @@
+{
+  "app": "Third Floor",
+  "report_schema_version": "1.0",
+  "ticker": "DHDG",
+  "name": "FT Vest U.S. Equity Quarterly 2.5 to 15 Buffer ETF",
+  "issuer": "First Trust",
+  "category": "options_integrated",
+  "as_of": "2025-03-31",
+  "generated_at": "2026-11-07T02:34:01Z",
+  "coverage": {
+    "inception": "2024-10-21",
+    "earliest_available_snapshot": "2025-01",
+    "earliest_full_baseline_snapshot": "2025-10",
+    "requested_backfill_depth_months": 19,
+    "history_limited_by_inception": false
+  },
+  "methodology": {
+    "measures": "capture_up is the fund's summed daily return over the benchmark's, across every day the benchmark rose; capture_down likewise for every day it fell. Not compounded, and equal to the ratio of the two average days. growth is the compounded return on all paired days, so 1.094 is $100 becoming $109.40.",
+    "low_fit_r_squared": 0.25,
+    "price_basis": "close_adjusted",
+    "price_source": "yfinance",
+    "return_frequency": "daily",
+    "defined_outcome_caveat": true
+  },
+  "benchmarks": {
+    "VOO": {
+      "roles": [
+        "universal_anchor",
+        "named_benchmark"
+      ],
+      "benchmark_source": "prospectus_index",
+      "horizons": [
+        {
+          "horizon": "12mo",
+          "window_start": "2024-03-31",
+          "window_end": "2025-03-31",
+          "first_day": null,
+          "days_total": 0,
+          "market_up_days": 0,
+          "market_down_days": 0,
+          "market_flat_days": 0,
+          "growth": null,
+          "up": null,
+          "down": null,
+          "worst_fall": null,
+          "fit": null,
+          "blockers": [
+            {
+              "code": "window_shorter_than_horizon",
+              "message": "This reading covers the 12 months up to this date, which means going back to 2024-03-31. This fund's price history only starts on 2024-10-22, so there is nothing to read for the earlier part of that period.",
+              "remedy": "Read the shorter windows in this same table, which fit inside the history the fund does have. The 12 months reading becomes available once the fund has been trading that long.",
+              "subjects": [
+                "12mo"
+              ]
+            }
+          ]
+        },
+        {
+          "horizon": "6mo",
+          "window_start": "2024-09-30",
+          "window_end": "2025-03-31",
+          "first_day": null,
+          "days_total": 0,
+          "market_up_days": 0,
+          "market_down_days": 0,
+          "market_flat_days": 0,
+          "growth": null,
+          "up": null,
+          "down": null,
+          "worst_fall": null,
+          "fit": null,
+          "blockers": [
+            {
+              "code": "window_shorter_than_horizon",
+              "message": "This reading covers the 6 months up to this date, which means going back to 2024-09-30. This fund's price history only starts on 2024-10-22, so there is nothing to read for the earlier part of that period.",
+              "remedy": "Read the shorter windows in this same table, which fit inside the history the fund does have. The 6 months reading becomes available once the fund has been trading that long.",
+              "subjects": [
+                "6mo"
+              ]
+            }
+          ]
+        },
+        {
+          "horizon": "13wk",
+          "window_start": "2024-12-30",
+          "window_end": "2025-03-31",
+          "first_day": "2024-12-30",
+          "days_total": 62,
+          "market_up_days": 33,
+          "market_down_days": 29,
+          "market_flat_days": 0,
+          "growth": {
+            "fund": 0.9764348317809615,
+            "benchmark": 0.9426258164659502
+          },
+          "up": {
+            "days": 33,
+            "sum_fund": 0.1136391846806869,
+            "sum_benchmark": 0.2253154716891741,
+            "capture": 0.5043558874530097,
+            "average_fund": 0.003443611656990512,
+            "average_benchmark": 0.006827741566338609,
+            "against_days": 3,
+            "against_share": 0.09090909090909091,
+            "blockers": []
+          },
+          "down": {
+            "days": 29,
+            "sum_fund": -0.13658240837017377,
+            "sum_benchmark": -0.28120415926398756,
+            "capture": 0.4857055056641376,
+            "average_fund": -0.004709738219661164,
+            "average_benchmark": -0.009696695147034053,
+            "against_days": 0,
+            "against_share": 0.0,
+            "blockers": []
+          },
+          "worst_fall": {
+            "fund": {
+              "depth": -0.04676486159671711,
+              "peak_date": "2025-02-19",
+              "trough_date": "2025-03-13"
+            },
+            "benchmark": {
+              "depth": -0.10044885430317796,
+              "peak_date": "2025-02-19",
+              "trough_date": "2025-03-13"
+            }
+          },
+          "fit": {
+            "r_squared": 0.8465828511355801,
+            "beta": 0.49095082634074544,
+            "blockers": []
+          },
+          "blockers": []
+        }
+      ]
+    }
+  }
+}

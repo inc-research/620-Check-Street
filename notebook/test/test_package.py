@@ -51,6 +51,17 @@ class CatchUpRun(unittest.TestCase):
         )
         self.assertEqual(depth, package.DEFAULT_SNAPSHOT_COUNT)
 
+    def test_a_reports_only_run_says_so_to_the_run(self):
+        stub = run_main(*self.common(), "--months", "22", "--reports-only")
+        self.assertTrue(stub.call_args.kwargs["reports_only"])
+        dates, _ = stub.return_value.build.call_args.args
+        self.assertEqual(len(dates), 22)
+        self.assertEqual(dates[0], date(2025, 1, 31))
+
+    def test_a_routine_run_writes_snapshots_as_well(self):
+        stub = run_main(*self.common())
+        self.assertFalse(stub.call_args.kwargs["reports_only"])
+
     def test_the_published_archive_reaches_the_run(self):
         # Without it the coverage block describes this run alone and reports the
         # fetch boundary as the fund's inception, as the August run did.

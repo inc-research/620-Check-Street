@@ -176,9 +176,12 @@ def normalise_score(raw: float | None) -> int | None:
 
 
 REPORTED_VALUE_PROSE = (
-    "The report shows raw_semibeta itself: for every 1% the benchmark moved on "
-    "days of this kind, the fund moved this much. A negative value means the "
-    "fund's move ran the other way."
+    "raw_semibeta is a slope about the quadrant's own means: how the fund's move "
+    "varied with the size of the benchmark's move on days of this kind, not how far "
+    "the fund moved. The report leads with the separate report archive under "
+    "data/_reports and shows only the two same-direction rows of this document, as "
+    "a detail section (3F D-17). A negative value means a bigger benchmark move went "
+    "with a smaller fund move."
 )
 
 SCORE_NORMALIZATION_FORMULA = "clamp(floor(50 * raw_semibeta + 0.5), 0, 100)"

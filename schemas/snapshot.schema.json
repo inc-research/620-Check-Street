@@ -51,7 +51,7 @@
       "additionalProperties": false,
       "properties": {
         "reported_value": {
-          "description": "What the report actually puts on the page: raw_semibeta itself, read as 'for every 1% the benchmark moved on days of this kind, the fund moved this much'. Added by 3F D-12, when the first archive run showed the bounded score could not represent a negative reading and that about a third of the two opposite-direction rows are negative.",
+          "description": "What this document's readings are and what the page does with them. Added by 3F D-12, whose reading of raw_semibeta as 'for every 1% the benchmark moved, the fund moved this much' was wrong: it is a slope about the quadrant's own means. Files from 3F D-17 onward say so, and earlier files keep the text they were published with. The report now leads with data/_reports and shows only the two same-direction rows of this document.",
           "type": "string", "minLength": 1
         },
         "score_normalization": { "type": "string", "minLength": 1 },

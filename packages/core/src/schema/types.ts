@@ -31,6 +31,9 @@ export const STATES = [
 ] as const;
 export type StateName = (typeof STATES)[number];
 
+/** Below this a reading carries a marker saying how few days it rests on (3F D-07). */
+export const MIN_OBSERVATIONS_PER_CELL = 20;
+
 export type DataSufficiency = 'ok' | 'thin' | 'blocked';
 export type PriceBasis = 'close_adjusted' | 'close_unadjusted';
 export type PriceSource = 'yfinance' | 'stooq' | 'yahoo_chart';
@@ -108,7 +111,7 @@ export interface Coverage {
 }
 
 export interface Methodology {
-  /** What the report puts on the page: the ratio itself (3F D-12). */
+  /** What this document's readings are, and how much of it the page shows (3F D-17). */
   reported_value: string;
   score_normalization: string;
   score_normalization_formula: string;

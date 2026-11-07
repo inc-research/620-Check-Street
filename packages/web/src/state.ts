@@ -9,7 +9,14 @@
  * published in this repository before the page loaded.
  */
 
-import { isSnapshot, validateSnapshot, type Snapshot } from './shim.ts';
+import {
+  isReport,
+  isSnapshot,
+  validateReport,
+  validateSnapshot,
+  type ReportDocument,
+  type Snapshot,
+} from './shim.ts';
 
 /** One fund, as the index describes it. Enough to list and route without a fetch. */
 export interface IndexFund {
@@ -40,6 +47,8 @@ export interface State {
   index: ArchiveIndex | null;
   /** Snapshots already fetched this visit, keyed `TICKER/YYYY-MM`. */
   readonly loaded: Map<string, Snapshot>;
+  /** Report files already fetched this visit, keyed the same way. */
+  readonly reports: Map<string, ReportDocument>;
   ticker: string | null;
   month: string | null;
   benchmark: string | null;
@@ -48,6 +57,7 @@ export interface State {
 export const state: State = {
   index: null,
   loaded: new Map(),
+  reports: new Map(),
   ticker: null,
   month: null,
   benchmark: null,
@@ -110,5 +120,33 @@ export async function loadSnapshot(ticker: string, month: string): Promise<Snaps
   }
 
   state.loaded.set(key, parsed);
+  return parsed;
+}
+
+/**
+ * Read one report file: what the page leads with (3F D-17).
+ *
+ * The same rules as a snapshot. A relative path, and a document that does not
+ * validate is refused rather than rendered.
+ */
+export async function loadReport(ticker: string, month: string): Promise<ReportDocument> {
+  const key = snapshotKey(ticker, month);
+  const already = state.reports.get(key);
+  if (already) return already;
+
+  const response = await fetch(`./data/_reports/${ticker}/${month}.json`);
+  if (!response.ok) {
+    throw new Error(`No report was published for ${ticker} covering ${month}.`);
+  }
+
+  const parsed: unknown = await response.json();
+  if (!isReport(parsed)) {
+    const problems = validateReport(parsed)
+      .map((p) => `${p.path}: ${p.message}`)
+      .join('; ');
+    throw new Error(`The report for ${ticker} ${month} could not be read — ${problems}`);
+  }
+
+  state.reports.set(key, parsed);
   return parsed;
 }

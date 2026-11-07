@@ -14,8 +14,10 @@ import type { HorizonKey, SectionKey, StateKey } from '../src/types.ts';
 
 const SECTIONS: SectionKey[] = [
   'overview',
+  'money',
+  'exposure',
+  'follows',
   'participation',
-  'resilience',
   'horizons',
   'benchmark_choice',
   'outcome_period',
@@ -84,8 +86,6 @@ test('the banned list keeps the family words and drops the holdings verdicts', (
 const STATES: StateKey[] = [
   'fund_up_bench_up',
   'fund_down_bench_down',
-  'fund_up_bench_down',
-  'fund_down_bench_up',
 ];
 const COLUMNS: HorizonKey[] = ['12mo', '6mo', '13wk'];
 
@@ -94,22 +94,48 @@ test('the table copy passes both lints', () => {
   deepStrictEqual(lintDeepExtended(TABLE), [], JSON.stringify(lintDeepExtended(TABLE), null, 2));
 });
 
-test('every row has a label, a spelled-out form and a direction', () => {
+test('every detail row has a label and a spelled-out form', () => {
+  deepStrictEqual(Object.keys(TABLE.rows).sort(), [...STATES].sort());
   for (const state of STATES) {
-    const row = TABLE.rows[state];
-    ok(row.label.trim().length > 0, `${state} has no label`);
-    ok(row.full.trim().length > 0, `${state} has no spelled-out form`);
-    ok(row.direction === 'sought' || row.direction === 'avoided', `${state} has no direction`);
+    ok(TABLE.rows[state].label.trim().length > 0, `${state} has no label`);
+    ok(TABLE.rows[state].full.trim().length > 0, `${state} has no spelled-out form`);
   }
 });
 
-test('the two rows in each group carry opposite directions', () => {
-  // Otherwise the tint would say the same thing about both rows of a pair,
-  // which is the one thing it exists to distinguish.
-  strictEqual(TABLE.rows.fund_up_bench_up.direction, 'sought');
-  strictEqual(TABLE.rows.fund_down_bench_down.direction, 'avoided');
-  strictEqual(TABLE.rows.fund_up_bench_down.direction, 'sought');
-  strictEqual(TABLE.rows.fund_down_bench_up.direction, 'avoided');
+test('every measure has a label and a spelled-out form', () => {
+  for (const [key, row] of Object.entries(TABLE.measures)) {
+    ok(row.label.trim().length > 0, `${key} has no label`);
+    ok(row.full.trim().length > 0, `${key} has no spelled-out form`);
+  }
+});
+
+test('the per-1% sentences say what the number is, and name its placeholder', () => {
+  // The sentence the survey found false on the semibeta table is now the
+  // headline, so what it may say is pinned here (3F D-17).
+  for (const key of ['up', 'down', 'upOpposite', 'downOpposite'] as const) {
+    ok(TABLE.perOne[key].includes('{ratio}%'), `${key} has no ratio`);
+    ok(TABLE.perOne[key].includes('1%'), `${key} does not say per 1%`);
+  }
+  ok(TABLE.perOne.lowFit.includes('{share}%'));
+  ok(TABLE.perOne.lowFit.includes('{benchmark}'));
+});
+
+test('the limits say what the money figures cannot', () => {
+  const blob = TABLE.limits.items.join(' ').toLowerCase();
+  for (const needed of ['distributions', 'taxes', 'what comes next', 'outcome period', 'a single sharp day']) {
+    ok(blob.includes(needed), `the limits do not mention ${needed}`);
+  }
+});
+
+test('the detail section does not claim to confirm the capture figures', () => {
+  const blob = `${TABLE.detail.intro} ${PLAIN.participation.mechanism}`.toLowerCase();
+  ok(!/confirm|prove|verif/.test(blob));
+});
+
+test('nothing retired comes back: no opposite-direction section, no row tint', () => {
+  ok(!('resilience' in PLAIN));
+  ok(!('resilience' in TABLE));
+  ok(!('tint' in TABLE.legend));
 });
 
 test('every shipping column has a heading and a spelled-out form', () => {
@@ -121,7 +147,7 @@ test('every shipping column has a heading and a spelled-out form', () => {
 });
 
 test('the legend explains every marker the table can draw', () => {
-  for (const key of ['tint', 'shift', 'thin', 'blocked', 'noBaseline'] as const) {
+  for (const key of ['shift', 'thin', 'blocked', 'noBaseline'] as const) {
     ok(TABLE.legend[key].length > 30, `legend.${key} is too short to explain anything`);
   }
 });

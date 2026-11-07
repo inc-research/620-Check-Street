@@ -296,6 +296,12 @@ committed — no user-supplied file needed for historical comparison; the
 static site fetches an older snapshot directly from the repo's own file
 history.
 
+**A second archive sits beside it (3F D-18).** `/data/_reports/<TICKER>/<YYYY-MM>.json`
+holds what the page leads with: growth, net capture, worst fall, fit. Those need
+full-window returns, which a snapshot does not store, and a committed snapshot is
+not rewritten. Same months, one for one, also append-only. The snapshot archive
+goes on being written and is what the semibeta detail section reads.
+
 ## Three lenses — keep these distinct
 
 **Lens A — within one snapshot, across trailing-window lengths.** The
@@ -350,6 +356,11 @@ pairs can answer all three windows at their latest shared month, and 3.3% of
 cells are not comparable, against Lens B's 33% and 43%. Both sides are read at
 the same date over the same window, so only a genuinely empty quadrant blocks a
 cell.
+
+**Lenses A, B and C now read `data/_reports` (3F D-17).** Lens B draws no dot, and
+Lens C draws one only on the two per-1% rows. The figures quoted above were
+measured on the semibeta rows and are kept as the record of how those decisions
+were reached.
 
 **Two constraints Lens C must enforce, not just support:**
 - **Same benchmark context on both sides.** With the universal VOO anchor
@@ -440,33 +451,41 @@ distinguishes nothing.
 
 ## Report table — UI spec
 
+**Rebuilt by 3F D-17.** Read that decision before changing any of this.
+
 - **Columns**, left to right: `12 mo`, `6 mo`, `13 wk` (3F D-10 removed `4 wk`).
-- **Rows**, grouped under two headers:
-  - **Participation**: "Fund and Benchmark: Price Increase" (green),
-    "Fund and Benchmark: Price Decrease" (red)
-  - **Resilience**: "Fund: Price Increase. Benchmark: Price Decrease."
-    (green), "Fund: Price Decrease. Benchmark: Price Increase." (red)
-- **No magnitude bars.** Each cell shows only the number. The number is the
-  ratio itself to two decimals with an explicit sign, **not** the bounded
-  0-100 score — see 3F D-12: the score clamps every negative to zero, and
-  about a third of the two opposite-direction rows are negative. Row tint
-  (light green/light red) marks whether a bigger number in that row is what
-  the fund is built to do; it is a property of the row and never of the
-  value, so it never passes judgement on a number.
-- **Shift marker:** small amber dot on cells at least `0.30` from the row's
-  `12 mo` reading — no text badge. Where the `12 mo` row is blocked there is
-  nothing to measure from, so no cell is marked and the report says so once,
-  above the table (3F-O-02, closed).
-- **Thin-data marker:** dotted underline on cells resting on fewer than 20
-  days, with the count in the cell's tooltip. Distinct from the reporting
-  floor: below **six** days a cell produces no number at all and shows a
-  dash (3F D-11), because a ratio from fewer points is not a weak estimate
-  but not an estimate.
+- **Rows**, grouped under four headers:
+  - **What happened to $100:** what it became in the fund and in the market, and
+    each one's deepest fall from a high inside the window.
+  - **An average day, per $100:** market and fund, across every day the market
+    rose, and every day it fell.
+  - **For every 1% the market moved:** net capture up and down.
+  - **How closely it follows:** the share of daily movement in line with the
+    benchmark, and how often the fund went the other way.
+- **The sentence above the table** states net capture for the longest window that
+  computed. It is summed, never compounded. Where R² is below 0.25 it is replaced
+  by a sentence saying the benchmark explains too little to describe the fund, and
+  the money rows stay.
+- **Limits box:** market prices with distributions reinvested, costs and taxes,
+  past periods, windows are not outcome periods, an average is not a ceiling.
+- **Detail section, closed by default:** the two same-direction semibeta rows, as
+  a second way of measuring those days. Never the per-1% claim, and never a claim
+  that it confirms the capture figures.
+- **Not on the page:** the opposite-direction rows, any up-minus-down figure, the
+  bounded score, row tint.
+- **Shift marker:** small amber dot, no text badge, only in the detail section:
+  at least `0.30` from the row's `12 mo` reading. Where that row is blocked no cell
+  is marked and the section says so once (3F-O-02, closed). Lens C carries a dot on
+  the per-1% rows. Lens B has none.
+- **Thin-data marker:** dotted underline on figures resting on fewer than 20 days,
+  with the count in the tooltip. Below **six** days a figure produces no number
+  and shows a dash (3F D-11), because a ratio from fewer points is not a weak
+  estimate but not an estimate.
 - **Options-caveat banner:** for any ticker with `defined_outcome_caveat:
   true` (nearly the entire coverage set), a visible note that the reading
-  reflects current position within the fund's outcome period, not purely
-  market-relative behavior.
-- A short legend explaining the amber dot and color convention.
+  reflects current position within the fund's outcome period. The premise is
+  untested (3F-O-07).
+- A short legend explaining each marker the page can actually draw.
 
 A static reference implementation of this layout was produced during
 design review — use it as the source of truth for spacing, type scale,
@@ -633,6 +652,11 @@ Each step has a gate. Run the gate; do not assume the step.
     a directory. Done alongside step 9. It also carries the reader-facing
     benchmark note, which is what the report renders (3F D-15).
 
-**All twelve steps are built.** The two open questions the site was waiting on
+13. ✅ The report rebuilt around the money, exposure and fit (3F D-17, D-18).
+    *Gate:* capture reliability and persistence measured on the committed report
+    files before any page work; the 615 snapshots byte-identical; every report
+    validates against its snapshot's month, date and benchmarks.
+
+**All thirteen steps are built.** The two open questions the site was waiting on
 are closed: 3F-O-05 no (the archive contradicts the caveat's premise) and
 3F-O-06 yes, LADM stays.

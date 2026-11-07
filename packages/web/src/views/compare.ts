@@ -19,10 +19,10 @@ import {
   type HorizonName,
   type LensCRow,
   type LensCTable,
-  type Snapshot,
-  type StateName,
+  type MeasureKind,
+  type ReportDocument,
 } from '../shim.ts';
-import { formatRatio, monthLabel } from './report.ts';
+import { formatGap, formatMeasure, groupHeadingRow, monthLabel } from './report.ts';
 
 export interface CompareHandlers {
   onHorizon: (horizon: HorizonName) => void;
@@ -32,8 +32,8 @@ export interface CompareHandlers {
 }
 
 export interface CompareContext {
-  a: Snapshot;
-  b: Snapshot;
+  a: ReportDocument;
+  b: ReportDocument;
   benchmark: string;
   horizon: HorizonName;
   /** Window lengths both reports could answer. */
@@ -44,23 +44,19 @@ export interface CompareContext {
   others: readonly { ticker: string; name: string }[];
 }
 
-function cell(value: number | null, thin: boolean, title: string): HTMLElement {
+function cell(value: number | null, kind: MeasureKind, thin: boolean, title: string): HTMLElement {
   const td = el('td', { class: 'score' });
   if (value === null) {
     append(td, [el('span', { class: 'absent', title: TABLE.comparison.unavailable }, '—')]);
     return td;
   }
-  append(td, [el('span', { class: thin ? 'thin-mark' : undefined, title }, formatRatio(value))]);
+  append(td, [
+    el('span', { class: thin ? 'thin-mark' : undefined, title }, formatMeasure(value, kind)),
+  ]);
   return td;
 }
 
-/** A signed difference, with the sign spelled out so colour is never the only channel (SF-21). */
-function differenceText(difference: number): string {
-  const sign = difference > 0 ? '+' : difference < 0 ? '−' : '';
-  return `${sign}${Math.abs(difference).toFixed(2)}`;
-}
-
-function differenceCell(row: LensCRow, model: LensCTable): HTMLElement {
+function differenceCell(row: LensCRow): HTMLElement {
   const td = el('td', { class: 'score change' });
   if (row.difference === null) {
     append(td, [el('span', { class: 'absent', title: TABLE.comparison.unavailable }, '—')]);
@@ -70,16 +66,8 @@ function differenceCell(row: LensCRow, model: LensCTable): HTMLElement {
   const parts: (HTMLElement | string)[] = [
     el(
       'span',
-      {
-        class: row.difference > 0 ? 'above' : row.difference < 0 ? 'below' : undefined,
-        title:
-          row.difference > 0
-            ? `${model.a} moved ${Math.abs(row.difference).toFixed(2)} further than ${model.b} for the same market move on days of this kind.`
-            : row.difference < 0
-              ? `${model.b} moved ${Math.abs(row.difference).toFixed(2)} further than ${model.a} for the same market move on days of this kind.`
-              : `${model.a} and ${model.b} moved the same amount for the same market move on days of this kind.`,
-      },
-      differenceText(row.difference),
+      { class: row.difference > 0 ? 'above' : row.difference < 0 ? 'below' : undefined },
+      formatGap(row.difference, row.kind),
     ),
   ];
 
@@ -88,7 +76,7 @@ function differenceCell(row: LensCRow, model: LensCTable): HTMLElement {
       el('span', {
         class: 'shift-dot',
         title: TABLE.comparison.marked,
-        'aria-label': 'a difference of 0.30 or more',
+        'aria-label': 'a gap of 0.30 or more',
       }),
     );
   }
@@ -101,7 +89,7 @@ function tableFor(model: LensCTable): HTMLElement {
   const head = el(
     'tr',
     {},
-    el('th', {}, 'On days when…'),
+    el('th', {}, ''),
     el('th', { class: 'num', title: model.nameA }, model.a),
     el('th', { class: 'num', title: model.nameB }, model.b),
     el('th', { class: 'num' }, TABLE.comparison.difference),
@@ -113,17 +101,16 @@ function tableFor(model: LensCTable): HTMLElement {
   for (const row of model.rows) {
     if (row.group !== group) {
       group = row.group;
-      const copy = group === 'participation' ? TABLE.participation : TABLE.resilience;
-      append(body, [el('tr', { class: 'group' }, el('th', { colspan: '4' }, copy.heading))]);
+      append(body, [groupHeadingRow(row.group, 4)]);
     }
 
-    const label = TABLE.rows[row.state as StateName];
-    const tr = el('tr', { class: label.direction });
+    const label = TABLE.measures[row.measure];
+    const tr = el('tr', {});
     append(tr, [
       el('th', { class: 'row-label', scope: 'row', title: label.full }, label.label),
-      cell(row.a, row.aThin, `${model.a}: ${label.full}.`),
-      cell(row.b, row.bThin, `${model.b}: ${label.full}.`),
-      differenceCell(row, model),
+      cell(row.a, row.kind, row.aThin, `${model.a}: ${label.full}.`),
+      cell(row.b, row.kind, row.bThin, `${model.b}: ${label.full}.`),
+      differenceCell(row),
     ]);
     append(body, [tr]);
   }
@@ -223,8 +210,11 @@ export function renderCompare(ctx: CompareContext, handlers: CompareHandlers): H
   ]);
 
   const legend = el('div', { class: 'legend' }, el('p', {}, TABLE.comparison.window));
-  if (model.threshold !== null) append(legend, [el('p', {}, TABLE.comparison.marked)]);
-  append(legend, [el('p', {}, TABLE.comparison.alike), el('p', {}, TABLE.comparison.unavailable)]);
+  append(legend, [
+    el('p', {}, TABLE.comparison.marked),
+    el('p', {}, TABLE.comparison.alike),
+    el('p', {}, TABLE.comparison.unavailable),
+  ]);
   append(root, [legend]);
 
   append(root, [

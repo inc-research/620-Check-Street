@@ -120,3 +120,29 @@ def benchmark_flat(state: str) -> Blocker:
         ),
         subjects=(state,),
     )
+
+
+def market_side_too_few(side: str, count: int, needed: int) -> Blocker:
+    """Too few days the market moved this way, in a window that otherwise computes."""
+    word = "rose" if side == "up" else "fell"
+    return Blocker(
+        code="market_side_too_few_days",
+        message=(
+            f"The market {word} on only {count} days in this window. At least "
+            f"{needed} are needed before an average of those days would mean "
+            "anything."
+        ),
+        remedy="Read a longer window, where more of those days have accumulated.",
+        subjects=(side,),
+    )
+
+
+def no_fit_variation() -> Blocker:
+    return Blocker(
+        code="fit_no_variation",
+        message=(
+            "The fund or the benchmark barely moved in this window, so there is "
+            "nothing to line one up against the other with."
+        ),
+        remedy="Read a longer window, where both have moved by varying amounts.",
+    )

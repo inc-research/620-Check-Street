@@ -167,7 +167,10 @@ export function buildLensA(snapshot: Snapshot, benchmark: string): LensATable {
  * fund behave the way its own literature says" is the sharper question. The
  * universal anchor is the fallback and is always present.
  */
-export function defaultBenchmark(snapshot: Snapshot): string {
+export function defaultBenchmark(snapshot: {
+  ticker: string;
+  benchmarks: Record<string, { roles: readonly string[] }>;
+}): string {
   const named = Object.entries(snapshot.benchmarks).find(([, b]) =>
     b.roles.includes('named_benchmark'),
   );

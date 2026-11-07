@@ -11,9 +11,23 @@ from tempfile import TemporaryDirectory
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from thirdfloor.backfill import build_ticker_slices, monthly_snapshot_dates  # noqa: E402
-from thirdfloor.emit import SCHEMA_VERSION, build_all_snapshots, write_snapshot  # noqa: E402
+from thirdfloor.emit import (  # noqa: E402
+    REPORT_SCHEMA_VERSION,
+    SCHEMA_VERSION,
+    build_all_snapshots,
+    build_report,
+    write_report,
+    write_snapshot,
+)
+from thirdfloor.exposure import compute_readings  # noqa: E402
 from thirdfloor.registry import Fund, RegistryError, load_registry  # noqa: E402
-from thirdfloor.semibeta import MIN_OBSERVATIONS_PER_CELL, STATES, normalise_score  # noqa: E402
+from thirdfloor.semibeta import (  # noqa: E402
+    MIN_OBSERVATIONS_PER_CELL,
+    STATES,
+    daily_returns,
+    normalise_score,
+    pair_returns,
+)
 
 from test_backfill import price_series  # noqa: E402
 
@@ -246,6 +260,44 @@ class TestRegistry(unittest.TestCase):
             }))
             with self.assertRaises(RegistryError):
                 load_registry(p)
+
+
+
+class ReportDocument(unittest.TestCase):
+    """The report file travels beside its snapshot and never disturbs it (3F D-18)."""
+
+    def setUp(self):
+        self.docs = build_documents()
+        self.month = max(self.docs)
+        self.doc = self.docs[self.month]
+        fund = price_series(date(2023, 1, 2), 1250, seed=50.0)
+        voo = price_series(date(2023, 1, 2), 1250)
+        pairs = pair_returns(daily_returns(fund), daily_returns(voo))
+        readings = compute_readings(pairs, date.fromisoformat(self.doc["as_of"]))
+        self.report = build_report(FUND, self.doc, {"VOO": readings})
+
+    def test_it_carries_its_own_version_and_the_snapshots_month(self):
+        self.assertEqual(self.report["report_schema_version"], REPORT_SCHEMA_VERSION)
+        self.assertEqual(self.report["as_of"], self.doc["as_of"])
+        self.assertEqual(self.report["coverage"], self.doc["coverage"])
+
+    def test_three_columns_in_table_order(self):
+        horizons = self.report["benchmarks"]["VOO"]["horizons"]
+        self.assertEqual([h["horizon"] for h in horizons], ["12mo", "6mo", "13wk"])
+
+    def test_the_days_balance_in_the_written_document(self):
+        for h in self.report["benchmarks"]["VOO"]["horizons"]:
+            self.assertEqual(
+                h["days_total"],
+                h["market_up_days"] + h["market_down_days"] + h["market_flat_days"],
+            )
+
+    def test_it_lands_beside_the_snapshot_archive_not_in_it(self):
+        with TemporaryDirectory() as root:
+            path = write_report(root, self.report, self.month)
+            self.assertEqual(
+                path.relative_to(root).as_posix(), f"_reports/TEST/{self.month}.json"
+            )
 
 
 if __name__ == "__main__":

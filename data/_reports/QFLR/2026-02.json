@@ -1,0 +1,367 @@
+{
+  "app": "Third Floor",
+  "report_schema_version": "1.0",
+  "ticker": "QFLR",
+  "name": "Innovator Nasdaq-100 Managed Floor ETF",
+  "issuer": "Innovator (Goldman Sachs Asset Management)",
+  "category": "options_integrated",
+  "as_of": "2026-02-27",
+  "generated_at": "2026-11-07T02:34:01Z",
+  "coverage": {
+    "inception": "2024-01-31",
+    "earliest_available_snapshot": "2025-01",
+    "earliest_full_baseline_snapshot": "2025-01",
+    "requested_backfill_depth_months": 19,
+    "history_limited_by_inception": false
+  },
+  "methodology": {
+    "measures": "capture_up is the fund's summed daily return over the benchmark's, across every day the benchmark rose; capture_down likewise for every day it fell. Not compounded, and equal to the ratio of the two average days. growth is the compounded return on all paired days, so 1.094 is $100 becoming $109.40.",
+    "low_fit_r_squared": 0.25,
+    "price_basis": "close_adjusted",
+    "price_source": "yfinance",
+    "return_frequency": "daily",
+    "defined_outcome_caveat": true
+  },
+  "benchmarks": {
+    "VOO": {
+      "roles": [
+        "universal_anchor"
+      ],
+      "benchmark_source": null,
+      "horizons": [
+        {
+          "horizon": "12mo",
+          "window_start": "2025-02-27",
+          "window_end": "2026-02-27",
+          "first_day": "2025-02-27",
+          "days_total": 252,
+          "market_up_days": 143,
+          "market_down_days": 108,
+          "market_flat_days": 1,
+          "growth": {
+            "fund": 1.1905898522753249,
+            "benchmark": 1.1683623071744653
+          },
+          "up": {
+            "days": 143,
+            "sum_fund": 0.7573421668587976,
+            "sum_benchmark": 0.9970549440317926,
+            "capture": 0.7595791700268111,
+            "average_fund": 0.005296099068942641,
+            "average_benchmark": 0.006972412196026522,
+            "against_days": 14,
+            "against_share": 0.0979020979020979,
+            "blockers": []
+          },
+          "down": {
+            "days": 108,
+            "sum_fund": -0.5720715561330929,
+            "sum_benchmark": -0.8246207719142785,
+            "capture": 0.6937389593098453,
+            "average_fund": -0.005296958853084194,
+            "average_benchmark": -0.007635377517724801,
+            "against_days": 23,
+            "against_share": 0.21296296296296297,
+            "blockers": []
+          },
+          "worst_fall": {
+            "fund": {
+              "depth": -0.10287392549124963,
+              "peak_date": "2025-02-26",
+              "trough_date": "2025-04-08"
+            },
+            "benchmark": {
+              "depth": -0.16173100320685352,
+              "peak_date": "2025-02-26",
+              "trough_date": "2025-04-08"
+            }
+          },
+          "fit": {
+            "r_squared": 0.7219701564757166,
+            "beta": 0.5897201921649858,
+            "blockers": []
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "6mo",
+          "window_start": "2025-08-27",
+          "window_end": "2026-02-27",
+          "first_day": "2025-08-27",
+          "days_total": 127,
+          "market_up_days": 74,
+          "market_down_days": 53,
+          "market_flat_days": 0,
+          "growth": {
+            "fund": 1.0879710200884125,
+            "benchmark": 1.0701035407300783
+          },
+          "up": {
+            "days": 74,
+            "sum_fund": 0.36446292324829255,
+            "sum_benchmark": 0.38233976380986334,
+            "capture": 0.9532435748156687,
+            "average_fund": 0.00492517463849044,
+            "average_benchmark": 0.005166753564998153,
+            "against_days": 9,
+            "against_share": 0.12162162162162163,
+            "blockers": []
+          },
+          "down": {
+            "days": 53,
+            "sum_fund": -0.2765895320227565,
+            "sum_benchmark": -0.3113136567072575,
+            "capture": 0.8884593594390441,
+            "average_fund": -0.005218670415523707,
+            "average_benchmark": -0.005873842579382217,
+            "against_days": 11,
+            "against_share": 0.20754716981132076,
+            "blockers": []
+          },
+          "worst_fall": {
+            "fund": {
+              "depth": -0.05030360424374325,
+              "peak_date": "2025-11-03",
+              "trough_date": "2025-11-20"
+            },
+            "benchmark": {
+              "depth": -0.05062106063946936,
+              "peak_date": "2025-10-29",
+              "trough_date": "2025-11-20"
+            }
+          },
+          "fit": {
+            "r_squared": 0.828279966020736,
+            "beta": 0.9486815848535981,
+            "blockers": []
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "13wk",
+          "window_start": "2025-11-28",
+          "window_end": "2026-02-27",
+          "first_day": "2025-11-28",
+          "days_total": 62,
+          "market_up_days": 33,
+          "market_down_days": 29,
+          "market_flat_days": 0,
+          "growth": {
+            "fund": 1.0071512772500066,
+            "benchmark": 1.0126022269430233
+          },
+          "up": {
+            "days": 33,
+            "sum_fund": 0.14347126282884504,
+            "sum_benchmark": 0.16481598811980858,
+            "capture": 0.8704935999567739,
+            "average_fund": 0.004347614025116516,
+            "average_benchmark": 0.004994423882418442,
+            "against_days": 5,
+            "against_share": 0.15151515151515152,
+            "blockers": []
+          },
+          "down": {
+            "days": 29,
+            "sum_fund": -0.1349722254302621,
+            "sum_benchmark": -0.1509126208447843,
+            "capture": 0.8943733444870916,
+            "average_fund": -0.004654214670009038,
+            "average_benchmark": -0.005203883477406355,
+            "against_days": 7,
+            "against_share": 0.2413793103448276,
+            "blockers": []
+          },
+          "worst_fall": {
+            "fund": {
+              "depth": -0.03786573929181902,
+              "peak_date": "2025-12-10",
+              "trough_date": "2025-12-17"
+            },
+            "benchmark": {
+              "depth": -0.02594975502874619,
+              "peak_date": "2026-01-27",
+              "trough_date": "2026-02-05"
+            }
+          },
+          "fit": {
+            "r_squared": 0.8228884807320201,
+            "beta": 0.9046500461875926,
+            "blockers": []
+          },
+          "blockers": []
+        }
+      ]
+    },
+    "QQQ": {
+      "roles": [
+        "named_benchmark"
+      ],
+      "benchmark_source": "prospectus_index",
+      "horizons": [
+        {
+          "horizon": "12mo",
+          "window_start": "2025-02-27",
+          "window_end": "2026-02-27",
+          "first_day": "2025-02-27",
+          "days_total": 252,
+          "market_up_days": 144,
+          "market_down_days": 108,
+          "market_flat_days": 0,
+          "growth": {
+            "fund": 1.1905898522753249,
+            "benchmark": 1.1861977341936443
+          },
+          "up": {
+            "days": 144,
+            "sum_fund": 0.7994663220827476,
+            "sum_benchmark": 1.2805739280953223,
+            "capture": 0.6243031382591427,
+            "average_fund": 0.005551849458907969,
+            "average_benchmark": 0.00889287450066196,
+            "against_days": 7,
+            "against_share": 0.04861111111111111,
+            "blockers": []
+          },
+          "down": {
+            "days": 108,
+            "sum_fund": -0.6167998755983903,
+            "sum_benchmark": -1.0829608861057014,
+            "capture": 0.5695495409962462,
+            "average_fund": -0.005711109959244355,
+            "average_benchmark": -0.010027415612089828,
+            "against_days": 14,
+            "against_share": 0.12962962962962962,
+            "blockers": []
+          },
+          "worst_fall": {
+            "fund": {
+              "depth": -0.10287392549124963,
+              "peak_date": "2025-02-26",
+              "trough_date": "2025-04-08"
+            },
+            "benchmark": {
+              "depth": -0.19021996484136927,
+              "peak_date": "2025-02-26",
+              "trough_date": "2025-04-08"
+            }
+          },
+          "fit": {
+            "r_squared": 0.8014093105955431,
+            "beta": 0.490493189493406,
+            "blockers": []
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "6mo",
+          "window_start": "2025-08-27",
+          "window_end": "2026-02-27",
+          "first_day": "2025-08-27",
+          "days_total": 127,
+          "market_up_days": 73,
+          "market_down_days": 54,
+          "market_flat_days": 0,
+          "growth": {
+            "fund": 1.0879710200884125,
+            "benchmark": 1.0631624147430747
+          },
+          "up": {
+            "days": 73,
+            "sum_fund": 0.38563110096749986,
+            "sum_benchmark": 0.5281723881787805,
+            "capture": 0.7301235535943389,
+            "average_fund": 0.005282617821472601,
+            "average_benchmark": 0.007235238194229871,
+            "against_days": 4,
+            "against_share": 0.0547945205479452,
+            "blockers": []
+          },
+          "down": {
+            "days": 54,
+            "sum_fund": -0.2977577097419638,
+            "sum_benchmark": -0.460510788006121,
+            "capture": 0.6465813993873387,
+            "average_fund": -0.005514031661888219,
+            "average_benchmark": -0.008527977555668908,
+            "against_days": 6,
+            "against_share": 0.1111111111111111,
+            "blockers": []
+          },
+          "worst_fall": {
+            "fund": {
+              "depth": -0.05030360424374325,
+              "peak_date": "2025-11-03",
+              "trough_date": "2025-11-20"
+            },
+            "benchmark": {
+              "depth": -0.07880210765255258,
+              "peak_date": "2025-10-29",
+              "trough_date": "2025-11-20"
+            }
+          },
+          "fit": {
+            "r_squared": 0.908588315678235,
+            "beta": 0.7086910085647612,
+            "blockers": []
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "13wk",
+          "window_start": "2025-11-28",
+          "window_end": "2026-02-27",
+          "first_day": "2025-11-28",
+          "days_total": 62,
+          "market_up_days": 33,
+          "market_down_days": 29,
+          "market_flat_days": 0,
+          "growth": {
+            "fund": 1.0071512772500066,
+            "benchmark": 0.9899106870288453
+          },
+          "up": {
+            "days": 33,
+            "sum_fund": 0.14833477675732887,
+            "sum_benchmark": 0.22452582139063937,
+            "capture": 0.6606579850753551,
+            "average_fund": 0.004494993235070572,
+            "average_benchmark": 0.0068038127694133145,
+            "against_days": 3,
+            "against_share": 0.09090909090909091,
+            "blockers": []
+          },
+          "down": {
+            "days": 29,
+            "sum_fund": -0.13983573935874594,
+            "sum_benchmark": -0.23196512071824982,
+            "capture": 0.6028308864960507,
+            "average_fund": -0.004821922046853308,
+            "average_benchmark": -0.007998797266146546,
+            "against_days": 4,
+            "against_share": 0.13793103448275862,
+            "blockers": []
+          },
+          "worst_fall": {
+            "fund": {
+              "depth": -0.03786573929181902,
+              "peak_date": "2025-12-10",
+              "trough_date": "2025-12-17"
+            },
+            "benchmark": {
+              "depth": -0.05715219998874177,
+              "peak_date": "2026-01-28",
+              "trough_date": "2026-02-05"
+            }
+          },
+          "fit": {
+            "r_squared": 0.9293502419447227,
+            "beta": 0.6873171961360509,
+            "blockers": []
+          },
+          "blockers": []
+        }
+      ]
+    }
+  }
+}

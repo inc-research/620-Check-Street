@@ -61,14 +61,17 @@ function main(argv) {
   for (const path of snapshots) {
     const month = basename(path);
     const ticker = basename(dirname(path));
-    const destination = join(DATA, ticker, month);
-    if (existsSync(destination) && !force) conflicts.push(`${ticker}/${month}`);
-    else added.push([path, destination, `${ticker}/${month}`]);
+    // Reports sit one level deeper and follow the same append-only rule (3F D-18).
+    const reports = basename(dirname(dirname(path))) === '_reports';
+    const label = reports ? `_reports/${ticker}/${month}` : `${ticker}/${month}`;
+    const destination = join(DATA, ...label.split('/'));
+    if (existsSync(destination) && !force) conflicts.push(label);
+    else added.push([path, destination, label]);
   }
 
   if (conflicts.length > 0) {
     console.error(
-      `refusing to overwrite ${conflicts.length} snapshot(s) already in data/:\n  ` +
+      `refusing to overwrite ${conflicts.length} file(s) already in data/:\n  ` +
         conflicts.slice(0, 12).join('\n  ') +
         (conflicts.length > 12 ? `\n  … and ${conflicts.length - 12} more` : ''),
     );
@@ -82,7 +85,7 @@ function main(argv) {
   }
 
   if (dryRun) {
-    console.log(`would add ${added.length} snapshot(s); nothing written`);
+    console.log(`would add ${added.length} file(s); nothing written`);
     return 0;
   }
 
@@ -97,14 +100,14 @@ function main(argv) {
     const manifest = JSON.parse(readFileSync(manifestSource, 'utf8'));
     const stamp = String(manifest.run_started_at ?? 'unknown').slice(0, 10);
     mkdirSync(join(root, 'data', '_runs'), { recursive: true });
-    writeFileSync(
-      join(root, 'data', '_runs', `${stamp}.json`),
-      JSON.stringify(manifest, null, 2) + '\n',
-    );
-    console.log(`recorded run manifest as data/_runs/${stamp}.json`);
+    // Two runs on one day are two records. The second must not replace the first.
+    let name = `${stamp}.json`;
+    for (let n = 2; existsSync(join(root, 'data', '_runs', name)); n++) name = `${stamp}-${n}.json`;
+    writeFileSync(join(root, 'data', '_runs', name), JSON.stringify(manifest, null, 2) + '\n');
+    console.log(`recorded run manifest as data/_runs/${name}`);
   }
 
-  console.log(`ingested ${added.length} snapshot(s) into data/${force ? ' (forced)' : ''}`);
+  console.log(`ingested ${added.length} file(s) into data/${force ? ' (forced)' : ''}`);
   return 0;
 }
 

@@ -17,23 +17,42 @@
 // Pure. No I/O; the caller fetches both documents.
 
 import { BLOCKERS } from './diagnostics.ts';
-import { HORIZONS, STATES } from './schema/types.ts';
-import type { Blocker, BenchmarkBlock, HorizonName, Snapshot, StateName } from './schema/types.ts';
+import {
+  FUND_MEASURES,
+  MEASURE_GROUP,
+  MEASURE_KIND,
+  blockersFor,
+  columnOf,
+  isThin,
+  readMeasure,
+  type Measure,
+  type MeasureGroup,
+  type MeasureKind,
+} from './report/measures.ts';
+import type { ReportDocument } from './report/types.ts';
+import { HORIZONS } from './schema/types.ts';
+import type { Blocker, HorizonName } from './schema/types.ts';
+
+/**
+ * The gap that earns the amber dot, on the two per-1% rows only. Measured on the
+ * real report archive: every one of the 309 gaps this size, across 435 pairs and
+ * both rows, sat beyond two standard errors (3F D-17). Same number as the rest of
+ * the site, and the one place on the money and exposure rows a dot still means
+ * something.
+ */
+export const DIFFERENCE_MARK = 0.3;
 
 export interface LensCRow {
-  state: StateName;
-  group: 'participation' | 'resilience';
+  measure: Measure;
+  group: MeasureGroup;
+  kind: MeasureKind;
   /** The first fund's reading. */
   a: number | null;
   /** The second fund's reading. */
   b: number | null;
-  /**
-   * Signed: `a - b`. Positive means the first fund moved further for the same
-   * market move. Null where either side is missing — never a zero, which would
-   * say the two funds behaved alike (INV-2).
-   */
+  /** Signed: `a - b`. Null where either side is missing, never a zero (INV-2). */
   difference: number | null;
-  /** At least the threshold's worth of difference, in either direction. */
+  /** On a per-1% row, at least `DIFFERENCE_MARK` apart. Never on any other row. */
   differs: boolean;
   aThin: boolean;
   bThin: boolean;
@@ -52,7 +71,6 @@ export interface LensCTable {
   asOf: string;
   window: { start: string | null; end: string | null };
   rows: LensCRow[];
-  threshold: number | null;
   /**
    * Reasons the comparison could not be made at all. Non-empty means `rows`
    * carries nothing worth showing, and the report says why instead.
@@ -60,23 +78,12 @@ export interface LensCTable {
   refusals: readonly Blocker[];
 }
 
-const GROUP: Record<StateName, 'participation' | 'resilience'> = {
-  fund_up_bench_up: 'participation',
-  fund_down_bench_down: 'participation',
-  fund_up_bench_down: 'resilience',
-  fund_down_bench_up: 'resilience',
-};
-
 /** Where the comparison starts, and the only benchmark guaranteed present on every fund. */
 export const COMPARISON_HORIZON: HorizonName = '12mo';
 
 /** The major component. Below 1.0 the family checks on MINOR (SF-14); this document is past it. */
 function major(version: string): string {
   return version.split('.')[0] ?? version;
-}
-
-function columnOf(block: BenchmarkBlock, horizon: HorizonName) {
-  return block.horizons.find((h) => h.horizon === horizon);
 }
 
 /** Months both funds published a report for, oldest first. */
@@ -93,7 +100,11 @@ export function sharedMonths(a: readonly string[], b: readonly string[]): string
  * them comparable. A fund's own named benchmark varies, and comparing two funds
  * across two different named benchmarks compares two questions.
  */
-export function sharedBenchmarks(a: Snapshot, b: Snapshot, anchor: string): string[] {
+export function sharedBenchmarks(
+  a: ReportDocument,
+  b: ReportDocument,
+  anchor: string,
+): string[] {
   const inB = new Set(Object.keys(b.benchmarks));
   const both = Object.keys(a.benchmarks).filter((k) => inB.has(k));
   return both.sort((x, y) => (x === anchor ? -1 : y === anchor ? 1 : x.localeCompare(y)));
@@ -101,8 +112,8 @@ export function sharedBenchmarks(a: Snapshot, b: Snapshot, anchor: string): stri
 
 /** Window lengths that produced a reading on both sides. */
 export function comparableHorizons(
-  a: Snapshot,
-  b: Snapshot,
+  a: ReportDocument,
+  b: ReportDocument,
   benchmark: string,
 ): HorizonName[] {
   const blockA = a.benchmarks[benchmark];
@@ -111,7 +122,7 @@ export function comparableHorizons(
   return HORIZONS.filter((h) => {
     const ca = columnOf(blockA, h);
     const cb = columnOf(blockB, h);
-    return !!ca && ca.states !== null && !!cb && cb.states !== null;
+    return !!ca && ca.growth !== null && !!cb && cb.growth !== null;
   });
 }
 
@@ -124,8 +135,8 @@ export function comparableHorizons(
  * Lens B, for the same reason it does there.
  */
 export function buildLensC(
-  a: Snapshot,
-  b: Snapshot,
+  a: ReportDocument,
+  b: ReportDocument,
   benchmark: string,
   horizon: HorizonName,
 ): LensCTable {
@@ -145,8 +156,10 @@ export function buildLensC(
     refusals.push(BLOCKERS.readingsFromDifferentMonths(a.ticker, monthA, b.ticker, monthB));
   }
 
-  if (major(a.schema_version) !== major(b.schema_version)) {
-    refusals.push(BLOCKERS.reportVersionMismatch(b.schema_version, a.schema_version));
+  if (major(a.report_schema_version) !== major(b.report_schema_version)) {
+    refusals.push(
+      BLOCKERS.reportVersionMismatch(b.report_schema_version, a.report_schema_version),
+    );
   }
 
   const blockA = a.benchmarks[benchmark];
@@ -160,42 +173,34 @@ export function buildLensC(
 
   // A window blocked on either side takes the whole comparison with it, as in
   // Lens B: four dashes in a row explain nothing, and one sentence does.
-  if (columnA && columnA.states === null) {
+  if (columnA && columnA.growth === null) {
     refusals.push(BLOCKERS.readingNotComparable(a.ticker, columnA.blockers[0]?.message ?? ''));
   }
-  if (columnB && columnB.states === null) {
+  if (columnB && columnB.growth === null) {
     refusals.push(BLOCKERS.readingNotComparable(b.ticker, columnB.blockers[0]?.message ?? ''));
   }
 
-  // One number for the reader to learn, so it has to be the same number on both
-  // sides. Two documents that disagree about what counts as a difference cannot
-  // mark one, and an unmarked table is honest where a mismarked one is not.
-  const thresholdA = a.methodology.shift_threshold;
-  const thresholdB = b.methodology.shift_threshold;
-  const threshold = thresholdA !== null && thresholdA === thresholdB ? thresholdA : null;
-
-  const rows: LensCRow[] = STATES.map((state) => {
-    const cellA = columnA?.states?.[state] ?? null;
-    const cellB = columnB?.states?.[state] ?? null;
-
-    const valueA = cellA?.raw_semibeta ?? null;
-    const valueB = cellB?.raw_semibeta ?? null;
+  const rows: LensCRow[] = FUND_MEASURES.map((measure) => {
+    const valueA = columnA ? readMeasure(columnA, measure) : null;
+    const valueB = columnB ? readMeasure(columnB, measure) : null;
     const difference = valueA !== null && valueB !== null ? valueA - valueB : null;
-
-    const blockers: Blocker[] = [];
-    if (cellA && cellA.raw_semibeta === null) blockers.push(...cellA.blockers);
-    if (cellB && cellB.raw_semibeta === null) blockers.push(...cellB.blockers);
-
     return {
-      state,
-      group: GROUP[state],
+      measure,
+      group: MEASURE_GROUP[measure],
+      kind: MEASURE_KIND[measure],
       a: valueA,
       b: valueB,
       difference,
-      differs: threshold !== null && difference !== null && Math.abs(difference) >= threshold,
-      aThin: cellA?.data_sufficiency === 'thin',
-      bThin: cellB?.data_sufficiency === 'thin',
-      blockers,
+      differs:
+        MEASURE_KIND[measure] === 'ratio' &&
+        difference !== null &&
+        Math.abs(difference) >= DIFFERENCE_MARK,
+      aThin: columnA ? isThin(columnA, measure) : false,
+      bThin: columnB ? isThin(columnB, measure) : false,
+      blockers: [
+        ...(valueA === null && columnA ? blockersFor(columnA, measure) : []),
+        ...(valueB === null && columnB ? blockersFor(columnB, measure) : []),
+      ],
     };
   });
 
@@ -210,9 +215,8 @@ export function buildLensC(
     asOf: a.as_of,
     window: { start: columnA?.window_start ?? null, end: columnA?.window_end ?? null },
     rows,
-    threshold,
     refusals,
   };
 }
 
-export { HORIZONS, STATES };
+export { HORIZONS };

@@ -18,8 +18,10 @@ export type Voice = 'plain';
 /** Keys are stable — they appear in the rendered anchor links. */
 export type SectionKey =
   | 'overview'
+  | 'money'
+  | 'exposure'
+  | 'follows'
   | 'participation'
-  | 'resilience'
   | 'horizons'
   | 'benchmark_choice'
   | 'outcome_period'
@@ -54,41 +56,60 @@ export type Deck = Record<SectionKey, Section>;
  * over every section — adding a row without writing its label fails compilation
  * rather than rendering an empty cell.
  */
-export type StateKey =
-  | 'fund_up_bench_up'
-  | 'fund_down_bench_down'
-  | 'fund_up_bench_down'
-  | 'fund_down_bench_up';
+export type StateKey = 'fund_up_bench_up' | 'fund_down_bench_down';
 
 export type HorizonKey = '12mo' | '6mo' | '13wk';
-
-/**
- * Whether a higher number in this row is the outcome the fund's own design is
- * aiming at. A fixed property of the row, never of the value — the tint says
- * which way to read the row, and never passes judgement on the number in it.
- */
-export type RowDirection = 'sought' | 'avoided';
 
 export interface RowLabel {
   /** What happened that day, in the reader's words. */
   label: string;
   /** The same thing spelled out, for a screen reader and the row's title. */
   full: string;
-  direction: RowDirection;
 }
 
+/** Every row the report can draw. Mirrors `Measure` in the core. */
+export type MeasureKey =
+  | 'growth_fund'
+  | 'growth_benchmark'
+  | 'fall_fund'
+  | 'fall_benchmark'
+  | 'day_up_benchmark'
+  | 'day_up_fund'
+  | 'day_down_benchmark'
+  | 'day_down_fund'
+  | 'capture_up'
+  | 'capture_down'
+  | 'fit'
+  | 'against_down'
+  | 'against_up';
+
+export type GroupKey = 'money' | 'days' | 'exposure' | 'follows';
+
 export interface TableCopy {
-  participation: { heading: string; blurb: string };
-  resilience: { heading: string; blurb: string };
-  /** How to read a number at all, printed once above the table. */
-  reading: { heading: string; body: string };
+  /** The four groups of the main table. */
+  groups: Record<GroupKey, { heading: string; blurb: string }>;
+  measures: Record<MeasureKey, RowLabel>;
+  /**
+   * The sentence the report leads with. Written with {placeholders} rather than
+   * built up in a view, so the lint reads every word of it.
+   */
+  perOne: {
+    up: string;
+    down: string;
+    upOpposite: string;
+    downOpposite: string;
+    lowFit: string;
+  };
+  /** The basis of the money figures, and what they cannot say. */
+  limits: { heading: string; items: readonly string[] };
+  /** The collapsed section holding the same-direction readings. */
+  detail: { summary: string; intro: string; heading: string; firstColumn: string };
   /** Lens B: the same reading, across two real reports. */
   history: {
     sixMonth: string;
     thirteenWeek: string;
     columns: { then: string; now: string; change: string };
     disjoint: string;
-    marked: string;
     steady: string;
     unavailable: string;
   };
@@ -106,7 +127,6 @@ export interface TableCopy {
   rows: Record<StateKey, RowLabel>;
   columns: Record<HorizonKey, { short: string; full: string }>;
   legend: {
-    tint: string;
     shift: string;
     thin: string;
     blocked: string;

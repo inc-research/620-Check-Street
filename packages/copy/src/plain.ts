@@ -18,31 +18,51 @@ export const PLAIN: Deck = {
   overview: {
     title: 'What this page is showing you',
     mechanism:
-      'This fund uses options contracts to change how it responds to the wider stock market. That is meant to make it behave differently from the market on the way up than it does on the way down. This page takes every day the fund has traded, sorts those days by which direction the fund and the market each moved, and works out how big the fund’s move was compared with the market’s on each kind of day.',
+      'This page starts with what happened to money held in this fund, set beside the same money held in the market, then shows how much of the market’s movement the fund carried and how closely it followed.',
     whatWouldChangeIt:
-      'The numbers are worked out again at the start of every month, from the daily closing prices of the past year. A month of unusual market movement can move them.',
+      'The numbers are worked out again at the start of every month, from daily closing prices. A month of unusual market movement can move them.',
     whenAbsent:
       'There is not enough price history for this fund yet to work any of this out.',
   },
 
-  participation: {
-    title: 'When the fund and the market moved the same way',
+  money: {
+    title: 'What happened to the money',
     mechanism:
-      'These two rows cover the days when the fund and the market both went up, or both went down. The number is how far the fund moved for every 1% the market moved on those days. So 0.60 means the fund moved about six tenths as far as the market did, and 1.00 would mean it moved just as far.',
+      'Each column follows $100 over that stretch of time, for this fund and for the market, with distributions reinvested. The deepest fall is the largest drop from a high along the way, which a good end result can hide.',
     whatWouldChangeIt:
-      'Funds built around options often move less than the market in both directions, because the options they hold give away some of the gain in exchange for softening the fall. Where the fund sits between its cap and its floor at the time changes how much of each it does.',
+      'These depend on where the stretch of time starts and ends. A different start date can give a different result for the same fund.',
     whenAbsent:
-      'There were not enough days in this period where the fund and the market moved the same way to work a number out from.',
+      'This fund has not been trading long enough to follow $100 over this stretch of time.',
   },
 
-  resilience: {
-    title: 'When the fund and the market moved in opposite directions',
+  exposure: {
+    title: 'How much of the market the fund carried',
     mechanism:
-      'These two rows cover the days when the fund and the market went different ways. The top row is days the fund rose while the market fell. The bottom row is days the fund fell while the market rose. Days like these are less common, so these two rows usually rest on fewer of them, and the numbers in them sit closer to nought.',
+      'Takes every day the market rose and adds up the fund’s moves and the market’s moves, then does the same for every day it fell. Days the fund went the other way are included and count against it. 1.00 would mean the fund moved as far as the market did.',
     whatWouldChangeIt:
-      'A fund holding a large options position can move against the market for reasons that have nothing to do with that day’s news — the value of the options themselves changes as time passes and as the market gets calmer or choppier.',
+      'Funds built around options often move less than the market in both directions. Where the fund sits between its cap and its floor at the time changes how much of each it does.',
     whenAbsent:
-      'There were not enough days in this period where the fund and the market moved in opposite directions to work a number out from.',
+      'The market moved in this direction on too few days in this stretch of time to work a number out from.',
+  },
+
+  follows: {
+    title: 'How closely the fund follows the market',
+    mechanism:
+      'The first figure is the share of the fund’s day-to-day movement that lines up with the market’s. The other two count how often the fund went the other way.',
+    whatWouldChangeIt:
+      'A fund holding a large options position can move against the market for reasons that have nothing to do with that day’s news. The value of the options themselves changes as time passes and as the market gets calmer or choppier.',
+    whenAbsent:
+      'The fund or the market barely moved in this stretch of time, so there is nothing to line one up against the other with.',
+  },
+
+  participation: {
+    title: 'How the fund’s move scaled with the market’s',
+    mechanism:
+      'This is a second way of measuring the days when the fund and the market moved the same way. It asks a narrower question: on those days, when the market’s move was bigger, how much bigger was the fund’s? So 0.60 means that each extra 1% on the market’s side went with about six tenths of 1% extra on the fund’s.',
+    whatWouldChangeIt:
+      'Where the fund sits between its cap and its floor at the time changes how much of each it does.',
+    whenAbsent:
+      'There were not enough days in this period where the fund and the market moved the same way to work a number out from.',
   },
 
   horizons: {
@@ -78,7 +98,7 @@ export const PLAIN: Deck = {
   thin_data: {
     title: 'The small marker on some numbers',
     mechanism:
-      'A number needs a reasonable number of days behind it before it means much. Where fewer than twenty days fell into a particular box, the number is still shown, with a small marker next to it saying how few days it rests on.',
+      'A number needs a reasonable number of days behind it before it means much. Where fewer than twenty days went into a figure, the number is still shown, with a small marker next to it saying how few days it rests on.',
     whatWouldChangeIt:
       'Longer periods gather more days, so a marked number in one column is often unmarked in the column to its left.',
     whenAbsent:
@@ -98,7 +118,7 @@ export const PLAIN: Deck = {
   comparing_funds: {
     title: 'Comparing two funds',
     mechanism:
-      'Two funds can be set side by side, box for box, to see how differently they responded to the same market. Both sides are compared against the same US large-company anchor, so the difference between them is about the funds and not about what each one chose to measure itself against.',
+      'Two funds can be set side by side, figure for figure, to see how differently they came through the same market. Both sides are compared against the same US large-company anchor, so the difference between them is about the funds and not about what each one chose to measure itself against.',
     whatWouldChangeIt:
       'Both funds have to have a report for the same month. Where one of them is newer, the earliest month they share is the earliest that can be compared.',
     whenAbsent:
@@ -115,55 +135,89 @@ export const PLAIN: Deck = {
  * here should be the situation being described, in their words.
  */
 export const TABLE: TableCopy = {
-  participation: {
-    heading: 'When they moved the same way',
-    blurb:
-      'Days when the fund and the market both went up, or both went down. The number is how far the fund moved for every 1% the market moved: 0.60 is about six tenths as far, 1.00 is just as far.',
+  groups: {
+    money: {
+      heading: 'What happened to $100',
+      blurb: 'Followed over each stretch of time, with distributions reinvested.',
+    },
+    days: {
+      heading: 'An average day, per $100',
+      blurb: 'The average across every day the market rose, and every day it fell.',
+    },
+    exposure: {
+      heading: 'For every 1% the market moved',
+      blurb: 'Every day the market moved that way is counted, including days the fund went the other way.',
+    },
+    follows: {
+      heading: 'How closely it follows',
+      blurb: 'How much of the fund’s movement lines up with the market’s, and how often it went the other way.',
+    },
   },
-  resilience: {
-    heading: 'When they moved in opposite directions',
-    blurb:
-      'Days when one went up and the other went down. These days are less common, so these two rows usually rest on fewer of them. A number below nought means the fund’s move ran the other way to the market’s size that day.',
+
+  measures: {
+    growth_fund: { label: 'In this fund', full: '$100 held in this fund became' },
+    growth_benchmark: { label: 'In the market', full: '$100 held in the market became' },
+    fall_fund: { label: 'This fund’s deepest fall', full: 'The largest drop from a high in this fund, per $100 at that high' },
+    fall_benchmark: { label: 'The market’s deepest fall', full: 'The largest drop from a high in the market, per $100 at that high' },
+    day_up_benchmark: { label: 'Market, on its rising days', full: 'The market’s average day, across the days it rose' },
+    day_up_fund: { label: 'This fund, on the market’s rising days', full: 'This fund’s average day, across the days the market rose' },
+    day_down_benchmark: { label: 'Market, on its falling days', full: 'The market’s average day, across the days it fell' },
+    day_down_fund: { label: 'This fund, on the market’s falling days', full: 'This fund’s average day, across the days the market fell' },
+    capture_up: { label: 'When the market rose', full: 'How far this fund moved for every 1% the market gained, across its rising days' },
+    capture_down: { label: 'When the market fell', full: 'How far this fund moved for every 1% the market lost, across its falling days' },
+    fit: { label: 'Movement in line with the market', full: 'The share of this fund’s day-to-day movement that lines up with the market’s' },
+    against_down: { label: 'Market fell, fund rose', full: 'The share of the market’s falling days on which this fund rose' },
+    against_up: { label: 'Market rose, fund fell', full: 'The share of the market’s rising days on which this fund fell' },
+  },
+
+  perOne: {
+    up: 'Over {window}, across the days the market rose, this fund gained {ratio}% for every 1% the market gained.',
+    down: 'Across the days the market fell, this fund lost {ratio}% for every 1% the market lost.',
+    upOpposite: 'Over {window}, across the days the market rose, this fund fell overall: {ratio}% for every 1% the market gained.',
+    downOpposite: 'Across the days the market fell, this fund rose overall: {ratio}% for every 1% the market lost.',
+    lowFit:
+      'Over {window}, only {share}% of this fund’s day-to-day movement lined up with {benchmark}. With so little in common, a figure per 1% of the market would not describe this fund, so none is offered here. The money figures are what happened. The two per-1% rows in the table are arithmetic, kept as a record.',
+  },
+
+  limits: {
+    heading: 'What these figures are, and what they are not',
+    items: [
+      'Worked out from closing market prices, with distributions reinvested. A fund’s market price can sit a little above or below the value of what it holds.',
+      'The fund’s fees are already in its price. Taxes and the cost of buying and selling are not counted.',
+      'These are past stretches of time. They say nothing about what comes next.',
+      'A cap or a buffer applies over the fund’s own outcome period, to someone who held from its start. These windows do not line up with that period, so these figures do not show whether a cap or a buffer delivered what it set out to.',
+      'An average is not a ceiling. On a single sharp day a fund can fall further than these figures suggest.',
+    ],
+  },
+
+  detail: {
+    summary: 'A closer look at the days they moved together',
+    intro:
+      'A number close to the per-1% figures above means the two ways of measuring agree. A number far from them means the size of the fund’s moves and the way they scaled tell different stories, and the per-1% figures are the ones that tie to the money.',
+    heading: 'When they moved the same way',
+    firstColumn: 'On days when…',
   },
 
   comparison: {
     heading: 'How the two differ',
     blurb:
-      'Both funds are read over the same stretch of days, against the same market, and sorted into the same four boxes. What is left between them is the difference between the two funds.',
+      'Both funds are read over the same stretch of days, against the same market. What is left between them is the difference between the two funds.',
     difference: 'Difference',
     sameEverythingElse:
       'Both columns come from reports covering the same month, worked out over the same length of time and against the same market index. The only thing that differs between them is the fund.',
     marked:
-      'An amber dot marks a difference of 0.30 or more, the same size of move the report marks anywhere else.',
+      'An amber dot marks a gap of 0.30 or more on the two per-1% rows.',
     alike:
-      'A difference near nought means the two funds responded to the market in much the same way on days of that kind.',
+      'A difference near nought means the two funds came through this stretch of market in much the same way.',
     unavailable:
       'A dash means one of the two funds had too few days of that kind to work a reading out from, so there is nothing to subtract. It does not mean the two were the same.',
     window:
-      'The difference on its own does not say much. A gap of 0.30 could be one fund moving almost as far as the market and the other moving a little less, or one moving a little and the other not at all. Both readings are shown so the gap can be read against them.',
+      'The difference on its own does not say much. A gap of 0.30 could be one fund moving almost as far as the market and the other moving a little less, or one moving a little and the other hardly at all. Both readings are shown so the gap can be read against them.',
   },
 
   rows: {
-    fund_up_bench_up: {
-      label: 'Both went up',
-      full: 'Days the fund rose and the market rose',
-      direction: 'sought',
-    },
-    fund_down_bench_down: {
-      label: 'Both went down',
-      full: 'Days the fund fell and the market fell',
-      direction: 'avoided',
-    },
-    fund_up_bench_down: {
-      label: 'Fund up, market down',
-      full: 'Days the fund rose while the market fell',
-      direction: 'sought',
-    },
-    fund_down_bench_up: {
-      label: 'Fund down, market up',
-      full: 'Days the fund fell while the market rose',
-      direction: 'avoided',
-    },
+    fund_up_bench_up: { label: 'Both went up', full: 'Days the fund rose and the market rose' },
+    fund_down_bench_down: { label: 'Both went down', full: 'Days the fund fell and the market fell' },
   },
 
   columns: {
@@ -172,29 +226,19 @@ export const TABLE: TableCopy = {
     '13wk': { short: '13 wk', full: 'the past thirteen weeks' },
   },
 
-  reading: {
-    heading: 'How to read the numbers',
-    body:
-      'Each number answers the same question: for every 1% the market moved on days of that kind, how far did the fund move? A number near 1.00 means the fund kept pace. A smaller number means it moved less. A number below nought means the fund went the other way from the market’s size on those days — a bigger market move going with a smaller fund move, rather than a larger one.',
-  },
-
   history: {
     sixMonth: 'Against six months ago',
     thirteenWeek: 'Against thirteen weeks ago',
     columns: { then: 'Before', now: 'Since', change: 'Change' },
     disjoint:
       'The two periods sit end to end and share no days, so this is a comparison of one stretch of time against the one before it — not the same days counted twice.',
-    marked:
-      'An amber dot marks a change of 0.30 or more, the same size of move the report marks anywhere else.',
     steady:
-      'A change near nought means the fund responded to the market in much the same way across both periods.',
+      'The market itself was different across the two periods, so a change in the money figures is often the market and not the fund. The per-1% rows are the place to look for a change in the fund.',
     unavailable:
       'A dash means one of the two periods had too few days of that kind to work a reading out from, so there is nothing to compare. It does not mean the reading was nought.',
   },
 
   legend: {
-    tint:
-      'A green row is one where a bigger number is what the fund is built to do. A red row is one where a bigger number is what it is built to avoid. The tint marks the row, not the number in it.',
     shift:
       'An amber dot marks a reading at least 0.30 away from the twelve-month reading in the same row — a sign the fund has been behaving differently lately than it did over the year.',
     thin:

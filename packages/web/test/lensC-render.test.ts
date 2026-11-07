@@ -13,7 +13,7 @@ import type { FakeElement } from './dom-shim.ts';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const base = JSON.parse(
-  readFileSync(join(root, 'fixtures', 'snapshot_computed.json'), 'utf8'),
+  readFileSync(join(root, 'fixtures', 'report_computed.json'), 'utf8'),
 ) as Record<string, unknown>;
 
 let installed: { uninstall: () => void } | null = null;
@@ -30,7 +30,11 @@ function other(ticker: string, mutate: (s: never) => void = () => {}): Record<st
   return doc;
 }
 
-type Column = { horizon: string; states: Record<string, { raw_semibeta: number | null }> | null; blockers: unknown[] };
+type Column = {
+  horizon: string;
+  up: { capture: number | null; blockers: unknown[] };
+  growth: { fund: number; benchmark: number };
+};
 function column(doc: Record<string, unknown>, benchmark: string, horizon: string): Column {
   const blocks = doc['benchmarks'] as Record<string, { horizons: Column[] }>;
   return blocks[benchmark]!.horizons.find((h) => h.horizon === horizon)!;
@@ -83,13 +87,32 @@ test('the figures never leave the page without what they were worked out from (I
 test('a difference is signed in the text, not only in colour', async () => {
   // The report has to survive greyscale and readers who do not separate red
   // from green (SF-21).
-  const mine = column(base, 'VOO', '12mo').states!['fund_up_bench_up']!.raw_semibeta!;
+  const mine = column(base, 'VOO', '12mo').up.capture!;
   const { text } = await render(
     other('AAAA', (s) => {
-      column(s as never, 'VOO', '12mo').states!['fund_up_bench_up']!.raw_semibeta = mine - 0.4;
+      column(s as never, 'VOO', '12mo').up.capture = mine - 0.4;
     }),
   );
   ok(/\+0\.40/.test(text), `no signed difference in: ${text.slice(0, 400)}`);
+});
+
+test('the dot is drawn on a per-1% gap, and not on a money gap', async () => {
+  const mine = column(base, 'VOO', '12mo').up.capture!;
+  const dots = async (mutate: (c: Column) => void) => {
+    const { node } = await render(other('AAAA', (s) => mutate(column(s as never, 'VOO', '12mo'))));
+    return node.findAll('span').filter((e) => e.getAttribute('class') === 'shift-dot').length;
+  };
+  strictEqual(await dots((c) => { c.up.capture = mine - 0.4; }), 1);
+  strictEqual(await dots((c) => { c.growth.fund += 1; }), 0);
+});
+
+test('money gaps are in dollars, not ratios', async () => {
+  const { text } = await render(
+    other('AAAA', (s) => {
+      column(s as never, 'VOO', '12mo').growth.fund += 0.05;
+    }),
+  );
+  ok(/−\$5\.00/.test(text), `no dollar difference in: ${text.slice(0, 500)}`);
 });
 
 test('a refused comparison draws no table at all', async () => {
@@ -103,7 +126,7 @@ test('a refused comparison draws no table at all', async () => {
   ok(text.includes('Compare the two funds in a month'), 'the refusal names no way out (INV-2)');
 });
 
-test('a fund set beside itself is refused rather than drawn as four zeroes', async () => {
+test('a fund set beside itself is refused rather than drawn as a table of zeroes', async () => {
   const { node, text } = await render(structuredClone(base));
   strictEqual(node.findAll('table').length, 0);
   ok(text.includes('beside itself'));
@@ -112,14 +135,9 @@ test('a fund set beside itself is refused rather than drawn as four zeroes', asy
 test('an uncomparable cell shows a dash, and the legend says a dash is not a nought', async () => {
   const { text } = await render(
     other('AAAA', (s) => {
-      const cell = column(s as never, 'VOO', '12mo').states!['fund_up_bench_down']!;
-      cell.raw_semibeta = null;
-      const full = cell as unknown as Record<string, unknown>;
-      full['score'] = null;
-      full['data_sufficiency'] = 'blocked';
-      full['blockers'] = [
-        { code: 'quadrant_empty', message: 'Too few days.', remedy: 'Read a longer window.', subjects: [] },
-      ];
+      const side = column(s as never, 'VOO', '12mo').up;
+      side.capture = null;
+      side.blockers = [{ code: 'market_side_too_few_days', message: 'Few.', remedy: 'Longer.' }];
     }),
   );
   ok(text.includes('—'), 'no dash was drawn');
@@ -154,8 +172,8 @@ test('two real archived reports render end to end', async () => {
   // The fixtures are synthetic by design (FF D-31). The archive is committed,
   // so the view can also be run against two documents the notebook actually
   // wrote — which is what catches a shape the fixture happens not to have.
-  const a = JSON.parse(readFileSync(join(root, 'data', 'BUFR', '2026-07.json'), 'utf8'));
-  const b = JSON.parse(readFileSync(join(root, 'data', 'DBMF', '2026-07.json'), 'utf8'));
+  const a = JSON.parse(readFileSync(join(root, 'data', '_reports', 'BUFR', '2026-07.json'), 'utf8'));
+  const b = JSON.parse(readFileSync(join(root, 'data', '_reports', 'DBMF', '2026-07.json'), 'utf8'));
 
   installed = installDom();
   const { renderCompare } = await import('../src/views/compare.ts');
@@ -175,5 +193,6 @@ test('two real archived reports render end to end', async () => {
 
   ok(text.includes('BUFR') && text.includes('DBMF'));
   ok(text.includes('2025-07-31') && text.includes('2026-07-31'), 'the real window dates are missing');
+  ok(text.includes('In this fund'), 'the money rows are missing');
   strictEqual((node as unknown as FakeElement).findAll('table').length, 1);
 });

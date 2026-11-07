@@ -13,6 +13,7 @@ import {
   append,
   archivedMonthFor,
   buildLensA,
+  buildReportTable,
   canCompare,
   clear,
   comparableHorizons,
@@ -22,9 +23,10 @@ import {
   sharedMonths,
   type HorizonName,
   type Lookback,
+  type ReportDocument,
   type Snapshot,
 } from './shim.ts';
-import { findFund, loadIndex, loadSnapshot, state } from './state.ts';
+import { findFund, loadIndex, loadReport, loadSnapshot, state } from './state.ts';
 import { renderFunds } from './views/funds.ts';
 import { renderReport } from './views/report.ts';
 import { renderHistory } from './views/history.ts';
@@ -157,24 +159,24 @@ async function renderRoute(): Promise<void> {
 
   show(busy());
 
-  let snapshot: Snapshot;
+  let report: ReportDocument;
   try {
-    snapshot = await loadSnapshot(fund.ticker, wanted);
+    report = await loadReport(fund.ticker, wanted);
   } catch (e) {
     show(message((e as Error).message, 'Pick another month, or go back to the list of funds.'));
     return;
   }
 
-  const available = Object.keys(snapshot.benchmarks);
+  const available = Object.keys(report.benchmarks);
   if (!state.benchmark || !available.includes(state.benchmark)) {
-    state.benchmark = defaultBenchmark(snapshot);
+    state.benchmark = defaultBenchmark(report);
   }
 
-  // Fail here rather than half-render: buildLensA throws on a benchmark the
+  // Fail here rather than half-render: the builders throw on a benchmark the
   // document does not carry, and a table showing a different benchmark than the
   // one asked for is worse than an error somebody can see.
   try {
-    buildLensA(snapshot, state.benchmark);
+    buildReportTable(report, state.benchmark);
   } catch (e) {
     show(message((e as Error).message, 'Pick another comparison from the list above.'));
     return;
@@ -211,9 +213,9 @@ async function renderRoute(): Promise<void> {
       return;
     }
 
-    let opposite: Snapshot;
+    let opposite: ReportDocument;
     try {
-      opposite = await loadSnapshot(partner.ticker, wanted);
+      opposite = await loadReport(partner.ticker, wanted);
     } catch (e) {
       show(message((e as Error).message, 'Pick another fund to set this one beside.'));
       return;
@@ -223,7 +225,7 @@ async function renderRoute(): Promise<void> {
     // is measured against and so the only benchmark that makes any two of them
     // comparable. A shared named benchmark is the fallback; no shared benchmark
     // at all is a refusal rather than a guess.
-    const shared = sharedBenchmarks(snapshot, opposite, index.universal_anchor);
+    const shared = sharedBenchmarks(report, opposite, index.universal_anchor);
     const on = shared[0];
     if (!on) {
       show(
@@ -235,7 +237,7 @@ async function renderRoute(): Promise<void> {
       return;
     }
 
-    const usable = comparableHorizons(snapshot, opposite, on);
+    const usable = comparableHorizons(report, opposite, on);
     const over = horizon && usable.includes(horizon)
       ? horizon
       : (usable.includes(COMPARISON_HORIZON) ? COMPARISON_HORIZON : usable[0] ?? COMPARISON_HORIZON);
@@ -243,7 +245,7 @@ async function renderRoute(): Promise<void> {
     show(
       renderCompare(
         {
-          a: snapshot,
+          a: report,
           b: opposite,
           benchmark: on,
           horizon: over,
@@ -278,9 +280,9 @@ async function renderRoute(): Promise<void> {
     }
 
     const earlier = archivedMonthFor(wanted, lookback);
-    let previous: Snapshot;
+    let previous: ReportDocument;
     try {
-      previous = await loadSnapshot(fund.ticker, earlier);
+      previous = await loadReport(fund.ticker, earlier);
     } catch (e) {
       show(message((e as Error).message, 'Read the current report on its own.'));
       return;
@@ -288,7 +290,7 @@ async function renderRoute(): Promise<void> {
 
     show(
       renderHistory(
-        { current: snapshot, previous, benchmark: state.benchmark, lookback, available: history },
+        { current: report, previous, benchmark: state.benchmark, lookback, available: history },
         {
           onLookback: (l) => goto(fund.ticker, wanted, l),
           onBack: () => goto(fund.ticker, wanted),
@@ -298,9 +300,20 @@ async function renderRoute(): Promise<void> {
     return;
   }
 
+  // The semibeta detail reads the snapshot archive, which is the record of it.
+  let snapshot: Snapshot;
+  try {
+    snapshot = await loadSnapshot(fund.ticker, wanted);
+    buildLensA(snapshot, state.benchmark);
+  } catch (e) {
+    show(message((e as Error).message, 'Pick another month, or go back to the list of funds.'));
+    return;
+  }
+
   show(
     renderReport(
       {
+        report,
         snapshot,
         benchmark: state.benchmark,
         months: fund.months,

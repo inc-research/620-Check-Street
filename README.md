@@ -1,17 +1,22 @@
 # Third Floor
 
-How funds that use options actually responded to the market — on the days it
-rose, and the days it fell.
+What happened to money held in funds that use options, and how much of the market
+they actually carried.
 
 Third Floor follows a fixed list of 31 Options-Integrated ETFs. Every month it
-works out, for each of them, how far it moved for every 1% the market moved — on
-each of the four combinations of directions the two can move in, over the past
-twelve months, six months and thirteen weeks. The reports are published as files
-in this repository and the site reads them.
+works out, for each of them, what $100 became, beside the same money in the
+market; the deepest fall along the way; how far the fund moved for every 1% the
+market moved, on the days it rose and the days it fell; and how closely it
+follows. All over the past twelve months, six months and thirteen weeks. The
+reports are published as files in this repository and the site reads them. See
+3F D-17.
 
-A four-week window was computed at first and dropped: split across four
-combinations it leaves about four days in each, which is not enough to report
-anything anybody should act on. See 3F D-10.
+The same-direction semibeta readings are still computed, archived, and shown in
+a closed section of each report. The opposite-direction ones are computed and
+archived but not shown: they could not be told from noise.
+
+A four-week window was computed at first and dropped: it leaves too few days in
+each case to report anything anybody should act on. See 3F D-10.
 
 It is a descriptive tool. It does not give advice, rank funds, or say anything
 about what any of them does next.
@@ -58,10 +63,9 @@ last N completed months and nothing else. See 3F D-16.
 `data/<TICKER>/<YYYY-MM>.json` is one report. The page reads them by relative
 path and computes nothing of its own.
 
-A number is only printed where at least six days fell into that combination of
-directions; below that it shows a dash, which is not a zero. Between six and
-twenty days it is printed with a dotted underline saying how few days are behind
-it. See 3F D-11 and 3F D-12.
+A number is only printed where at least six days went into it; below that it
+shows a dash, which is not a zero. Between six and twenty days it is printed with
+a dotted underline saying how few days are behind it. See 3F D-11.
 
 There are three ways to read a report, and each one holds everything still
 except the one thing it varies:
@@ -88,6 +92,7 @@ npm run check:vendored # vendored modules are still verbatim
 npm run check:notebook # third_floor.ipynb is not stale
 npm run check:index    # data/index.json matches what is on disk
 npm run validate:data  # every committed snapshot
+npm run validate:reports # every report, and that it matches its snapshot
 npm run check:registry # the registry's reader-facing prose passes the lint
 npm run build --workspace @third-floor/web
 node packages/web/serve.mjs

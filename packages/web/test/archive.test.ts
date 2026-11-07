@@ -51,6 +51,28 @@ test('a snapshot is read by a relative path, never an absolute one', async () =>
   ok(!/^https?:|^\/\//.test(seen[0]!));
 });
 
+test('a report file is read by a relative path, and a bad one is refused', async () => {
+  const { loadReport, state } = await import('../src/state.ts');
+  state.reports.clear();
+
+  const report = JSON.parse(
+    readFileSync(join(root, 'fixtures', 'report_computed.json'), 'utf8'),
+  ) as Record<string, unknown>;
+  const seen = stubFetch(() => ({ ok: true, body: report }));
+  const doc = await loadReport('RFLR', '2026-07');
+  strictEqual(doc.ticker, 'RFLR');
+  strictEqual(seen[0], './data/_reports/RFLR/2026-07.json');
+
+  // Cached for the visit, as a snapshot is.
+  await loadReport('RFLR', '2026-07');
+  strictEqual(seen.length, 1);
+
+  stubFetch(() => ({ ok: true, body: { app: 'Third Floor' } }));
+  await rejects(loadReport('BUFR', '2026-07'), /could not be read/);
+  stubFetch(() => ({ ok: false }));
+  await rejects(loadReport('BUFR', '2026-06'), /No report was published/);
+});
+
 test('a second read of the same month does not fetch again', async () => {
   const { loadSnapshot, state } = await import('../src/state.ts');
   state.loaded.clear();

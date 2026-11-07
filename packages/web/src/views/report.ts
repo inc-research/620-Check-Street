@@ -2,13 +2,16 @@
 //
 // Lens A: one fund, one benchmark, one month, read across window lengths.
 //
+// Leads with what happened to the money, then how much of the market the fund
+// carried and how closely it followed (3F D-17). The same-direction semibeta sits
+// in a collapsed section below that, read from the snapshot archive.
+//
 // This file renders and computes nothing (INV-5). Every marker it draws was
-// decided in `buildLensA`, and every sentence it prints came from the copy deck,
+// decided in the core, and every sentence it prints came from the copy deck,
 // which the lint runs over as a test. Text is set through `textContent`
 // throughout, so nothing a data file carries can become markup.
 
 import {
-  BASELINE,
   HORIZONS,
   PLAIN,
   TABLE,
@@ -16,13 +19,18 @@ import {
   benchmarkIndexNote,
   benchmarkIndexShort,
   buildLensA,
+  buildReportTable,
   el,
   explain,
   type HorizonName,
   type LensATable,
-  type Snapshot,
   type Lookback,
-  type StateName,
+  type MeasureGroup,
+  type MeasureKind,
+  type ReportCell,
+  type ReportDocument,
+  type ReportTable,
+  type Snapshot,
   type TableCell,
 } from '../shim.ts';
 
@@ -35,6 +43,8 @@ export interface ReportHandlers {
 }
 
 export interface ReportContext {
+  report: ReportDocument;
+  /** The same month's snapshot, for the detail section. */
   snapshot: Snapshot;
   benchmark: string;
   months: readonly string[];
@@ -67,13 +77,11 @@ export function monthLabel(month: string): string {
 }
 
 /**
- * The ratio, as the table prints it.
+ * The ratio, as the tables print it.
  *
  * Two decimals and an explicit sign on negatives. A minus sign is the whole
  * difference between "the fund moved a little the same way" and "the fund moved
- * the other way", and about a third of the two opposite-direction rows are
- * negative (3F D-12) — losing it would be the same mistake the bounded score
- * made.
+ * the other way".
  */
 export function formatRatio(value: number): string {
   const text = Math.abs(value).toFixed(2);
@@ -81,14 +89,162 @@ export function formatRatio(value: number): string {
   return value < 0 ? `\u2212${text}` : text;
 }
 
-/**
- * One cell.
- *
- * A blocked cell shows a dash and nothing else. The legend says a dash is not a
- * zero, because a zero and an unknown are opposite claims and on a page of
- * numbers the dash is the easier of the two to misread (INV-2).
- */
-function scoreCell(cell: TableCell, rowLabel: string): HTMLElement {
+/** A sign for what is printed, so a value that rounds to nothing reads as nothing. */
+function signOf(value: number, decimals: number): string {
+  if (Number(Math.abs(value).toFixed(decimals)) === 0) return '';
+  return value > 0 ? '+' : '\u2212';
+}
+
+/** A reading, as its kind reads: dollars per $100, a ratio, or a percentage. */
+export function formatMeasure(value: number, kind: MeasureKind): string {
+  const dollars = `$${Math.abs(value).toFixed(2)}`;
+  switch (kind) {
+    case 'money': return dollars;
+    case 'fall': return value < 0 ? `\u2212${dollars}` : dollars;
+    case 'day': return `${signOf(value, 2)}${dollars}`;
+    case 'ratio': return formatRatio(value);
+    case 'share': return `${Math.round(value)}%`;
+  }
+}
+
+/** A signed gap between two readings, with the sign in the text and not only in colour (SF-21). */
+export function formatGap(value: number, kind: MeasureKind): string {
+  const size = Math.abs(value);
+  if (kind === 'share') {
+    const points = Math.round(size);
+    return `${signOf(value, 0)}${points} ${points === 1 ? 'pt' : 'pts'}`;
+  }
+  if (kind === 'ratio') return `${signOf(value, 2)}${size.toFixed(2)}`;
+  return `${signOf(value, 2)}$${size.toFixed(2)}`;
+}
+
+/** Fill a {placeholder} sentence from the deck. */
+function fill(template: string, values: Record<string, string>): string {
+  return template.replace(/\{(\w+)\}/g, (_, key: string) => values[key] ?? '');
+}
+
+export function groupHeadingRow(group: MeasureGroup, span: number): HTMLElement {
+  const copy = TABLE.groups[group];
+  return el(
+    'tr',
+    { class: 'group' },
+    el('th', { colspan: String(span), title: copy.blurb }, copy.heading),
+  );
+}
+
+/** A blocked figure shows a dash and nothing else, and the legend says a dash is not a zero (INV-2). */
+function measureCell(cell: ReportCell, kind: MeasureKind, label: string): HTMLElement {
+  const td = el('td', { class: 'score' });
+  if (cell.value === null) {
+    const reason = cell.blockers.length > 0 ? explain(cell.blockers) : '';
+    append(td, [el('span', { class: 'absent', title: reason || undefined }, '—')]);
+    return td;
+  }
+  const column = TABLE.columns[cell.horizon as keyof typeof TABLE.columns];
+  const value = formatMeasure(cell.value, kind);
+  append(td, [
+    el(
+      'span',
+      {
+        class: cell.thin ? 'thin-mark' : undefined,
+        title: cell.thin
+          ? `${label}, over ${column.full}: ${value}. Rests on ${cell.days} days, fewer than the 20 the report asks for.`
+          : `${label}, over ${column.full}: ${value}. ${cell.days} days.`,
+      },
+      value,
+    ),
+  ]);
+  return td;
+}
+
+function mainTable(model: ReportTable): HTMLElement {
+  const head = el(
+    'tr',
+    {},
+    el('th', {}, ''),
+    ...HORIZONS.map((h: HorizonName) =>
+      el('th', { class: 'num', title: TABLE.columns[h as keyof typeof TABLE.columns].full },
+         TABLE.columns[h as keyof typeof TABLE.columns].short),
+    ),
+  );
+
+  const body = el('tbody', {});
+  let group: string | null = null;
+  for (const row of model.rows) {
+    if (row.group !== group) {
+      group = row.group;
+      append(body, [groupHeadingRow(row.group, 1 + HORIZONS.length)]);
+    }
+    const label = TABLE.measures[row.measure];
+    const tr = el('tr', {});
+    append(tr, [el('th', { class: 'row-label', scope: 'row', title: label.full }, label.label)]);
+    append(tr, row.cells.map((c) => measureCell(c, row.kind, label.full)));
+    append(body, [tr]);
+  }
+
+  return el('div', { class: 'scroll-x' }, el('table', {}, el('thead', {}, head), body));
+}
+
+/** The sentence the report leads with, or what stands in for it (3F D-17). */
+function perOneSentences(model: ReportTable): HTMLElement | null {
+  const lead = model.lead;
+  if (!lead) return null;
+  const window = TABLE.columns[lead.horizon as keyof typeof TABLE.columns].full;
+
+  if (lead.lowFit) {
+    return el(
+      'p',
+      { class: 'lead' },
+      fill(TABLE.perOne.lowFit, {
+        window,
+        share: lead.fit === null ? '0' : String(Math.round(100 * lead.fit)),
+        benchmark: model.benchmark,
+      }),
+    );
+  }
+
+  const sentences: string[] = [];
+  if (lead.captureUp !== null) {
+    sentences.push(
+      fill(lead.captureUp < 0 ? TABLE.perOne.upOpposite : TABLE.perOne.up, {
+        window,
+        ratio: Math.abs(lead.captureUp).toFixed(2),
+      }),
+    );
+  }
+  if (lead.captureDown !== null) {
+    sentences.push(
+      fill(lead.captureDown < 0 ? TABLE.perOne.downOpposite : TABLE.perOne.down, {
+        window,
+        ratio: Math.abs(lead.captureDown).toFixed(2),
+      }),
+    );
+  }
+  return sentences.length > 0 ? el('p', { class: 'lead' }, sentences.join(' ')) : null;
+}
+
+function legend(model: ReportTable): HTMLElement {
+  const root = el('div', { class: 'legend' });
+  append(root, [
+    el('p', {}, PLAIN.money.mechanism),
+    el('p', {}, PLAIN.exposure.mechanism),
+    el('p', {}, PLAIN.follows.mechanism),
+  ]);
+  const thin = model.rows.some((r) => r.cells.some((c) => c.thin && c.value !== null));
+  if (thin) append(root, [el('p', {}, TABLE.legend.thin)]);
+  append(root, [el('p', {}, TABLE.legend.blocked)]);
+  return root;
+}
+
+function limits(): HTMLElement {
+  const list = el('ul', {});
+  for (const item of TABLE.limits.items) append(list, [el('li', {}, item)]);
+  return el('div', { class: 'limits' }, el('h3', {}, TABLE.limits.heading), list);
+}
+
+// --- the detail section ------------------------------------------------------
+
+function detailCell(cell: TableCell, rowLabel: string): HTMLElement {
   const column = TABLE.columns[cell.horizon as keyof typeof TABLE.columns];
   const td = el('td', { class: 'score' });
 
@@ -98,29 +254,26 @@ function scoreCell(cell: TableCell, rowLabel: string): HTMLElement {
     return td;
   }
 
-  const parts: (HTMLElement | string)[] = [];
-  const number = el(
-    'span',
-    {
-      class: cell.thin ? 'thin-mark' : undefined,
-      title: cell.thin
-        ? `${rowLabel}, over ${column.full}: for every 1% the market moved, this fund moved ${formatRatio(cell.ratio)}%. Rests on ${cell.observations} days, fewer than the 20 the report asks for.`
-        : `${rowLabel}, over ${column.full}: for every 1% the market moved, this fund moved ${formatRatio(cell.ratio)}%. ${cell.observations} days.`,
-    },
-    formatRatio(cell.ratio),
-  );
-  parts.push(number);
+  const parts: (HTMLElement | string)[] = [
+    el(
+      'span',
+      {
+        class: cell.thin ? 'thin-mark' : undefined,
+        title: cell.thin
+          ? `${rowLabel}, over ${column.full}. Rests on ${cell.observations} days, fewer than the 20 the report asks for.`
+          : `${rowLabel}, over ${column.full}. ${cell.observations} days.`,
+      },
+      formatRatio(cell.ratio),
+    ),
+  ];
 
   if (cell.shifted && cell.distanceFromBaseline !== null) {
     parts.push(
-      el(
-        'span',
-        {
-          class: 'shift-dot',
-          title: `${cell.distanceFromBaseline.toFixed(2)} away from the twelve-month reading in this row.`,
-          'aria-label': `shifted by ${cell.distanceFromBaseline.toFixed(2)} from the twelve-month reading`,
-        },
-      ),
+      el('span', {
+        class: 'shift-dot',
+        title: `${cell.distanceFromBaseline.toFixed(2)} away from the twelve-month reading in this row.`,
+        'aria-label': `shifted by ${cell.distanceFromBaseline.toFixed(2)} from the twelve-month reading`,
+      }),
     );
   }
 
@@ -128,18 +281,12 @@ function scoreCell(cell: TableCell, rowLabel: string): HTMLElement {
   return td;
 }
 
-function groupHeading(text: string, blurb: string): HTMLElement {
-  const tr = el('tr', { class: 'group' });
-  const th = el('th', { colspan: String(1 + HORIZONS.length), title: blurb }, text);
-  append(tr, [th]);
-  return tr;
-}
-
-function tableFor(model: LensATable): HTMLElement {
+/** Only the two same-direction rows. The other two are not on this page (3F D-17). */
+function detailTable(model: LensATable): HTMLElement {
   const head = el(
     'tr',
     {},
-    el('th', {}, 'On days when…'),
+    el('th', {}, TABLE.detail.firstColumn),
     ...HORIZONS.map((h: HorizonName) =>
       el('th', { class: 'num', title: TABLE.columns[h as keyof typeof TABLE.columns].full },
          TABLE.columns[h as keyof typeof TABLE.columns].short),
@@ -147,59 +294,64 @@ function tableFor(model: LensATable): HTMLElement {
   );
 
   const body = el('tbody', {});
-  let group: string | null = null;
-
   for (const row of model.rows) {
-    if (row.group !== group) {
-      group = row.group;
-      const copy = group === 'participation' ? TABLE.participation : TABLE.resilience;
-      append(body, [groupHeading(copy.heading, copy.blurb)]);
-    }
-
-    const label = TABLE.rows[row.state as StateName];
-    const tr = el('tr', { class: label.direction });
+    if (row.state !== 'fund_up_bench_up' && row.state !== 'fund_down_bench_down') continue;
+    const label = TABLE.rows[row.state];
+    const tr = el('tr', {});
     append(tr, [el('th', { class: 'row-label', scope: 'row', title: label.full }, label.label)]);
-    append(tr, row.cells.map((c) => scoreCell(c, label.full)));
+    append(tr, row.cells.map((c) => detailCell(c, label.full)));
     append(body, [tr]);
   }
 
-  return el(
-    'div',
-    { class: 'scroll-x' },
-    el('table', {}, el('thead', {}, head), body),
-  );
+  return el('div', { class: 'scroll-x' }, el('table', {}, el('thead', {}, head), body));
 }
 
-function legend(model: LensATable): HTMLElement {
+function detailLegend(model: LensATable): HTMLElement {
   const root = el('div', { class: 'legend' });
-  const lines: HTMLElement[] = [];
-
-  const tint = el('p', {});
-  append(tint, [
-    el('span', { class: 'swatch-above', 'aria-hidden': 'true' }),
-    el('span', { class: 'swatch-below', 'aria-hidden': 'true' }),
-    ' ' + TABLE.legend.tint,
-  ]);
-  lines.push(tint);
-
+  const shown = model.rows.filter(
+    (r) => r.state === 'fund_up_bench_up' || r.state === 'fund_down_bench_down',
+  );
   // The dot is only explained where one can actually appear. A legend entry for
   // a marker the reader cannot find is a small puzzle with no answer.
   if (!model.baselineAbsent && model.shiftThreshold !== null) {
-    const shift = el('p', {});
-    append(shift, [el('span', { class: 'shift-dot', 'aria-hidden': 'true' }), ' ' + TABLE.legend.shift]);
-    lines.push(shift);
+    append(root, [
+      el(
+        'p',
+        {},
+        el('span', { class: 'shift-dot', 'aria-hidden': 'true' }),
+        ' ' + TABLE.legend.shift,
+      ),
+    ]);
   }
-
-  lines.push(el('p', {}, TABLE.legend.thin));
-  lines.push(el('p', {}, TABLE.legend.blocked));
-
-  append(root, lines);
+  if (shown.some((r) => r.cells.some((c) => c.thin))) {
+    append(root, [el('p', {}, TABLE.legend.thin)]);
+  }
+  append(root, [el('p', {}, TABLE.legend.blocked)]);
   return root;
 }
 
+function detailSection(snapshot: Snapshot, benchmark: string): HTMLElement {
+  const model = buildLensA(snapshot, benchmark);
+  const body: (HTMLElement | null)[] = [
+    el('p', {}, PLAIN.participation.mechanism),
+    el('p', {}, TABLE.detail.intro),
+    model.baselineAbsent
+      ? el('div', { class: 'blocker' }, el('p', {}, TABLE.legend.noBaseline))
+      : null,
+    detailTable(model),
+    detailLegend(model),
+  ];
+  return el(
+    'details',
+    { class: 'detail' },
+    el('summary', {}, TABLE.detail.summary),
+    ...body,
+  );
+}
+
 /** The caveat nearly every fund in the coverage set carries. */
-function outcomeCaveat(snapshot: Snapshot): HTMLElement | null {
-  if (!snapshot.methodology.defined_outcome_caveat) return null;
+function outcomeCaveat(report: ReportDocument): HTMLElement | null {
+  if (!report.methodology.defined_outcome_caveat) return null;
   return el(
     'div',
     { class: 'caveat' },
@@ -208,13 +360,7 @@ function outcomeCaveat(snapshot: Snapshot): HTMLElement | null {
   );
 }
 
-/** 3F-O-02: said once, above the table, rather than left as an absence. */
-function noBaselineNotice(model: LensATable): HTMLElement | null {
-  if (!model.baselineAbsent) return null;
-  return el('div', { class: 'blocker' }, el('p', {}, TABLE.legend.noBaseline));
-}
-
-function blockedNotes(model: LensATable): HTMLElement | null {
+function blockedNotes(model: ReportTable): HTMLElement | null {
   if (model.blockedHorizons.length === 0) return null;
   const root = el('div', { class: 'blocker' });
   for (const { horizon, blockers } of model.blockedHorizons) {
@@ -305,7 +451,7 @@ function compareOffer(ctx: ReportContext, handlers: ReportHandlers): HTMLElement
 
 function controls(ctx: ReportContext, handlers: ReportHandlers): HTMLElement {
   const root = el('div', { class: 'controls' });
-  const benchmarks = Object.keys(ctx.snapshot.benchmarks);
+  const benchmarks = Object.keys(ctx.report.benchmarks);
 
   // Only offered where there is a choice. A select with one option is a control
   // that looks like it does something.
@@ -315,7 +461,7 @@ function controls(ctx: ReportContext, handlers: ReportHandlers): HTMLElement {
       onchange: (e) => handlers.onBenchmark((e.target as HTMLSelectElement).value),
     });
     for (const b of benchmarks) {
-      const block = ctx.snapshot.benchmarks[b]!;
+      const block = ctx.report.benchmarks[b]!;
       const named = block.roles.includes('named_benchmark');
       // The ticker alone does not say what it tracks, so the index travels
       // with it in the option the reader is choosing between.
@@ -335,7 +481,7 @@ function controls(ctx: ReportContext, handlers: ReportHandlers): HTMLElement {
     });
     for (const m of [...ctx.months].reverse()) {
       const option = el('option', { value: m }, monthLabel(m));
-      if (m === ctx.snapshot.as_of.slice(0, 7)) option.setAttribute('selected', 'selected');
+      if (m === ctx.report.as_of.slice(0, 7)) option.setAttribute('selected', 'selected');
       append(select, [option]);
     }
     append(root, [el('div', {}, el('label', { for: 'month' }, 'Report from'), select)]);
@@ -345,13 +491,13 @@ function controls(ctx: ReportContext, handlers: ReportHandlers): HTMLElement {
 }
 
 export function renderReport(ctx: ReportContext, handlers: ReportHandlers): HTMLElement {
-  const model = buildLensA(ctx.snapshot, ctx.benchmark);
+  const model = buildReportTable(ctx.report, ctx.benchmark);
   const root = el('section', {});
 
   append(root, [
     el('button', { class: 'back', onclick: () => handlers.onBack() }, '← All funds'),
-    el('h2', {}, ctx.snapshot.name),
-    el('p', { class: 'quiet' }, `${ctx.snapshot.ticker} · ${ctx.snapshot.issuer}`),
+    el('h2', {}, ctx.report.name),
+    el('p', { class: 'quiet' }, `${ctx.report.ticker} · ${ctx.report.issuer}`),
     controls(ctx, handlers),
   ]);
 
@@ -366,37 +512,35 @@ export function renderReport(ctx: ReportContext, handlers: ReportHandlers): HTML
     append(root, [el('p', { class: 'benchmark-note' }, ctx.benchmarkNote)]);
   }
 
-  append(root, [
-    el('h3', {}, PLAIN.participation.title),
-    el('p', {}, PLAIN.overview.mechanism),
-    el('h4', {}, TABLE.reading.heading),
-    el('p', {}, TABLE.reading.body),
-  ]);
+  append(root, [el('h3', {}, PLAIN.money.title), el('p', {}, PLAIN.overview.mechanism)]);
 
-  const notice = noBaselineNotice(model);
-  if (notice) append(root, [notice]);
+  const lead = perOneSentences(model);
+  if (lead) append(root, [lead]);
 
-  append(root, [tableFor(model)]);
+  append(root, [mainTable(model)]);
   append(root, [
     el(
       'p',
       { class: 'assumption' },
-      `Worked out from daily closing prices up to ${model.asOf}, against ${model.benchmark}.`,
+      `Worked out from daily closing prices up to ${model.asOf}, against ${model.benchmark}. “The market” here means ${model.benchmark}.`,
     ),
   ]);
 
   append(root, [legend(model)]);
-  append(root, [historyOffer(ctx, handlers)]);
-  append(root, [compareOffer(ctx, handlers)]);
 
   const blocked = blockedNotes(model);
   if (blocked) append(root, [blocked]);
 
-  const caveat = outcomeCaveat(ctx.snapshot);
+  append(root, [limits()]);
+  append(root, [detailSection(ctx.snapshot, ctx.benchmark)]);
+  append(root, [historyOffer(ctx, handlers)]);
+  append(root, [compareOffer(ctx, handlers)]);
+
+  const caveat = outcomeCaveat(ctx.report);
   if (caveat) append(root, [caveat]);
 
   append(root, [
-    el('p', { class: 'assumption' }, `What would change this: ${PLAIN.horizons.whatWouldChangeIt}`),
+    el('p', { class: 'assumption' }, `What would change this: ${PLAIN.money.whatWouldChangeIt}`),
   ]);
 
   return root;

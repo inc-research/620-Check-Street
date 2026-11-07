@@ -1,0 +1,198 @@
+{
+  "app": "Third Floor",
+  "report_schema_version": "1.0",
+  "ticker": "BUFC",
+  "name": "AB Conservative Buffer ETF",
+  "issuer": "AllianceBernstein",
+  "category": "options_integrated",
+  "as_of": "2026-06-30",
+  "generated_at": "2026-11-07T02:34:01Z",
+  "coverage": {
+    "inception": "2024-01-31",
+    "earliest_available_snapshot": "2025-01",
+    "earliest_full_baseline_snapshot": "2025-01",
+    "requested_backfill_depth_months": 19,
+    "history_limited_by_inception": false
+  },
+  "methodology": {
+    "measures": "capture_up is the fund's summed daily return over the benchmark's, across every day the benchmark rose; capture_down likewise for every day it fell. Not compounded, and equal to the ratio of the two average days. growth is the compounded return on all paired days, so 1.094 is $100 becoming $109.40.",
+    "low_fit_r_squared": 0.25,
+    "price_basis": "close_adjusted",
+    "price_source": "yfinance",
+    "return_frequency": "daily",
+    "defined_outcome_caveat": true
+  },
+  "benchmarks": {
+    "VOO": {
+      "roles": [
+        "universal_anchor",
+        "named_benchmark"
+      ],
+      "benchmark_source": "prospectus_index",
+      "horizons": [
+        {
+          "horizon": "12mo",
+          "window_start": "2025-06-30",
+          "window_end": "2026-06-30",
+          "first_day": "2025-06-30",
+          "days_total": 252,
+          "market_up_days": 141,
+          "market_down_days": 110,
+          "market_flat_days": 1,
+          "growth": {
+            "fund": 1.077963504323179,
+            "benchmark": 1.2295035006968114
+          },
+          "up": {
+            "days": 141,
+            "sum_fund": 0.24855144499500648,
+            "sum_benchmark": 0.8559742139747699,
+            "capture": 0.29037258475444283,
+            "average_fund": 0.0017627762056383438,
+            "average_benchmark": 0.0060707391062040416,
+            "against_days": 23,
+            "against_share": 0.16312056737588654,
+            "blockers": []
+          },
+          "down": {
+            "days": 110,
+            "sum_fund": -0.17478993439756052,
+            "sum_benchmark": -0.641501683877328,
+            "capture": 0.27246995415679215,
+            "average_fund": -0.0015889994036141866,
+            "average_benchmark": -0.005831833489793891,
+            "against_days": 28,
+            "against_share": 0.2545454545454545,
+            "blockers": []
+          },
+          "worst_fall": {
+            "fund": {
+              "depth": -0.036232951214563824,
+              "peak_date": "2026-02-02",
+              "trough_date": "2026-03-30"
+            },
+            "benchmark": {
+              "depth": -0.08900469847829928,
+              "peak_date": "2026-01-27",
+              "trough_date": "2026-03-30"
+            }
+          },
+          "fit": {
+            "r_squared": 0.699920199978577,
+            "beta": 0.29173024246643675,
+            "blockers": []
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "6mo",
+          "window_start": "2025-12-30",
+          "window_end": "2026-06-30",
+          "first_day": "2025-12-30",
+          "days_total": 125,
+          "market_up_days": 67,
+          "market_down_days": 58,
+          "market_flat_days": 0,
+          "growth": {
+            "fund": 1.0267309499129804,
+            "benchmark": 1.092292693199921
+          },
+          "up": {
+            "days": 67,
+            "sum_fund": 0.14395638853230186,
+            "sum_benchmark": 0.468318724368431,
+            "capture": 0.3073897776059236,
+            "average_fund": 0.002148602813914953,
+            "average_benchmark": 0.006989831706991508,
+            "against_days": 6,
+            "against_share": 0.08955223880597014,
+            "blockers": []
+          },
+          "down": {
+            "days": 58,
+            "sum_fund": -0.11695291922646556,
+            "sum_benchmark": -0.3751255032885218,
+            "capture": 0.31177010947323697,
+            "average_fund": -0.002016429641835613,
+            "average_benchmark": -0.00646768109118141,
+            "against_days": 10,
+            "against_share": 0.1724137931034483,
+            "blockers": []
+          },
+          "worst_fall": {
+            "fund": {
+              "depth": -0.03623295121456471,
+              "peak_date": "2026-02-02",
+              "trough_date": "2026-03-30"
+            },
+            "benchmark": {
+              "depth": -0.08900469847829928,
+              "peak_date": "2026-01-27",
+              "trough_date": "2026-03-30"
+            }
+          },
+          "fit": {
+            "r_squared": 0.7440247652475971,
+            "beta": 0.30744208356710107,
+            "blockers": []
+          },
+          "blockers": []
+        },
+        {
+          "horizon": "13wk",
+          "window_start": "2026-03-31",
+          "window_end": "2026-06-30",
+          "first_day": "2026-03-31",
+          "days_total": 63,
+          "market_up_days": 40,
+          "market_down_days": 23,
+          "market_flat_days": 0,
+          "growth": {
+            "fund": 1.0581829091350228,
+            "benchmark": 1.1857023784119551
+          },
+          "up": {
+            "days": 40,
+            "sum_fund": 0.08122681844491342,
+            "sum_benchmark": 0.3114608359481401,
+            "capture": 0.26079304063268527,
+            "average_fund": 0.0020306704611228353,
+            "average_benchmark": 0.007786520898703503,
+            "against_days": 4,
+            "against_share": 0.1,
+            "blockers": []
+          },
+          "down": {
+            "days": 23,
+            "sum_fund": -0.024400841283109598,
+            "sum_benchmark": -0.1382850700225804,
+            "capture": 0.17645318673321145,
+            "average_fund": -0.0010609061427438956,
+            "average_benchmark": -0.006012394348807843,
+            "against_days": 7,
+            "against_share": 0.30434782608695654,
+            "blockers": []
+          },
+          "worst_fall": {
+            "fund": {
+              "depth": -0.010784765483516257,
+              "peak_date": "2026-06-04",
+              "trough_date": "2026-06-10"
+            },
+            "benchmark": {
+              "depth": -0.044696883005159616,
+              "peak_date": "2026-06-02",
+              "trough_date": "2026-06-10"
+            }
+          },
+          "fit": {
+            "r_squared": 0.6759939535352378,
+            "beta": 0.25296470118535863,
+            "blockers": []
+          },
+          "blockers": []
+        }
+      ]
+    }
+  }
+}

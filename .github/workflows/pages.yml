@@ -62,6 +62,9 @@ jobs:
       - name: Validate the archive
         run: npm run validate:data
 
+      - name: Validate the reports
+        run: npm run validate:reports
+
       - name: Build the site
         run: npm run build --workspace @third-floor/web
 
