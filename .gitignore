@@ -27,3 +27,7 @@ build/
 # under data/ by scripts/ingest-snapshots.mjs; the zip itself is a transport
 # format and is not history.
 *.zip
+
+# Work kept beside the project and outside its history. Holds intraday volume bars
+# that cannot be pulled again, so it is not disposable.
+OUT_OF_GIT/
