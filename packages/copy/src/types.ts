@@ -28,7 +28,8 @@ export type SectionKey =
   | 'thin_data'
   | 'capture_trend'
   | 'history'
-  | 'comparing_funds';
+  | 'comparing_funds'
+  | 'observer';
 
 export interface Section {
   /**
@@ -136,6 +137,8 @@ export interface TableCopy {
     runIntro: string;
     runColumns: { month: string; up: string; down: string; change: string; market: string };
   };
+  /** The links to the OBSERVER Folder (3F D-21). */
+  observer: { download: string; read: string };
   /** Lens C: two funds, one benchmark, one month, one window length. */
   comparison: {
     heading: string;

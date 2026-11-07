@@ -2,7 +2,7 @@
 //
 // The front page: what this site follows, and how to open one of them.
 
-import { PLAIN, append, el } from '../shim.ts';
+import { PLAIN, TABLE, append, el } from '../shim.ts';
 import type { ArchiveIndex, IndexFund } from '../state.ts';
 import { monthLabel } from './report.ts';
 
@@ -67,6 +67,25 @@ export function renderFunds(index: ArchiveIndex, handlers: FundsHandlers): HTMLE
   });
   append(list, ordered.map((f) => card(f, handlers)));
   append(root, [list]);
+
+  // Plain relative links: nothing loads until a reader asks, so the page's promise
+  // about what it fetches still holds (3F D-02, 3F D-21).
+  append(root, [
+    el(
+      'section',
+      { id: 'observer' },
+      el('h3', {}, PLAIN.observer.title),
+      el('p', {}, PLAIN.observer.mechanism),
+      el('p', { class: 'quiet' }, PLAIN.observer.whatWouldChangeIt),
+      el(
+        'p',
+        {},
+        el('a', { href: 'third_floor_observer.zip', download: 'third_floor_observer.zip' }, TABLE.observer.download),
+        ' · ',
+        el('a', { href: 'OBSERVER/README.md' }, TABLE.observer.read),
+      ),
+    ),
+  ]);
 
   return root;
 }

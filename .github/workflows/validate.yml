@@ -56,6 +56,14 @@ jobs:
       - name: Validate the archive
         run: npm run validate:data
 
+      # Conformance says the folder is well formed, replication says its numbers
+      # follow from its own formulas and rows. Neither stands in for the other.
+      - name: The OBSERVER Folder is current and checks out (3F D-21)
+        run: |
+          python3 -m pip install pyyaml
+          npm run check:observer
+          npm run validate:observer
+
       # The registry's reader-facing notes are rendered on a fund's report just
       # like a line from the deck, but they live in a data file the deck's own
       # test never walks. They shipped as engineering prose until this ran

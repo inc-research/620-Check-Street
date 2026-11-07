@@ -24,6 +24,7 @@ const SECTIONS: SectionKey[] = [
   'thin_data',
   'capture_trend',
   'history',
+  'observer',
   'comparing_funds',
 ];
 

@@ -650,6 +650,62 @@ boundary.
 rerun the script. Storing squared returns in a future report version would allow
 a band per fund.
 
+## 3F D-21 · The analysis is published as an OBSERVER Folder, and it ranks
+
+The owner wants the analysis readable by agents in the repository and downloadable
+from the site, to add to a conversation with any AI system. `OBSERVER/` does that,
+in OBSERVER Format 0.1. It is additive: no report page changes.
+
+**It ranks, and this is a decision rather than an oversight.** The format's top
+layer is ordered, which runs against "does not rank funds" and against 3F D-20's
+"no list across funds". The owner authorized it: reporting metrics in order with
+the numbers and their derivation shown is a different act from assigning grades to
+funds or writing sentences about predicted performance. The utility outweighs the
+old statement, so the claim leaves the site footer and the README. This narrows
+3F D-20 to the site's pages, which still read one fund at a time. Grades, verdicts
+and predictions stay forbidden, and generated prose passes the copy lint.
+
+**Top five and bottom five on eight measures.** Up and down net capture and up and
+down same-direction semibeta over twelve months, and up and down capture change at
+both lookbacks. "Bidirectional semibeta" means those two rows: the opposite-direction
+ones stay out (3F D-17), as does up-minus-down (3F D-20). 80 objects, against the
+4 a stricter rule would have elevated, so the tables at the head of the file are
+the readable layer.
+
+**Against VOO, so the funds can be read together.** The same reasoning as Lens C.
+This has a cost the folder states: a fund whose own benchmark is not VOO ranks
+partly on that mismatch, and its changes are noisier. Clearing both lookbacks in
+one direction happened on 12% to 17% of shuffled weeks against VOO for those funds,
+and 2% to 3% on a fund's own benchmark. Own-benchmark readings are in perception,
+unranked.
+
+**Evolution uses matched windows (3F D-13).** Thirteen weeks at three months back,
+six months at six. Each change carries its 3F D-20 band, and `within_band: true`
+marks one that could not be told from shuffled days. These are listed rather than
+removed: the ranking orders numbers, and the flag says what a number can bear.
+
+**The raw layer is report sums, not prices.** Everything recomputes from the sums
+and quadrant moments already published. How days became sums cannot be checked from
+the folder, which says so. Daily prices stay out for three reasons: republishing a
+vendor's series in a bulk download needs a terms check first, it would need a
+notebook change, and adjusted closes drift (3F D-08), so older months would only
+reproduce approximately. `raw_semibeta` recomputes from its stored moments exactly.
+
+**Its formulas are what runs.** Values come from executing the published strings.
+The build refuses to write if one disagrees with a stored figure or with
+`captureTrend.ts` anywhere in the archive, and the bands are read from the core so
+there is one copy. `generated.at` is the real build time, as the format now
+requires, and `--check` ignores it. The `OB_SKILL.md` first supplied predates this.
+
+**A correction, appended as this file requires.** 3F D-13 and 3F D-20 say adjacent
+windows share no days. They share one: the boundary day, which is the last day of
+the earlier window and also falls in the later one. The Observer says so. The site
+copy still says none, and one day in 63 or 126 does not change any figure's reading.
+
+*Reverses if:* the rankings are read as grades in practice, in which case the top
+layer moves to the stricter rule, or a terms check clears the prices for inclusion,
+which would let a reader rebuild the sums.
+
 ---
 
 ## Open

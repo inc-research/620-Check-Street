@@ -3,7 +3,7 @@
 """Gain and loss capture by sign quadrant, over one fixed period.
 
 An introductory research pass, deliberately outside the site and the archive:
-Third Floor's published reports do not rank funds. It describes one stretch of
+Third Floor's report pages do not rank funds. It describes one stretch of
 the market and claims nothing about what any fund does next.
 
 Why capture and not only semibeta. `quadrant_semibeta` is a slope about the

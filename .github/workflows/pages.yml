@@ -65,11 +65,22 @@ jobs:
       - name: Validate the reports
         run: npm run validate:reports
 
+      - name: The OBSERVER Folder is current and checks out (3F D-21)
+        run: |
+          python3 -m pip install pyyaml
+          npm run check:observer
+          npm run validate:observer
+
       - name: Build the site
         run: npm run build --workspace @third-floor/web
 
       - name: Publish the archive alongside the site
         run: cp -R data packages/web/dist/data
+
+      - name: Publish the OBSERVER Folder and its download
+        run: |
+          cp -R OBSERVER packages/web/dist/OBSERVER
+          python3 scripts/build_observer.py --zip packages/web/dist/third_floor_observer.zip
 
       # 3F D-02 amends INV-6 in scope rather than dropping it. Third Floor's
       # page must read its own committed archive, so a bare ban on `fetch` would
@@ -110,7 +121,7 @@ jobs:
         run: |
           cd packages/web/dist
           if grep -rniE 'api[_-]?key|secret[_-]?key|bearer |authorization:' \
-               --exclude-dir=data . ; then
+               --exclude-dir=data --exclude='*.zip' . ; then
             echo "::error::something that looks like a credential is in the built site"
             exit 1
           fi

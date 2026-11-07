@@ -134,6 +134,16 @@ export const PLAIN: Deck = {
     whenAbsent:
       'These two funds have no month in common with a published report for both.',
   },
+
+  observer: {
+    title: 'Using these figures with an AI system',
+    mechanism:
+      'The same figures are published as an OBSERVER Folder: a small set of files that opens with the five highest and five lowest funds on each measure, followed by every figure with the formula and the inputs behind it. Download it and add it to a conversation with any AI system, which can then recompute the figures from the folder itself.',
+    whatWouldChangeIt:
+      'The folder sets the funds in order on each measure, all against the same benchmark, which these pages do not do. An order describes a past period. It is not a grade, and it says nothing about what any fund does next.',
+    whenAbsent:
+      'The folder is published alongside each month’s reports.',
+  },
 };
 
 /**
@@ -279,6 +289,11 @@ export const TABLE: TableCopy = {
       change: 'Change',
       market: '$100 in the market',
     },
+  },
+
+  observer: {
+    download: 'Download the folder',
+    read: 'Read its first file',
   },
 
   history: {

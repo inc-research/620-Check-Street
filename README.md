@@ -18,8 +18,9 @@ archived but not shown: they could not be told from noise.
 A four-week window was computed at first and dropped: it leaves too few days in
 each case to report anything anybody should act on. See 3F D-10.
 
-It is a descriptive tool. It does not give advice, rank funds, or say anything
-about what any of them does next.
+It is a descriptive tool. It does not give advice, or say anything about what any
+of them does next. Its pages read one fund at a time; `OBSERVER/` sets the funds in
+order on each measure, with every number and its formula shown. See 3F D-21.
 
 **This README is short by design.** The real explanations live in the app, at the
 moment they are needed — the reader this is built for does not open a README.
@@ -47,7 +48,9 @@ signals.
    unzip -o third_floor_package.zip -d /tmp/third-floor-run
    node scripts/ingest-snapshots.mjs /tmp/third-floor-run
    node scripts/validate-snapshots.mjs
-   git add data && git commit -m 'data: monthly run' && git push
+   npm run build:index && npm run build:observer
+   npm run validate:observer
+   git add data OBSERVER && git commit -m 'data: monthly run' && git push
    ```
 
 `ingest-snapshots.mjs` refuses to overwrite a month that is already published.
@@ -81,6 +84,18 @@ with nothing on the page to separate the two — so each one refuses rather than
 approximating. The two comparisons name what they could not compare, and why.
 See 3F D-13 and 3F D-14.
 
+## The OBSERVER Folder
+
+`OBSERVER/` is this analysis in OBSERVER Format 0.1: the five highest and lowest
+funds on each of eight measures first, then every value with its formula and its
+inputs. It is for agents working in this repository, and the site offers it as a
+zip to add to a conversation with any AI system. It is generated from `data/` by
+`scripts/build_observer.py` and never edited by hand. The build refuses to write
+if a published formula disagrees with the archive or the core. See 3F D-21.
+
+`scripts/validate_observer.py` is the OBSERVER kit's checker, copied verbatim and
+not edited.
+
 ## Working on it
 
 ```sh
@@ -94,6 +109,8 @@ npm run check:index    # data/index.json matches what is on disk
 npm run validate:data  # every committed snapshot
 npm run validate:reports # every report, and that it matches its snapshot
 npm run check:registry # the registry's reader-facing prose passes the lint
+npm run check:observer # OBSERVER/ matches the archive
+npm run validate:observer # conformance, then replication from the folder alone
 npm run build --workspace @third-floor/web
 node packages/web/serve.mjs
 ```

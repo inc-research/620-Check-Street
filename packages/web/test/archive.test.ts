@@ -132,6 +132,29 @@ test('the front page frames the site in plain English, not a technical label', a
   }
 });
 
+test('the OBSERVER Folder is offered by relative links, so nothing leaves this origin', async () => {
+  const dom = installDom();
+  try {
+    const { renderFunds } = await import('../src/views/funds.ts');
+    const node = renderFunds(
+      {
+        app: 'Third Floor',
+        schema_version: '1.0',
+        anchors: ['VOO'],
+        universal_anchor: 'VOO',
+        funds: [],
+        totals: { tracked: 31, with_snapshots: 30, snapshots: 523 },
+      },
+      { onOpen: () => {} },
+    ) as unknown as { findAll: (tag: string) => { getAttribute: (k: string) => string | null }[] };
+    const links = node.findAll('a').map((a) => a.getAttribute('href'));
+    ok(links.includes('third_floor_observer.zip'), 'the download is missing');
+    for (const href of links) ok(href !== null && !/^(https?:|\/\/|\/)/.test(href), `not relative: ${href}`);
+  } finally {
+    dom.uninstall();
+  }
+});
+
 test('a fund with no reports is offered as too new, not as untracked', async () => {
   // LADM is exactly this in the live archive. The two states are different
   // facts and the page must not substitute one for the other.
