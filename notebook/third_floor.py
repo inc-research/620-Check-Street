@@ -21,7 +21,7 @@
 # Point `REPO` at your own clone if you have forked it.
 
 # %%
-REPO = "https://github.com/inc-research/Third_Floor.git"
+REPO = "https://github.com/inc-research/620-Check-Street.git"
 BRANCH = "main"
 
 import os
