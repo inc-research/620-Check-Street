@@ -109,7 +109,8 @@ test('the benchmark toggle moves capture and fit but not the fund’s own money'
   const iwm = (await render(computed, computedSnapshot, 'IWM')).text;
   strictEqual(read(voo, 'In this fund'), read(iwm, 'In this fund'));
   strictEqual(read(voo, 'This fund’s deepest fall'), read(iwm, 'This fund’s deepest fall'));
-  ok(read(voo, 'When the market rose') !== read(iwm, 'When the market rose'));
+  ok(read(voo, 'Upside capture') !== read(iwm, 'Upside capture'));
+  ok(read(voo, 'Loss buffer') !== read(iwm, 'Loss buffer'));
   ok(read(voo, 'Movement in line with the market') !== read(iwm, 'Movement in line with the market'));
 });
 
@@ -170,7 +171,9 @@ test('the benchmark ticker is told what it stands in for', async () => {
 });
 
 test('no spec vocabulary reaches the page', async () => {
-  const { text } = await render(computed, computedSnapshot, 'VOO');
+  // “Upside capture” is the one exception, by the owner’s choice: it is the term fund
+  // factsheets use, and it pairs with the loss buffer (620 Check Street).
+  const text = (await render(computed, computedSnapshot, 'VOO')).text.replace(/upside capture/gi, '');
   for (const jargon of ['semibeta', 'quadrant', 'Participation', 'Resilience', 'covariance', 'horizon', 'capture', 'R²']) {
     ok(!text.includes(jargon), `jargon leaked onto the page: ${jargon}`);
   }
@@ -260,4 +263,30 @@ test('the way through to the history view is offered only where the archive can 
   const both = await render(computed, computedSnapshot, 'VOO', ['2026-01', '2026-04', '2026-07'], ['6mo', '13wk']);
   ok(both.text.includes('Against six months ago'));
   ok(both.text.includes('Against thirteen weeks ago'));
+});
+
+test('the down side reads as a loss buffer, one minus what the fund carried', async () => {
+  const { text } = await render(computed, computedSnapshot, 'VOO');
+  const capture = (computed as never as { benchmarks: { VOO: { horizons: { down: { capture: number } }[] } } })
+    .benchmarks.VOO.horizons[0]!.down.capture;
+  ok(text.includes('Loss buffer'));
+  ok(text.includes(`loss buffer was ${(1 - capture).toFixed(2)}`), 'the lead sentence speaks in the buffer');
+  ok(!text.includes('When the market fell'));
+});
+
+test('the headline figures lead the page, ahead of the table', async () => {
+  const { node, text } = await render(computed, computedSnapshot, 'VOO');
+  const cards = node.findByClass('hero-card');
+  ok(cards.length >= 4, 'growth, upside capture, loss buffer and fit each get a card');
+  for (const label of ['$100 became', 'Upside capture', 'Loss buffer', 'In line with the market']) {
+    ok(cards.some((c) => (c.textContent as string).includes(label)), `no card for ${label}`);
+  }
+  ok(text.indexOf('$100 became') < text.indexOf('What happened to $100'), 'the cards come before the table');
+});
+
+test('the longer explanations start closed', async () => {
+  const { node } = await render(computed, computedSnapshot, 'VOO');
+  const explain = node.findByClass('explain');
+  ok(explain.length > 0);
+  ok(explain.every((d) => d.tagName.toLowerCase() === 'details' && d.getAttribute('open') === null));
 });

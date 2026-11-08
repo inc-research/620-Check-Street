@@ -3,6 +3,7 @@
 // The front page: what this site follows, and how to open one of them.
 
 import { PLAIN, TABLE, append, el } from '../shim.ts';
+import { explainer } from './layout.ts';
 import type { ArchiveIndex, IndexFund } from '../state.ts';
 import { monthLabel } from './report.ts';
 
@@ -37,7 +38,8 @@ function card(fund: IndexFund, handlers: FundsHandlers): HTMLElement {
       disabled: usable ? undefined : 'disabled',
       onclick: usable ? () => handlers.onOpen(fund.ticker) : undefined,
     },
-    el('h3', {}, `${fund.ticker} — ${fund.name}`),
+    el('p', { class: 'card-ticker' }, fund.ticker),
+    el('h3', {}, fund.name),
     el('p', {}, subtitle(fund)),
   );
   return node;
@@ -46,15 +48,19 @@ function card(fund: IndexFund, handlers: FundsHandlers): HTMLElement {
 export function renderFunds(index: ArchiveIndex, handlers: FundsHandlers): HTMLElement {
   const root = el('section', {});
 
+  // The list leads; what the site does and why is a click away (620 Check Street).
   append(root, [
-    el('h2', {}, PLAIN.overview.title),
-    el('p', {}, PLAIN.overview.mechanism),
-    el('h3', {}, PLAIN.benchmark_choice.title),
-    el('p', {}, PLAIN.benchmark_choice.mechanism),
+    el('h2', {}, 'The funds'),
     el(
       'p',
-      { class: 'quiet' },
+      { class: 'caption' },
       `${index.totals.tracked} funds are followed here. ${index.totals.with_snapshots} have enough history to report on, across ${index.totals.snapshots} monthly reports.`,
+    ),
+    explainer(
+      el('h4', {}, PLAIN.overview.title),
+      el('p', {}, PLAIN.overview.mechanism),
+      el('h4', {}, PLAIN.benchmark_choice.title),
+      el('p', {}, PLAIN.benchmark_choice.mechanism),
     ),
   ]);
 

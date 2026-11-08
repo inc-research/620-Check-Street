@@ -56,6 +56,14 @@ export const TREND_BANDS: Record<HorizonName, Record<TrendLookback, number>> = {
 export const TREND_SMALL_BASE = 0.1;
 
 export type TrendSide = 'up' | 'down';
+
+/**
+ * How the down side is read. `capture` is downside capture, as the archive and
+ * the OBSERVER Folder record it. `loss_buffer` is one minus that, as the page
+ * shows it. Bands are sizes, so they apply to either unchanged; the direction
+ * words follow the number being shown.
+ */
+export type TrendDownAs = 'capture' | 'loss_buffer';
 export type TrendDirection = 'higher' | 'lower' | 'about_the_same';
 /** Why a change that exists is not given as a percentage. */
 export type PercentAbsence = 'small_base' | 'sign_changed';
@@ -154,6 +162,7 @@ function pointFor(
   current: ReportDocument,
   benchmark: string,
   columnName: HorizonName,
+  downAs: TrendDownAs,
 ): TrendPoint {
   const missing = (blocker: Blocker): TrendPoint => {
     const blocked = { ...NOTHING, blockers: [blocker] };
@@ -178,8 +187,11 @@ function pointFor(
     return missing(BLOCKERS.trendLowFit(month, benchmark));
   }
 
-  const reading = (measure: 'capture_up' | 'capture_down'): TrendReading => {
-    const value = readMeasure(column, measure);
+  const reading = (measure: 'capture_up' | 'loss_buffer'): TrendReading => {
+    const read = readMeasure(column, measure);
+    // The archive's engine and the OBSERVER Folder read downside capture itself;
+    // the page reads it as a loss buffer, one minus that (620 Check Street).
+    const value = measure === 'loss_buffer' && downAs === 'capture' && read !== null ? 1 - read : read;
     return {
       value,
       thin: value !== null && isThin(column, measure),
@@ -191,7 +203,7 @@ function pointFor(
   return {
     month,
     up: reading('capture_up'),
-    down: reading('capture_down'),
+    down: reading('loss_buffer'),
     market: readMeasure(column, 'growth_benchmark'),
     windowStart: column.window_start,
     windowEnd: column.window_end,
@@ -251,11 +263,12 @@ export function buildCaptureTrend(
   earlier: ReadonlyMap<string, ReportDocument>,
   benchmark: string,
   column: HorizonName,
+  downAs: TrendDownAs = 'capture',
 ): CaptureTrend {
   const month = current.as_of.slice(0, 7);
   const previousMonth = monthsBack(month, 1);
   const point = (m: string, doc: ReportDocument | undefined) =>
-    pointFor(m, doc, current, benchmark, column);
+    pointFor(m, doc, current, benchmark, column, downAs);
 
   const empty: CaptureTrend = {
     ticker: current.ticker,

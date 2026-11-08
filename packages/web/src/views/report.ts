@@ -33,6 +33,8 @@ import {
   type Snapshot,
   type TableCell,
 } from '../shim.ts';
+import { renderHero } from './hero.ts';
+import { explainer, sectionHead } from './layout.ts';
 import { renderReal, type RealContext } from './real.ts';
 import { renderTrend } from './trend.ts';
 
@@ -136,7 +138,7 @@ export function groupHeadingRow(group: MeasureGroup, span: number): HTMLElement 
   const copy = TABLE.groups[group];
   return el(
     'tr',
-    { class: 'group' },
+    { class: `group ${group}` },
     el('th', { colspan: String(span), title: copy.blurb }, copy.heading),
   );
 }
@@ -221,13 +223,14 @@ function perOneSentences(model: ReportTable): HTMLElement | null {
       }),
     );
   }
-  if (lead.captureDown !== null) {
-    sentences.push(
-      fill(lead.captureDown < 0 ? TABLE.perOne.downOpposite : TABLE.perOne.down, {
-        window,
-        ratio: Math.abs(lead.captureDown).toFixed(2),
-      }),
-    );
+  if (lead.lossBuffer !== null) {
+    const buffer = lead.lossBuffer;
+    // The loss buffer is one minus downside capture, so what the fund carried
+    // is one minus the buffer. Above 1 the fund rose; below 0 it fell further.
+    const carried = Math.abs(1 - buffer).toFixed(2);
+    const template =
+      buffer > 1 ? TABLE.perOne.downOpposite : buffer < 0 ? TABLE.perOne.downDeeper : TABLE.perOne.down;
+    sentences.push(fill(template, { buffer: formatRatio(buffer), carried }));
   }
   return sentences.length > 0 ? el('p', { class: 'lead' }, sentences.join(' ')) : null;
 }
@@ -248,7 +251,7 @@ function legend(model: ReportTable): HTMLElement {
 function limits(): HTMLElement {
   const list = el('ul', {});
   for (const item of TABLE.limits.items) append(list, [el('li', {}, item)]);
-  return el('div', { class: 'limits' }, el('h3', {}, TABLE.limits.heading), list);
+  return el('div', { class: 'limits' }, list);
 }
 
 // --- the detail section ------------------------------------------------------
@@ -358,14 +361,18 @@ function detailSection(snapshot: Snapshot, benchmark: string): HTMLElement {
   );
 }
 
-/** The caveat nearly every fund in the coverage set carries. */
+/**
+ * The caveat nearly every fund in the coverage set carries. Its title stays on
+ * the page, near the top, and its explanation opens from it (620 Check Street).
+ */
 function outcomeCaveat(report: ReportDocument): HTMLElement | null {
   if (!report.methodology.defined_outcome_caveat) return null;
   return el(
-    'div',
+    'details',
     { class: 'caveat' },
-    el('h3', {}, PLAIN.outcome_period.title),
+    el('summary', {}, PLAIN.outcome_period.title),
     el('p', {}, PLAIN.outcome_period.mechanism),
+    el('p', {}, PLAIN.outcome_period.whatWouldChangeIt),
   );
 }
 
@@ -392,15 +399,14 @@ function blockedNotes(model: ReportTable): HTMLElement | null {
  * keep, and this reader has no way to know in advance which it is.
  */
 function historyOffer(ctx: ReportContext, handlers: ReportHandlers): HTMLElement {
-  const root = el('section', {});
-  append(root, [el('h3', {}, PLAIN.history.title)]);
+  const root = el('section', { class: 'block' });
+  append(root, [sectionHead(PLAIN.history.title, null, 'sky')]);
 
   if (ctx.history.length === 0) {
     append(root, [el('p', { class: 'quiet' }, PLAIN.history.whenAbsent)]);
     return root;
   }
 
-  append(root, [el('p', {}, PLAIN.history.mechanism)]);
   const buttons = el('div', { class: 'controls' });
   const group = el('div', {});
   for (const l of ctx.history) {
@@ -413,7 +419,7 @@ function historyOffer(ctx: ReportContext, handlers: ReportHandlers): HTMLElement
     );
   }
   append(buttons, [group]);
-  append(root, [buttons]);
+  append(root, [buttons, explainer(el('p', {}, PLAIN.history.mechanism))]);
   return root;
 }
 
@@ -426,15 +432,13 @@ function historyOffer(ctx: ReportContext, handlers: ReportHandlers): HTMLElement
  * on the page would separate the two.
  */
 function compareOffer(ctx: ReportContext, handlers: ReportHandlers): HTMLElement {
-  const root = el('section', {});
-  append(root, [el('h3', {}, PLAIN.comparing_funds.title)]);
+  const root = el('section', { class: 'block' });
+  append(root, [sectionHead(PLAIN.comparing_funds.title, null, 'violet')]);
 
   if (ctx.companions.length === 0) {
     append(root, [el('p', { class: 'quiet' }, PLAIN.comparing_funds.whenAbsent)]);
     return root;
   }
-
-  append(root, [el('p', {}, PLAIN.comparing_funds.mechanism)]);
 
   const select = el('select', {
     id: 'compare-with',
@@ -454,6 +458,7 @@ function compareOffer(ctx: ReportContext, handlers: ReportHandlers): HTMLElement
       { class: 'controls' },
       el('div', {}, el('label', { for: 'compare-with' }, 'Set beside'), select),
     ),
+    explainer(el('p', {}, PLAIN.comparing_funds.mechanism)),
   ]);
   return root;
 }
@@ -501,50 +506,54 @@ function controls(ctx: ReportContext, handlers: ReportHandlers): HTMLElement {
 
 export function renderReport(ctx: ReportContext, handlers: ReportHandlers): HTMLElement {
   const model = buildReportTable(ctx.report, ctx.benchmark);
-  const root = el('section', {});
+  const root = el('section', { class: 'report' });
 
   append(root, [
     el('button', { class: 'back', onclick: () => handlers.onBack() }, '← All funds'),
     el('h2', {}, ctx.report.name),
-    el('p', { class: 'quiet' }, `${ctx.report.ticker} · ${ctx.report.issuer}`),
+    el('p', { class: 'meta' }, `${ctx.report.ticker} · ${ctx.report.issuer}`),
     controls(ctx, handlers),
   ]);
 
   // Shown whether or not a chooser was drawn: a fund with one benchmark still
   // has its reading taken against a ticker the reader has to recognise.
   const indexNote = benchmarkIndexNote(ctx.benchmark);
-  if (indexNote) {
-    append(root, [el('p', { class: 'benchmark-index' }, indexNote)]);
-  }
+  if (indexNote) append(root, [el('p', { class: 'benchmark-index' }, indexNote)]);
+  if (ctx.benchmarkNote) append(root, [el('p', { class: 'benchmark-note' }, ctx.benchmarkNote)]);
 
-  if (ctx.benchmarkNote) {
-    append(root, [el('p', { class: 'benchmark-note' }, ctx.benchmarkNote)]);
-  }
+  const caveat = outcomeCaveat(ctx.report);
+  if (caveat) append(root, [caveat]);
 
-  append(root, [el('h3', {}, PLAIN.money.title), el('p', {}, PLAIN.overview.mechanism)]);
+  // The numbers lead (620 Check Street): the headline figures, then each table
+  // with one line of context, and the longer explanation closed beneath it.
+  append(root, [renderHero({ report: ctx.report, model, ...ctx.real })]);
 
+  const figures = el('section', { class: 'block' });
+  append(figures, [sectionHead(TABLE.sections.figures.heading, TABLE.sections.figures.caption, 'blue')]);
   const lead = perOneSentences(model);
-  if (lead) append(root, [lead]);
-
-  append(root, [mainTable(model)]);
-  append(root, [
-    el(
-      'p',
-      { class: 'assumption' },
-      `Worked out from daily closing prices up to ${model.asOf}, against ${model.benchmark}. “The market” here means ${model.benchmark}.`,
+  if (lead) append(figures, [lead]);
+  append(figures, [mainTable(model)]);
+  const blocked = blockedNotes(model);
+  if (blocked) append(figures, [blocked]);
+  append(figures, [
+    explainer(
+      el('p', {}, PLAIN.overview.mechanism),
+      el('p', {}, PLAIN.money.mechanism),
+      el('p', {}, PLAIN.exposure.mechanism),
+      el('p', {}, PLAIN.follows.mechanism),
+      legend(model),
+      el(
+        'p',
+        { class: 'assumption' },
+        `Worked out from daily closing prices up to ${model.asOf}, against ${model.benchmark}. “The market” here means ${model.benchmark}.`,
+      ),
     ),
   ]);
-
-  append(root, [legend(model)]);
-
-  const blocked = blockedNotes(model);
-  if (blocked) append(root, [blocked]);
+  append(root, [figures]);
 
   append(root, [
     renderReal({ ...ctx.real, report: ctx.report, benchmark: ctx.benchmark }, handlers.onAdviser),
   ]);
-
-  append(root, [limits()]);
   append(root, [
     renderTrend(
       { report: ctx.report, earlier: ctx.earlier, benchmark: ctx.benchmark, column: ctx.trendColumn },
@@ -555,12 +564,24 @@ export function renderReport(ctx: ReportContext, handlers: ReportHandlers): HTML
   append(root, [historyOffer(ctx, handlers)]);
   append(root, [compareOffer(ctx, handlers)]);
 
-  const caveat = outcomeCaveat(ctx.report);
-  if (caveat) append(root, [caveat]);
-
-  append(root, [
-    el('p', { class: 'assumption' }, `What would change this: ${PLAIN.money.whatWouldChangeIt}`),
+  const notes = el('section', { class: 'block notes' });
+  append(notes, [
+    sectionHead(TABLE.sections.notes.heading, null, 'gold'),
+    el(
+      'details',
+      { class: 'explain' },
+      el('summary', {}, TABLE.limits.heading),
+      limits(),
+    ),
+    el(
+      'details',
+      { class: 'explain' },
+      el('summary', {}, TABLE.sections.notes.changes),
+      el('p', {}, PLAIN.money.whatWouldChangeIt),
+      el('p', {}, PLAIN.exposure.whatWouldChangeIt),
+    ),
   ]);
+  append(root, [notes]);
 
   return root;
 }

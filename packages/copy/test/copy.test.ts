@@ -114,8 +114,15 @@ test('every measure has a label and a spelled-out form', () => {
 test('the per-1% sentences say what the number is, and name its placeholder', () => {
   // The sentence the survey found false on the semibeta table is now the
   // headline, so what it may say is pinned here (3F D-17).
-  for (const key of ['up', 'down', 'upOpposite', 'downOpposite'] as const) {
+  for (const key of ['up', 'upOpposite'] as const) {
     ok(TABLE.perOne[key].includes('{ratio}%'), `${key} has no ratio`);
+    ok(TABLE.perOne[key].includes('1%'), `${key} does not say per 1%`);
+  }
+  // The down side leads with the loss buffer and still says what was carried per
+  // 1%, so the buffer is never read without the loss it stands for.
+  for (const key of ['down', 'downOpposite', 'downDeeper'] as const) {
+    ok(TABLE.perOne[key].includes('{buffer}'), `${key} does not name the loss buffer`);
+    ok(TABLE.perOne[key].includes('{carried}%'), `${key} does not say what was carried`);
     ok(TABLE.perOne[key].includes('1%'), `${key} does not say per 1%`);
   }
   ok(TABLE.perOne.lowFit.includes('{share}%'));

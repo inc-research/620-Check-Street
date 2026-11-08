@@ -22,6 +22,7 @@ import {
   type MeasureKind,
   type ReportDocument,
 } from '../shim.ts';
+import { explainer, sectionHead } from './layout.ts';
 import { formatGap, formatMeasure, groupHeadingRow, monthLabel } from './report.ts';
 
 export interface CompareHandlers {
@@ -178,9 +179,9 @@ export function renderCompare(ctx: CompareContext, handlers: CompareHandlers): H
   append(root, [
     el('button', { class: 'back', onclick: () => handlers.onBack() }, '← Back to the report'),
     el('h2', {}, PLAIN.comparing_funds.title),
-    el('p', { class: 'quiet' }, `${model.a} — ${model.nameA}, beside ${model.b} — ${model.nameB}`),
+    el('p', { class: 'meta' }, `${model.a} beside ${model.b}`),
+    el('p', { class: 'caption' }, `${model.nameA} · ${model.nameB}`),
     controls(ctx, handlers),
-    el('p', {}, PLAIN.comparing_funds.mechanism),
   ]);
 
   // A refused comparison shows why and stops. Half of it would be worse than
@@ -197,8 +198,7 @@ export function renderCompare(ctx: CompareContext, handlers: CompareHandlers): H
   const column = TABLE.columns[model.horizon as keyof typeof TABLE.columns];
 
   append(root, [
-    el('h3', {}, TABLE.comparison.heading),
-    el('p', { class: 'quiet' }, TABLE.comparison.sameEverythingElse),
+    sectionHead(TABLE.comparison.heading, TABLE.comparison.sameEverythingElse, 'blue'),
     tableFor(model),
     // INV-1: the figures never leave the page without what they were worked
     // out from — which month, which days, which market, which length of time.
@@ -215,13 +215,11 @@ export function renderCompare(ctx: CompareContext, handlers: CompareHandlers): H
     el('p', {}, TABLE.comparison.alike),
     el('p', {}, TABLE.comparison.unavailable),
   ]);
-  append(root, [legend]);
-
   append(root, [
-    el(
-      'p',
-      { class: 'assumption' },
-      `What would change this: ${PLAIN.comparing_funds.whatWouldChangeIt}`,
+    explainer(
+      el('p', {}, PLAIN.comparing_funds.mechanism),
+      legend,
+      el('p', { class: 'assumption' }, `What would change this: ${PLAIN.comparing_funds.whatWouldChangeIt}`),
     ),
   ]);
 

@@ -19,9 +19,10 @@ const PUBLIC = join(here, 'public');
 const FONTS = join(here, 'fonts');
 
 const FONT_SLOTS = {
-  __FONT_ARVO_400__: 'arvo-400-latin.woff2',
-  __FONT_ARVO_700__: 'arvo-700-latin.woff2',
+  __FONT_ARSENAL_400__: 'arsenal-400-latin.woff2',
+  __FONT_ARSENAL_700__: 'arsenal-700-latin.woff2',
   __FONT_NEWSREADER__: 'newsreader-var-latin.woff2',
+  __FONT_JETBRAINS_MONO__: 'jetbrains-mono-var-latin.woff2',
 };
 
 function embedFonts(css) {

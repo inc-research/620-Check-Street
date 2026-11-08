@@ -38,7 +38,7 @@ export const PLAIN: Deck = {
   exposure: {
     title: 'How much of the market the fund carried',
     mechanism:
-      'Takes every day the market rose and adds up the fund’s moves and the market’s moves, then does the same for every day it fell. Days the fund went the other way are included and count against it. 1.00 would mean the fund moved as far as the market did.',
+      'Takes every day the market rose and adds up the fund’s moves and the market’s moves, then does the same for every day it fell. Days the fund went the other way are included and count against it. On rising days the figure is the upside capture: 1.00 would mean the fund rose as far as the market did. On falling days it is the loss buffer, the part of each 1% fall that did not show up in the fund: 0 means the fund fell as far as the market, 0.50 that it fell half as far, and 1.00 that it did not fall at all. Below 0, the fund fell further than the market; above 1.00, it rose overall while the market fell.',
     whatWouldChangeIt:
       'Funds built around options often move less than the market in both directions. Where the fund sits between its cap and its floor at the time changes how much of each it does.',
     whenAbsent:
@@ -108,7 +108,7 @@ export const PLAIN: Deck = {
   capture_trend: {
     title: 'How has this changed lately?',
     mechanism:
-      'Each month’s report measures how much of the market’s rises and falls the fund carried. This reads those figures from one report to the next, for market-up days and market-down days separately. Each figure covers the same length of time, ending at that month’s close.',
+      'Each month’s report measures how much of the market’s rises and falls the fund carried. This reads those figures from one report to the next, for market-up days and market-down days separately, with the down side shown as the loss buffer: a higher loss buffer means less of the market’s falls showed up in the fund. Each figure covers the same length of time, ending at that month’s close.',
     whatWouldChangeIt:
       'A change says the fund carried more or less of the market than it did before. It does not say why. The market moved differently across these periods, a fund can read differently without anything in it having changed, and the same days can sit in both of the figures being compared.',
     whenAbsent:
@@ -183,8 +183,8 @@ export const TABLE: TableCopy = {
     day_up_fund: { label: 'This fund, on the market’s rising days', full: 'This fund’s average day, across the days the market rose' },
     day_down_benchmark: { label: 'Market, on its falling days', full: 'The market’s average day, across the days it fell' },
     day_down_fund: { label: 'This fund, on the market’s falling days', full: 'This fund’s average day, across the days the market fell' },
-    capture_up: { label: 'When the market rose', full: 'How far this fund moved for every 1% the market gained, across its rising days' },
-    capture_down: { label: 'When the market fell', full: 'How far this fund moved for every 1% the market lost, across its falling days' },
+    capture_up: { label: 'Upside capture', full: 'How far this fund rose for every 1% the market gained, across the market’s rising days' },
+    loss_buffer: { label: 'Loss buffer', full: 'How much of each 1% the market lost did not show up in this fund, across the market’s falling days. 0.24 means the fund lost 0.76% for every 1% the market lost' },
     fit: { label: 'Movement in line with the market', full: 'The share of this fund’s day-to-day movement that lines up with the market’s' },
     against_down: { label: 'Market fell, fund rose', full: 'The share of the market’s falling days on which this fund rose' },
     against_up: { label: 'Market rose, fund fell', full: 'The share of the market’s rising days on which this fund fell' },
@@ -192,9 +192,10 @@ export const TABLE: TableCopy = {
 
   perOne: {
     up: 'Over {window}, across the days the market rose, this fund gained {ratio}% for every 1% the market gained.',
-    down: 'Across the days the market fell, this fund lost {ratio}% for every 1% the market lost.',
+    down: 'Its loss buffer was {buffer}: across the days the market fell, it lost {carried}% for every 1% the market lost.',
     upOpposite: 'Over {window}, across the days the market rose, this fund fell overall: {ratio}% for every 1% the market gained.',
-    downOpposite: 'Across the days the market fell, this fund rose overall: {ratio}% for every 1% the market lost.',
+    downOpposite: 'Its loss buffer was {buffer}: across the days the market fell, it rose overall, {carried}% for every 1% the market lost.',
+    downDeeper: 'Its loss buffer was {buffer}: across the days the market fell, it lost {carried}% for every 1% the market lost, which is more than the market did.',
     lowFit:
       'Over {window}, only {share}% of this fund’s day-to-day movement lined up with {benchmark}. With so little in common, a figure per 1% of the market would not describe this fund, so none is offered here. The money figures are what happened. The two per-1% rows in the table are arithmetic, kept as a record.',
   },
@@ -247,6 +248,33 @@ export const TABLE: TableCopy = {
     '13wk': { short: '13 wk', full: 'the past thirteen weeks' },
   },
 
+  hero: {
+    heading: 'At a glance: {window}',
+    growth: { label: '$100 became', sub: 'In the market: {market}' },
+    real: {
+      label: 'In today’s money',
+      subAdviser: 'After a 1% adviser’s fee and {inflation}% inflation. The market: {market}',
+      subPlain: 'After {inflation}% inflation, with no adviser’s fee. The market: {market}',
+    },
+    up: { label: 'Upside capture', sub: 'Gained for every 1% the market gained' },
+    buffer: { label: 'Loss buffer', sub: 'Of every 1% the market lost, the part this fund did not lose' },
+    fit: { label: 'In line with the market', sub: 'Share of daily movement matching {benchmark}' },
+    lowFit: '{benchmark} explains too little of this fund’s movement for this figure to describe it.',
+    none: 'Not enough history yet.',
+  },
+
+  sections: {
+    figures: {
+      heading: 'The figures',
+      caption: 'Three stretches of time, each ending at this report’s month-end close.',
+    },
+    trend: { caption: 'Upside capture and loss buffer now, against earlier monthly reports.' },
+    real: { caption: 'The same $100, after an adviser’s fee and inflation, beside Treasury bills.' },
+    notes: { heading: 'Notes on these figures', changes: 'What would change these figures' },
+  },
+
+  explainSummary: 'How to read this',
+
   real: {
     heading: 'After an adviser’s fee and inflation',
     intro:
@@ -259,7 +287,7 @@ export const TABLE: TableCopy = {
       fund: { label: '$100 in this fund', full: 'What $100 in this fund was worth at the end, in money of the last month' },
       market: { label: '$100 in the market', full: 'What $100 in the market was worth at the end, in money of the last month' },
       bills: { label: '$100 in Treasury bills', full: 'What $100 in three-month Treasury bills was worth at the end, in money of the last month' },
-      prices: { label: 'Prices rose by', full: 'How much consumer prices rose over the period' },
+      prices: { label: 'Inflation', full: 'Inflation: how much consumer prices rose over the period' },
     },
     costs:
       'This fund’s own costs, {total}% a year, are already inside every figure on this page: they come out of its price day by day.',
@@ -291,8 +319,8 @@ export const TABLE: TableCopy = {
       three: 'Three months back',
       six: 'Six months back',
     },
-    upRow: { label: 'Market-up days', full: 'Share of the market’s rise carried, across every day the market rose' },
-    downRow: { label: 'Market-down days', full: 'Share of the market’s fall carried, across every day the market fell' },
+    upRow: { label: 'Upside capture', full: 'Share of the market’s rise carried, across every day the market rose' },
+    downRow: { label: 'Loss buffer', full: 'How much of each 1% the market lost did not show up in this fund, across every day the market fell' },
     marketRow: { label: '$100 in the market', full: 'What $100 in the market became over the same length of time' },
     was: 'was {value}',
     then: '{value} then',
@@ -321,8 +349,8 @@ export const TABLE: TableCopy = {
     runIntro: 'The same figures at each of the last six monthly reports, with the percentage change from the report before.',
     runColumns: {
       month: 'Report',
-      up: 'Market-up days',
-      down: 'Market-down days',
+      up: 'Upside capture',
+      down: 'Loss buffer',
       change: 'Change',
       market: '$100 in the market',
     },

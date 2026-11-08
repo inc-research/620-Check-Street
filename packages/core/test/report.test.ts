@@ -91,7 +91,9 @@ test('dollar readings are per $100, shares are out of 100, ratios are left alone
   strictEqual(readMeasure(h, 'fall_fund'), 100 * h.worst_fall!.fund.depth);
   strictEqual(readMeasure(h, 'day_up_fund'), 100 * h.up!.average_fund!);
   strictEqual(readMeasure(h, 'fit'), 100 * h.fit!.r_squared!);
-  strictEqual(readMeasure(h, 'capture_down'), h.down!.capture);
+  strictEqual(readMeasure(h, 'capture_up'), h.up!.capture);
+  // The loss buffer is one minus downside capture: 0.76 carried is 0.24 kept off.
+  strictEqual(readMeasure(h, 'loss_buffer'), 1 - h.down!.capture!);
 });
 
 test('the sentence speaks about the longest window that computed', () => {

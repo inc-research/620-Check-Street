@@ -44,8 +44,8 @@ async function render(
 
 test('a normal fund shows its levels, its changes and the market', async () => {
   const text = await render('RFLR', 'IWM', '13wk', earlierFor('RFLR'));
-  ok(text.includes('Market-up days'));
-  ok(text.includes('Market-down days'));
+  ok(text.includes('Upside capture'));
+  ok(text.includes('Loss buffer'));
   ok(text.includes('$100 in the market'));
   ok(text.includes('Since September 2026'));
   ok(/[+−]\d+\.\d%/.test(text), 'the month’s percentage is printed');
@@ -90,7 +90,7 @@ test('a young fund reads the month it has and dashes the rest', async () => {
 
 test('an earlier report that failed to load costs only its own cells', async () => {
   const text = await render('RFLR', 'IWM', '13wk', new Map());
-  ok(text.includes('Market-up days'));
+  ok(text.includes('Upside capture'));
   ok(text.includes('—'));
   strictEqual(/\d\.\d\d then/.test(text), false);
 });

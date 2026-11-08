@@ -795,6 +795,52 @@ calls for its own decision.
 which case it is withheld until published, or readers turn out mostly to hold these
 funds themselves, in which case the adviser's fee starts off.
 
+## 3F D-24 · 620 Check Street: the numbers lead, and downside capture is a loss buffer
+
+The owner asked for the presentation to put human reading first, and authorized
+every departure from the house design rules below.
+
+**Name and look.** The site is titled 620 CHECK STREET, white lettering on
+street-sign green. That sign is the only green on the page. The page is white with
+black ink. Arsenal sets the title and every heading, Newsreader stays for body
+text, and JetBrains Mono sets the figures. Arvo is gone. All four faces are
+embedded as before (SF-18). Accents are bright blue, orange, violet, sky and gold:
+each table group and section has one, and none is green or red, so a colour says
+which section a figure is in and never whether it is good.
+
+**Colour now marks direction of change.** It did not before (3F D-20 said "no
+colour"). Blue is up, orange is down, and grey is about the same. The sign and
+the word still travel with every change, and a change that rounds to nothing gets
+no colour.
+
+**The loss buffer.** Downside capture is shown as one minus itself: 0.76 carried
+reads as a loss buffer of 0.24. Above 1, the fund rose overall while the market
+fell. Below 0, it fell further than the market. Each case has its own sentence.
+The change is in `readMeasure` (`loss_buffer` replaces `capture_down`), so the
+report, Lens B and Lens C read the same figure. The capture-over-time engine reads
+capture by default and the page asks for the buffer: the OBSERVER Folder and its
+replication check keep downside capture unchanged. The trend's bands are sizes, so
+they apply as they were. Its percentage changes and the below-0.10 withholding rule
+now act on the buffer, because that is the figure on the page. Funds that track
+the market closely have buffers near 0, so they will show "a plain difference"
+more often than they did.
+
+**"Upside capture" is allowed on the page.** "capture" was on the jargon list. It is
+the term fund factsheets use, and it is the natural partner of the loss buffer.
+The render test exempts that one phrase.
+
+**The numbers lead.** Each report opens with five cards for the longest window
+that computed: what $100 became, the same in today's money, upside capture, loss buffer
+and fit. Then come the tables, each under a coloured heading with one line of
+context. Every longer explanation (mechanisms, legends, limits, the outcome-period
+caveat, and the Lens B and Lens C prose) is in a closed "How to read this". The
+caveat's title stays visible near the top, so it is still prominent. "Prices rose
+by" is now "Inflation". The fund list leads the front page.
+
+*Reverses if:* readers misread the loss buffer as a promise about future falls. In
+that case the per-1% sentence, which always states what was carried, moves above
+the cards.
+
 ---
 
 ## Open

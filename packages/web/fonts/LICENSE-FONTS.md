@@ -1,17 +1,22 @@
 # Fonts vendored here
 
-Both faces are licensed under the SIL Open Font License 1.1, which permits
+All three faces are licensed under the SIL Open Font License 1.1, which permits
 bundling and redistribution — including embedding into a stylesheet as a
 `data:` URI, which is what this build does (SF-18).
 
 | File | Family | Weight | Subset | Source |
 |---|---|---|---|---|
-| `arvo-400-latin.woff2` | Arvo | 400 | latin | Google Fonts, Arvo v23 |
-| `arvo-700-latin.woff2` | Arvo | 700 | latin | Google Fonts, Arvo v23 |
+| `arsenal-400-latin.woff2` | Arsenal | 400 | latin | Fontsource `@fontsource/arsenal` 5.3.0 |
+| `arsenal-700-latin.woff2` | Arsenal | 700 | latin | Fontsource `@fontsource/arsenal` 5.3.0 |
 | `newsreader-var-latin.woff2` | Newsreader | 200–800 variable | latin | Google Fonts, Newsreader v26 |
+| `jetbrains-mono-var-latin.woff2` | JetBrains Mono | 100–800 variable | latin | Fontsource `@fontsource-variable/jetbrains-mono` 5.3.0 |
 
-Newsreader is a variable font: one file covers every weight the page uses, which
-is why there is one of it and two of Arvo.
+Arsenal sets the site title and every heading. Newsreader sets body text.
+JetBrains Mono sets the figures, with tabular digits so columns line up. Arvo,
+the earlier heading face, was removed in the 620 Check Street redesign.
+
+Newsreader and JetBrains Mono are variable fonts: one file covers every weight
+the page uses, which is why there is one of each and two of Arsenal.
 
 Only the **latin** subsets are vendored. Google serves latin-ext, Vietnamese and
 Cyrillic cuts as separate files, and the whole set would roughly double the page
@@ -35,7 +40,7 @@ so the promise is checked rather than remembered.
 
 ## SIL Open Font License 1.1
 
-Arvo © Anton Koovit. Newsreader © Production Type.
+Arsenal © 2012 The Arsenal Project Authors. Newsreader © Production Type. JetBrains Mono © 2020 The JetBrains Mono Project Authors.
 
 The full licence text is at <https://openfontlicense.org>. Its substance, for
 this use: the fonts may be bundled and redistributed with or without

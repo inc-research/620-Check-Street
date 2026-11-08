@@ -58,13 +58,14 @@ test('the benchmark’s own rows are left out, being the same on both sides', ()
 });
 
 test('the difference is signed, because which fund moved further is the finding', () => {
+  // The other fund's downside capture of 2.0 is a loss buffer of -1.0.
   const b = other('OTHR', (s) => {
     column(s).down!.capture = 2.0;
   });
-  const row = buildLensC(base, b, 'VOO', '12mo').rows.find((r) => r.measure === 'capture_down')!;
+  const row = buildLensC(base, b, 'VOO', '12mo').rows.find((r) => r.measure === 'loss_buffer')!;
   ok(row.a !== null && row.difference !== null);
-  strictEqual(row.difference, row.a - 2.0);
-  ok(row.difference < 0);
+  strictEqual(row.difference, row.a - (1 - 2.0));
+  ok(row.difference > 0);
 });
 
 test('both readings survive into the row, not only the gap between them', () => {

@@ -80,7 +80,7 @@ export type MeasureKey =
   | 'day_down_benchmark'
   | 'day_down_fund'
   | 'capture_up'
-  | 'capture_down'
+  | 'loss_buffer'
   | 'fit'
   | 'against_down'
   | 'against_up';
@@ -97,9 +97,13 @@ export interface TableCopy {
    */
   perOne: {
     up: string;
+    /** Loss buffer between 0 and 1: the fund fell, by less than the market. */
     down: string;
     upOpposite: string;
+    /** Loss buffer above 1: the fund rose overall on the market's falling days. */
     downOpposite: string;
+    /** Loss buffer below 0: the fund fell further than the market did. */
+    downDeeper: string;
     lowFit: string;
   };
   /** The basis of the money figures, and what they cannot say. */
@@ -115,6 +119,26 @@ export interface TableCopy {
     steady: string;
     unavailable: string;
   };
+  /** The headline figures at the top of a fund's report (620 Check Street). {placeholders} are filled by the view. */
+  hero: {
+    heading: string;
+    growth: { label: string; sub: string };
+    real: { label: string; subAdviser: string; subPlain: string };
+    up: { label: string; sub: string };
+    buffer: { label: string; sub: string };
+    fit: { label: string; sub: string };
+    lowFit: string;
+    none: string;
+  };
+  /** Section headings, and the one line under each, before the detail is opened. */
+  sections: {
+    figures: { heading: string; caption: string };
+    trend: { caption: string };
+    real: { caption: string };
+    notes: { heading: string; changes: string };
+  };
+  /** The label on every closed explanation. */
+  explainSummary: string;
   /** After an adviser's fee and inflation (3F D-22, D-23). {placeholders} are filled by the view. */
   real: {
     heading: string;

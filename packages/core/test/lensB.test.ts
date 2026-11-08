@@ -66,14 +66,15 @@ test('a comparable pair yields a signed change per row', () => {
 });
 
 test('the change is signed, because the direction is the finding', () => {
+  // Downside capture 2.0 then is a loss buffer of -1.0: the fund lost twice the market.
   const before = past('2026-01', (s) => {
     six(s).down!.capture = 2.0;
   });
-  const row = buildLensB(now, before, 'VOO', '6mo').rows.find((r) => r.measure === 'capture_down')!;
-  strictEqual(row.then, 2.0);
+  const row = buildLensB(now, before, 'VOO', '6mo').rows.find((r) => r.measure === 'loss_buffer')!;
+  strictEqual(row.then, 1 - 2.0);
   ok(row.now !== null && row.change !== null);
-  strictEqual(row.change, row.now - 2.0);
-  ok(row.change < 0, 'the fund now carries less than it did, so the change is negative');
+  strictEqual(row.change, row.now - (1 - 2.0));
+  ok(row.change > 0, 'the fund now loses less of each fall than it did, so its buffer rose');
 });
 
 test('no row carries a marker: this lens draws no dot at all', () => {

@@ -477,7 +477,13 @@ distinguishes nothing.
 
 ## Report table — UI spec
 
-**Rebuilt by 3F D-17.** Read that decision before changing any of this.
+**Rebuilt by 3F D-17, and restyled as 620 Check Street by 3F D-24.** Read both
+before changing any of this. Where the bullets below and 3F D-24 disagree, 3F D-24
+wins: the site is titled 620 CHECK STREET, the page is white with Arsenal headings,
+Newsreader body and JetBrains Mono figures, five headline cards lead each report,
+every long explanation sits in a closed "How to read this", downside capture is
+shown as the **loss buffer** (one minus it), and colour marks a section or the
+direction of a change, never green or red.
 
 - **Columns**, left to right: `12 mo`, `6 mo`, `13 wk` (3F D-10 removed `4 wk`).
 - **Rows**, grouped under four headers:
@@ -507,8 +513,9 @@ distinguishes nothing.
   reports. Each side on its own: changes in the gap between them could not be told
   from noise. The percentage is over the earlier reading's size and is withheld
   below 0.10 or across a change of sign. Direction uses the per-window bands in
-  `packages/core/src/captureTrend.ts`. No dot, no colour, no cause, no list across
-  funds.
+  `packages/core/src/captureTrend.ts`. No dot, no cause, no list across funds. The
+  down side reads as the loss buffer, and changes are coloured blue for up and
+  orange for down (3F D-24).
 - **Shift marker:** small amber dot, no text badge, only in the detail section:
   at least `0.30` from the row's `12 mo` reading. Where that row is blocked no cell
   is marked and the section says so once (3F-O-02, closed). Lens C carries a dot on

@@ -26,6 +26,7 @@ import {
   type TrendReading,
   type TrendStep,
 } from '../shim.ts';
+import { explainer, sectionHead } from './layout.ts';
 import { fill, formatGap, formatMeasure, monthLabel, signOf } from './report.ts';
 
 export interface TrendContext {
@@ -61,16 +62,22 @@ function level(r: TrendReading, label: string): HTMLElement {
 /** The change itself: a percentage, or a plain gap where a percentage would mislead. */
 function changeText(step: TrendStep): HTMLElement {
   if (step.change === null) return dash(step.then.blockers);
+  // Colour marks only which way the figure moved: blue up, orange down. The
+  // sign travels with it in the text (620 Check Street).
+  // Judged on what is printed, so a change that rounds to nothing is not coloured.
+  const shown = step.percent === null ? Math.round(step.change * 100) : Math.round(step.percent * 10);
+  const way = shown > 0 ? 'change rise' : shown < 0 ? 'change fall' : 'change';
   if (step.percent === null) {
     return el(
       'span',
       {
+        class: way,
         title: step.percentAbsence === 'small_base' ? TABLE.trend.smallBase : TABLE.trend.signChanged,
       },
       formatGap(step.change, 'ratio'),
     );
   }
-  return el('span', {}, `${signOf(step.percent, 1)}${Math.abs(step.percent).toFixed(1)}%`);
+  return el('span', { class: way }, `${signOf(step.percent, 1)}${Math.abs(step.percent).toFixed(1)}%`);
 }
 
 function stacked(top: HTMLElement, under: string | null): HTMLElement {
@@ -112,7 +119,7 @@ function legRow(leg: CaptureTrend['legs'][number]): HTMLElement {
       const then = ratio(b.then.value);
       const said = b.direction ? DIRECTION[b.direction] : null;
       return stacked(
-        said ? el('span', {}, said) : dash(b.then.blockers),
+        said ? el('span', { class: `direction ${b.direction}` }, said) : dash(b.then.blockers),
         then ? fill(TABLE.trend.then, { value: then }) : null,
       );
     }),
@@ -190,8 +197,8 @@ function chooser(ctx: TrendContext, onColumn: (c: HorizonName) => void): HTMLEle
 }
 
 export function renderTrend(ctx: TrendContext, onColumn: (c: HorizonName) => void): HTMLElement {
-  const root = el('section', { id: 'capture-trend' });
-  append(root, [el('h3', {}, PLAIN.capture_trend.title)]);
+  const root = el('section', { id: 'capture-trend', class: 'block' });
+  append(root, [sectionHead(PLAIN.capture_trend.title, TABLE.sections.trend.caption, 'orange')]);
 
   const available = trendColumns(ctx.report, ctx.benchmark);
   const first = available[0];
@@ -203,9 +210,9 @@ export function renderTrend(ctx: TrendContext, onColumn: (c: HorizonName) => voi
   // A window this fund cannot answer falls back rather than refusing: the choice
   // was made on some other fund, and may not hold on this one.
   const column = available.includes(ctx.column) ? ctx.column : first;
-  const model = buildCaptureTrend(ctx.report, ctx.earlier, ctx.benchmark, column);
+  // The page reads the down side as a loss buffer (620 Check Street).
+  const model = buildCaptureTrend(ctx.report, ctx.earlier, ctx.benchmark, column, 'loss_buffer');
 
-  append(root, [el('p', {}, PLAIN.capture_trend.mechanism)]);
   const pick = chooser({ ...ctx, column }, onColumn);
   if (pick) append(root, [pick]);
 
@@ -239,6 +246,7 @@ export function renderTrend(ctx: TrendContext, onColumn: (c: HorizonName) => voi
   const legend = el(
     'div',
     { class: 'legend' },
+    el('p', {}, PLAIN.capture_trend.mechanism),
     el('p', {}, TABLE.trend.overlap[column as keyof typeof TABLE.trend.overlap]),
     el('p', {}, fill(TABLE.trend.bands, { three: bands[3].toFixed(2), six: bands[6].toFixed(2) })),
     el('p', {}, PLAIN.capture_trend.whatWouldChangeIt),
@@ -246,7 +254,7 @@ export function renderTrend(ctx: TrendContext, onColumn: (c: HorizonName) => voi
   const thin = model.run.some((r) => r.up.thin || r.down.thin);
   if (thin) append(legend, [el('p', {}, TABLE.legend.thin)]);
   append(legend, [el('p', {}, TABLE.trend.dash)]);
-  append(root, [legend]);
+  append(root, [explainer(legend)]);
 
   append(root, [
     el(

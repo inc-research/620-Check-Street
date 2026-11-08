@@ -20,7 +20,7 @@ export const MEASURES = [
   'day_down_benchmark',
   'day_down_fund',
   'capture_up',
-  'capture_down',
+  'loss_buffer',
   'fit',
   'against_down',
   'against_up',
@@ -41,7 +41,7 @@ export const MEASURE_KIND: Record<Measure, MeasureKind> = {
   day_down_benchmark: 'day',
   day_down_fund: 'day',
   capture_up: 'ratio',
-  capture_down: 'ratio',
+  loss_buffer: 'ratio',
   fit: 'share',
   against_down: 'share',
   against_up: 'share',
@@ -57,7 +57,7 @@ export const MEASURE_GROUP: Record<Measure, MeasureGroup> = {
   day_down_benchmark: 'days',
   day_down_fund: 'days',
   capture_up: 'exposure',
-  capture_down: 'exposure',
+  loss_buffer: 'exposure',
   fit: 'follows',
   against_down: 'follows',
   against_up: 'follows',
@@ -75,10 +75,15 @@ function sideOf(h: ReportHorizon, m: Measure): Side | null {
   if (m === 'day_up_benchmark' || m === 'day_up_fund' || m === 'capture_up' || m === 'against_up') {
     return h.up;
   }
-  if (m === 'day_down_benchmark' || m === 'day_down_fund' || m === 'capture_down' || m === 'against_down') {
+  if (m === 'day_down_benchmark' || m === 'day_down_fund' || m === 'loss_buffer' || m === 'against_down') {
     return h.down;
   }
   return null;
+}
+
+/** One minus downside capture. Null stays null. */
+export function lossBuffer(downCapture: number | null): number | null {
+  return downCapture === null ? null : 1 - downCapture;
 }
 
 /** One figure, as stored scaled for reading: dollars per $100, or 0 to 100 for a share. */
@@ -94,8 +99,12 @@ export function readMeasure(h: ReportHorizon, m: Measure): number | null {
     case 'day_down_benchmark': return hundred(side?.average_benchmark);
     case 'day_up_fund':
     case 'day_down_fund': return hundred(side?.average_fund);
-    case 'capture_up':
-    case 'capture_down': return side?.capture ?? null;
+    case 'capture_up': return side?.capture ?? null;
+    // The share of the market's falls the fund did not carry (the 620 Check
+    // Street redesign): a downside capture of 0.76 reads as a buffer of 0.24.
+    // Above 1 means the fund rose overall on the market's falling days; below 0,
+    // that it fell further than the market did.
+    case 'loss_buffer': return lossBuffer(side?.capture ?? null);
     case 'fit': return hundred(h.fit?.r_squared);
     case 'against_up':
     case 'against_down': return hundred(side?.against_share);
@@ -141,7 +150,8 @@ export interface ReportTable {
   lead: {
     horizon: HorizonName;
     captureUp: number | null;
-    captureDown: number | null;
+    /** One minus downside capture (see `lossBuffer`). */
+    lossBuffer: number | null;
     fit: number | null;
     /** Below the document's floor, the sentence is replaced rather than qualified. */
     lowFit: boolean;
@@ -185,7 +195,7 @@ export function buildReportTable(report: ReportDocument, benchmark: string): Rep
       ? {
           horizon: led.horizon,
           captureUp: led.up?.capture ?? null,
-          captureDown: led.down?.capture ?? null,
+          lossBuffer: lossBuffer(led.down?.capture ?? null),
           fit: r2,
           lowFit: r2 === null || r2 < report.methodology.low_fit_r_squared,
         }

@@ -24,6 +24,7 @@ import {
   type RealResult,
   type ReportDocument,
 } from '../shim.ts';
+import { explainer, sectionHead } from './layout.ts';
 import { fill, monthLabel } from './report.ts';
 
 export interface RealContext {
@@ -109,8 +110,8 @@ function costsLine(ctx: RealContext, results: RealResult[]): HTMLElement[] {
 }
 
 export function renderReal(ctx: RealContext, onAdviser: (on: boolean) => void): HTMLElement {
-  const root = el('section', { class: 'real' });
-  append(root, [el('h3', {}, TABLE.real.heading)]);
+  const root = el('section', { class: 'block real' });
+  append(root, [sectionHead(TABLE.real.heading, TABLE.sections.real.caption, 'violet')]);
 
   const block = ctx.report.benchmarks[ctx.benchmark];
   if (!ctx.rates || !block) {
@@ -131,8 +132,6 @@ export function renderReal(ctx: RealContext, onAdviser: (on: boolean) => void): 
     }),
   );
 
-  append(root, costsLine(ctx, results));
-
   const toggle = el('input', {
     type: 'checkbox',
     id: 'adviser',
@@ -143,13 +142,11 @@ export function renderReal(ctx: RealContext, onAdviser: (on: boolean) => void): 
     toggle.checked = true;
   }
   append(root, [
-    el('div', { class: 'controls' }, toggle, el('label', { for: 'adviser' }, TABLE.real.adviserToggle)),
-    el('p', {}, ctx.adviser ? TABLE.real.adviserOn : TABLE.real.adviserOff),
+    el('div', { class: 'toggle' }, toggle, el('label', { for: 'adviser' }, TABLE.real.adviserToggle)),
   ]);
 
   const computed = results.find((r) => r.kind === 'computed');
   const endMonth = computed && computed.kind === 'computed' ? computed.reading.inflation.endMonth : ctx.report.as_of.slice(0, 7);
-  append(root, [el('p', {}, fill(TABLE.real.intro, { month: monthLabel(endMonth) }))]);
 
   const head = el(
     'tr',
@@ -183,10 +180,17 @@ export function renderReal(ctx: RealContext, onAdviser: (on: boolean) => void): 
     append(body, [tr]);
   }
   append(root, [el('div', { class: 'scroll-x' }, el('table', {}, el('thead', {}, head), body))]);
+  append(root, costsLine(ctx, results));
 
   const legend = el('div', { class: 'legend' });
   if (marked) append(legend, [el('p', {}, TABLE.real.legend)]);
   append(legend, [el('p', {}, TABLE.real.dash)]);
-  append(root, [legend]);
+  append(root, [
+    explainer(
+      el('p', {}, fill(TABLE.real.intro, { month: monthLabel(endMonth) })),
+      el('p', {}, ctx.adviser ? TABLE.real.adviserOn : TABLE.real.adviserOff),
+      legend,
+    ),
+  ]);
   return root;
 }

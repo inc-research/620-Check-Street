@@ -76,7 +76,7 @@ test('the fund’s money and the market’s money are both on the table', async 
   const { text } = await render(past('2026-01'));
   ok(text.includes('In this fund'));
   ok(text.includes('In the market'));
-  ok(text.includes('When the market rose'));
+  ok(text.includes('Upside capture'));
 });
 
 test('the two average-day rows can be told apart without the market rows above them', async () => {

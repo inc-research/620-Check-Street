@@ -17,6 +17,7 @@ import {
   type MeasureKind,
   type ReportDocument,
 } from '../shim.ts';
+import { explainer, sectionHead } from './layout.ts';
 import { formatGap, formatMeasure, groupHeadingRow, monthLabel } from './report.ts';
 
 export interface HistoryHandlers {
@@ -137,15 +138,13 @@ export function renderHistory(ctx: HistoryContext, handlers: HistoryHandlers): H
   const root = el('section', {});
 
   append(root, [
-    el('button', { onclick: () => handlers.onBack() }, '← Back to the report'),
+    el('button', { class: 'back', onclick: () => handlers.onBack() }, '← Back to the report'),
     el('h2', {}, PLAIN.history.title),
-    el('p', { class: 'quiet' }, `${ctx.current.ticker} — ${ctx.current.name}`),
+    el('p', { class: 'meta' }, `${ctx.current.ticker} · ${ctx.current.name}`),
   ]);
 
   const pick = chooser(ctx, handlers);
   if (pick) append(root, [pick]);
-
-  append(root, [el('p', {}, PLAIN.history.mechanism)]);
 
   // A refused comparison shows why and stops. Half of it would be worse than
   // none, and this reader has no way to tell which half was wrong.
@@ -158,21 +157,26 @@ export function renderHistory(ctx: HistoryContext, handlers: HistoryHandlers): H
     return root;
   }
 
-  append(root, [el('p', { class: 'quiet' }, TABLE.history.disjoint)]);
-  append(root, [tableFor(model)]);
-  append(root, [windowLine(model)]);
-
   append(root, [
-    el(
-      'div',
-      { class: 'legend' },
-      el('p', {}, TABLE.history.steady),
-      el('p', {}, TABLE.history.unavailable),
+    sectionHead(
+      ctx.lookback === '6mo' ? TABLE.history.sixMonth : TABLE.history.thirteenWeek,
+      TABLE.history.disjoint,
+      'sky',
     ),
   ]);
-
+  append(root, [tableFor(model)]);
+  append(root, [windowLine(model)]);
   append(root, [
-    el('p', { class: 'assumption' }, `What would change this: ${PLAIN.history.whatWouldChangeIt}`),
+    explainer(
+      el('p', {}, PLAIN.history.mechanism),
+      el(
+        'div',
+        { class: 'legend' },
+        el('p', {}, TABLE.history.steady),
+        el('p', {}, TABLE.history.unavailable),
+      ),
+      el('p', { class: 'assumption' }, `What would change this: ${PLAIN.history.whatWouldChangeIt}`),
+    ),
   ]);
 
   return root;

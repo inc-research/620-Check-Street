@@ -90,7 +90,7 @@ test('switched off, it says no fee is taken', async () => {
 
 test('three rows of money and one of prices, across three columns', async () => {
   const { node, text } = await render(true);
-  for (const label of ['$100 in this fund', '$100 in the market', '$100 in Treasury bills', 'Prices rose by']) {
+  for (const label of ['$100 in this fund', '$100 in the market', '$100 in Treasury bills', 'Inflation']) {
     ok(text.includes(label), `missing: ${label}`);
   }
   strictEqual(node.findAll('tbody')[0]!.findAll('tr').length, 4);

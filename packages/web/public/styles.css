@@ -1,44 +1,35 @@
 /* SPDX-License-Identifier: MIT
  *
- * Second Floor — dark-mode modern newspaper (AGENTS.md §8).
+ * 620 Check Street — a white, modern-newspaper page where the numbers lead.
  *
- * Companion to First Floor, and it has to look like one: Arvo for the wordmark
- * and headings, Newsreader for body, a monospace stack for tickers and figures.
+ * Arsenal sets the site title and every heading, and turns up again in the
+ * report where a figure needs a label of the same weight. Newsreader sets body
+ * text. JetBrains Mono sets every figure, with tabular digits so columns line up.
  *
- * The @font-face src values below say __FONT_ARVO_400__ and so on. The build
+ * The @font-face src values below say __FONT_ARSENAL_400__ and so on. The build
  * substitutes base64 data: URIs (SF-18) and then asserts that every remaining
  * asset reference in the built file is a data: URI, so the "no network call
  * after load" promise is checked rather than remembered.
  *
- * Sizes here are numbers rather than adjectives on purpose. "Reasonably large"
- * is not a specification, and this audience skews toward readers over forty.
- *
- * Every declared size is twice §8's stated minimums: body at 2.25rem (36px),
- * table figures at 2rem, the wordmark at 3.5–5rem. §8 sets floors rather than
- * targets, so this clears them by a wide margin and nothing in it is broken by
- * the change.
- *
- * Doubled by writing the numbers out rather than by setting the root to 200%,
- * for two reasons. The root size is what a reader's own browser setting scales,
- * and taking it over means their preference stops doing anything. And the
- * clamp() bounds below are mixed rem and vw: moving the root would double the
- * rem ends and leave the vw middle where it was, so the headings would scale by
- * some other number at most window widths.
+ * Colour. White ground, black ink. The accents are bright and are never green
+ * or red, so a colour says which section a figure belongs to, or which way a
+ * figure moved, and never whether it is good. The one green on the page is the
+ * street sign at the top, which is the site's name.
  */
 
 @font-face {
-  font-family: 'Arvo';
+  font-family: 'Arsenal';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url(__FONT_ARVO_400__) format('woff2');
+  src: url(__FONT_ARSENAL_400__) format('woff2');
 }
 @font-face {
-  font-family: 'Arvo';
+  font-family: 'Arsenal';
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: url(__FONT_ARVO_700__) format('woff2');
+  src: url(__FONT_ARSENAL_700__) format('woff2');
 }
 @font-face {
   font-family: 'Newsreader';
@@ -47,64 +38,61 @@
   font-display: swap;
   src: url(__FONT_NEWSREADER__) format('woff2');
 }
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url(__FONT_JETBRAINS_MONO__) format('woff2');
+}
 
 :root {
-  /* Ground and ink. Contrast of --ink on --ground is 14.8:1, well past the
-   * 7:1 this page holds itself to (§8). */
-  --ground: #14151a;
-  --ground-raised: #1d1f26;
-  --ground-sunken: #101116;
-  --rule: #333644;
-  --rule-soft: #24262f;
+  --ground: #ffffff;
+  --ground-soft: #f6f6f4;
+  --ground-tint: #eef1f6;
+  --rule: #1a1a1a;
+  --rule-soft: #d9d9d6;
 
-  --ink: #ece9e3;
-  --ink-quiet: #a9a69f;
-  --ink-faint: #7d7b75;
+  /* Black ink, 21:1 on white; the quiet ink is still 7.5:1. */
+  --ink: #111111;
+  --ink-quiet: #4a4a4a;
+  --ink-faint: #6b6b6b;
 
-  /* One accent, used for links, rules and focus. Not for data. */
-  --accent: #d6a75f;
+  /* Section and direction accents. Bright, and neither green nor red. */
+  --blue: #0b5cd5;
+  --orange: #e8710a;
+  --violet: #7b3fd0;
+  --sky: #0091c7;
+  --gold: #c99400;
 
-  /* The same accent as a solid fill, darkened. A colour that reads well as a
-   * thin line on the dark ground is too bright as a large block of it, and the
-   * primary button is the largest block on the page. Kept separate from
-   * --accent rather than darkening that: links and focus rings need the bright
-   * one against --ground, and moving both would trade a loud button for
-   * dimmer links. Dark ink on this is 5.7:1, comfortably past the 4.5:1 that
-   * bold text this size is held to. */
-  --accent-solid: #c08340;
+  /* Which way a figure moved, and nothing more. */
+  --rise: var(--blue);
+  --fall: var(--orange);
 
-  /* Direction only, never magnitude (SF-21). Both sit above 4.5:1 on the
-   * raised ground, and neither is ever the only thing carrying the meaning —
-   * a sign or a word travels with it. */
-  --above: #7fbf8a;
-  --below: #d98b7e;
+  /* The street sign: the only green on the page. */
+  --sign: #00693e;
+  --sign-ink: #ffffff;
+
+  --link: var(--blue);
 
   --measure: 68ch;
-  --body-size: 1.6875rem;
+  --body-size: 1.25rem;
   --body-leading: 1.6;
 
-  --sans: 'Newsreader', Georgia, 'Times New Roman', serif;
-  --display: 'Arvo', Georgia, 'Times New Roman', serif;
-  --mono: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Menlo, Consolas, monospace;
+  --serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --display: 'Arsenal', 'Gill Sans', 'Helvetica Neue', Arial, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 }
 
-/* The page commits to dark (§8). A light mode would be a second palette to
- * keep honest, and the family's look is the dark one. Stated rather than
- * left to chance, so nothing borrows the host's theme. */
 * { box-sizing: border-box; }
 
-html {
-  background: var(--ground);
-  /* Never below 100%: shrinking the root size is how "responsive" typography
-   * quietly becomes unreadable on the phone most of this audience is holding. */
-  font-size: 100%;
-}
+html { background: var(--ground); font-size: 100%; }
 
 body {
   margin: 0;
   background: var(--ground);
   color: var(--ink);
-  font-family: var(--sans);
+  font-family: var(--serif);
   font-size: var(--body-size);
   line-height: var(--body-leading);
   font-optical-sizing: auto;
@@ -114,397 +102,427 @@ body {
 /* --- layout --------------------------------------------------------------- */
 
 .wrap {
-  max-width: var(--measure);
+  max-width: 62rem;
   margin: 0 auto;
-  padding: 2rem 1.25rem 6rem;
+  padding: 1.5rem 1.25rem 5rem;
 }
 
-/* Wide tables get the full width; prose stays at the measure. */
-.wide { max-width: min(96rem, 100%); }
+/* --- masthead: the street sign -------------------------------------------- */
 
 header.masthead {
-  border-bottom: 3px double var(--rule);
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 3px solid var(--rule);
+  margin-bottom: 1.5rem;
 }
 
-.wordmark {
+.wordmark { margin: 0; line-height: 1; }
+
+.sign {
+  display: inline-block;
+  background: var(--sign);
+  color: var(--sign-ink);
   font-family: var(--display);
   font-weight: 700;
-  font-size: clamp(3.5rem, 10vw, 5rem);
-  letter-spacing: -0.01em;
-  margin: 0;
-  color: var(--ink);
+  font-size: clamp(2rem, 6vw, 3.25rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.45em 0.9em 0.4em;
+  border-radius: 0.35em;
+  /* The white inset border a real street sign carries. */
+  box-shadow: inset 0 0 0 0.12em var(--sign), inset 0 0 0 0.2em var(--sign-ink);
 }
-
-/* One colour across the whole wordmark. The span stays so the two words remain
- * addressable, but "Floor" is no longer set apart in the accent. */
-.wordmark .floor { color: var(--ink); }
+.sign:hover, .sign:focus-visible { text-decoration: none; filter: brightness(1.08); }
 
 .standfirst {
-  font-size: 1.59375rem;
+  margin: 1rem 0 0;
   color: var(--ink-quiet);
-  margin: 0.4rem 0 0;
+  font-size: 1.125rem;
   max-width: var(--measure);
 }
 
 /* --- type ----------------------------------------------------------------- */
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
   font-family: var(--display);
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.15;
   color: var(--ink);
 }
+h2 { font-size: clamp(1.9rem, 4.5vw, 2.6rem); margin: 1rem 0 0.25rem; }
+h3 { font-size: 1.5rem; margin: 1.5rem 0 0.5rem; }
+h4 { font-size: 1.2rem; margin: 1rem 0 0.35rem; }
 
-h1 { font-size: clamp(2.25rem, 6vw, 3rem); margin: 2.5rem 0 0.75rem; }
-h2 {
-  font-size: clamp(1.875rem, 4.5vw, 2.25rem);
-  margin: 2.75rem 0 0.75rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--rule-soft);
-}
-h3 { font-size: 1.6875rem; margin: 1.75rem 0 0.5rem; }
+p { margin: 0 0 0.85rem; max-width: var(--measure); }
 
-p { margin: 0 0 1rem; max-width: var(--measure); }
-
-.lede { font-size: 1.875rem; color: var(--ink); }
-.quiet { color: var(--ink-quiet); }
-.faint { color: var(--ink-faint); font-size: 1.5rem; }
-
-/* The caveat that travels with a figure (INV-1). Not small print — it is set
- * at the same size as the body, because burying it would defeat the point. */
-.assumption {
-  border-left: 3px solid var(--rule);
-  padding: 0.15rem 0 0.15rem 1rem;
-  margin: 1rem 0;
+.meta {
+  font-family: var(--display);
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--ink-quiet);
+  margin-bottom: 0.75rem;
 }
+.caption { color: var(--ink-quiet); font-size: 1.05rem; margin: 0 0 0.75rem; }
+.quiet { color: var(--ink-quiet); }
+.assumption { color: var(--ink-faint); font-size: 1rem; }
 
-a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 2px; }
 a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
+
+/* --- sections ------------------------------------------------------------- */
+
+.block { margin: 2.25rem 0 0; }
+
+.section-head {
+  border-top: 4px solid var(--accent, var(--rule));
+  padding-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.section-head h3 { margin: 0 0 0.15rem; font-size: 1.6rem; }
+.section-head .caption { margin: 0; }
+
+.accent-blue { --accent: var(--blue); }
+.accent-orange { --accent: var(--orange); }
+.accent-violet { --accent: var(--violet); }
+.accent-sky { --accent: var(--sky); }
+.accent-gold { --accent: var(--gold); }
+
+/* --- headline figures ----------------------------------------------------- */
+
+.hero { margin: 1.5rem 0 0.5rem; }
+.hero-heading {
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-quiet);
+  margin: 0 0 0.6rem;
+}
+.hero-grid {
+  display: grid;
+  gap: 0.75rem;
+  /* Five across on a wide screen, so none is left alone on a second row. */
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.hero-card {
+  border-top: 5px solid var(--accent);
+  background: var(--ground-soft);
+  padding: 0.75rem 0.85rem 0.85rem;
+}
+.hero-card p { margin: 0; }
+.hero-label {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.hero-value {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3.4vw, 2.2rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin: 0.2rem 0 0.35rem !important;
+}
+.hero-value.absent { color: var(--ink-faint); }
+.hero-sub { font-size: 0.95rem; color: var(--ink-quiet); line-height: 1.4; }
 
 /* --- tables --------------------------------------------------------------- */
 
-/* Wide tables scroll inside their own container and never push the page
- * sideways — the page body must not scroll horizontally at 200% zoom (§8). */
 .scroll-x {
   overflow-x: auto;
-  margin: 1.25rem 0;
-  border: 1px solid var(--rule-soft);
-  border-radius: 2px;
+  -webkit-overflow-scrolling: touch;
+  margin: 0.5rem 0 0.75rem;
 }
 
 table {
-  border-collapse: collapse;
   width: 100%;
-  font-size: 1.5rem;
+  border-collapse: collapse;
+  font-size: 1.05rem;
 }
 
 th, td {
-  padding: 0.5rem 0.75rem;
-  text-align: left;
+  padding: 0.5rem 0.6rem;
   border-bottom: 1px solid var(--rule-soft);
+  text-align: left;
+  vertical-align: top;
 }
 
 thead th {
   font-family: var(--display);
-  font-size: 1.40625rem;
   font-weight: 700;
-  color: var(--ink-quiet);
-  background: var(--ground-sunken);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   border-bottom: 2px solid var(--rule);
-  position: sticky;
-  top: 0;
+  white-space: nowrap;
 }
 
-td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
-td.ticker { font-family: var(--mono); font-size: 1.40625rem; letter-spacing: 0.01em; }
-
-tbody tr:hover { background: var(--ground-raised); }
-
-/* Direction only. The sign in the cell text is what carries the meaning when
- * colour is unavailable; the colour is a second channel, never the only one. */
-td.above { color: var(--above); }
-td.below { color: var(--below); }
-
-/* --- components ----------------------------------------------------------- */
-
-.card {
-  display: block;
-  width: 100%;
-  text-align: left;
-  background: var(--ground-raised);
-  border: 1px solid var(--rule);
-  border-radius: 3px;
-  padding: 1.25rem;
-  margin: 0 0 1rem;
-  color: var(--ink);
-  font-family: inherit;
-  font-size: inherit;
-  cursor: pointer;
-}
-.card:hover { border-color: var(--accent); }
-.card h3 { margin: 0 0 0.35rem; }
-.card p { margin: 0; color: var(--ink-quiet); font-size: 1.5rem; }
-
-.cards { display: grid; gap: 1rem; grid-template-columns: 1fr; margin: 1.5rem 0; }
-@media (min-width: 46rem) {
-  .cards { grid-template-columns: 1fr 1fr; }
-}
-
-button {
-  font-family: var(--sans);
-  font-size: 1.5rem;
-  color: var(--ink);
-  background: var(--ground-raised);
-  border: 1px solid var(--rule);
-  border-radius: 3px;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-}
-button:hover { border-color: var(--accent); }
-button.primary {
-  background: var(--accent-solid);
-  color: #14151a;
-  border-color: var(--accent-solid);
-  font-weight: 600;
-}
-
-input[type='text'], input[type='date'] {
-  font-family: var(--sans);
-  font-size: 1.5rem;
-  color: var(--ink);
-  background: var(--ground-sunken);
-  border: 1px solid var(--rule);
-  border-radius: 3px;
-  padding: 0.5rem 0.65rem;
-  max-width: 100%;
-}
-
-/* The selects carry the choices this app offers — which fund, which benchmark,
- * which month, which window. On the sunken ground they read as chrome and the
- * options go unnoticed, so they take the same filled accent as the primary
- * button. Dark ink on --accent-solid is 5.7:1; --ink on it is 2.6:1, so the
- * fill and the lettering move together or not at all. */
-select {
-  font-family: var(--sans);
-  font-size: 1.5rem;
-  color: #14151a;
-  background: var(--accent-solid);
-  border: 1px solid var(--accent-solid);
-  border-radius: 3px;
-  padding: 0.5rem 0.65rem;
-  max-width: 100%;
-  font-weight: 600;
-}
-
-/* The open list is painted by the platform from each option's own colours, not
- * the select's, so they are stated again here. */
-select option {
-  background: var(--accent-solid);
-  color: #14151a;
-}
-
-label { display: block; margin: 1rem 0 0.35rem; color: var(--ink-quiet); font-size: 1.5rem; }
-
-/* Focus must be visible and must not rely on colour alone. */
-:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
-}
-
-/* A blocker: why a figure is absent, with what would bring it back (INV-2). */
-.blocker {
-  background: var(--ground-raised);
-  border: 1px solid var(--rule);
-  border-left: 4px solid var(--accent);
-  border-radius: 3px;
-  padding: 1rem 1.25rem;
-  margin: 1.25rem 0;
-}
-.blocker p { margin: 0; }
-.blocker .remedy { margin-top: 0.5rem; color: var(--ink-quiet); }
-
-.ledger { color: var(--ink-quiet); font-size: 1.5rem; }
-
-.toast {
-  position: fixed;
-  bottom: 1.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--ground-raised);
-  border: 1px solid var(--accent);
-  border-radius: 3px;
-  padding: 0.75rem 1.25rem;
-  z-index: 10;
-}
-
-hr { border: 0; border-top: 1px solid var(--rule-soft); margin: 2.5rem 0; }
-
-footer {
-  margin-top: 4rem;
-  padding-top: 1.5rem;
-  border-top: 3px double var(--rule);
-  color: var(--ink-faint);
-  font-size: 1.5rem;
-}
-
-@media print {
-  body { background: #fff; color: #000; }
-  .scroll-x { overflow: visible; }
-  td.above, td.below { color: #000; }
-}
-
-/* --- the report table (Lens A) -------------------------------------------- */
+th.num, td.num { text-align: right; }
 
 th.row-label {
-  font-family: var(--sans);
   font-weight: 400;
+  font-family: var(--serif);
   color: var(--ink);
-  white-space: nowrap;
-  padding-left: 0.9rem;
+  min-width: 11rem;
 }
 
 td.score {
   text-align: right;
-  font-variant-numeric: tabular-nums;
   font-family: var(--mono);
-  font-size: 1.59375rem;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.15rem;
+  font-weight: 600;
   white-space: nowrap;
 }
+td.score .absent { color: var(--ink-faint); font-weight: 400; }
 
-/* The group heading, spanning the table. */
+tbody tr:hover { background: var(--ground-tint); }
+
+/* Group headings inside the main table: one bright bar per group. */
 tr.group th {
   font-family: var(--display);
-  font-size: 1.5rem;
   font-weight: 700;
-  color: var(--ink);
-  background: var(--ground-raised);
-  border-bottom: 1px solid var(--rule);
-  padding-top: 0.9rem;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: var(--group, var(--ink));
+  border-bottom: 0;
+  padding: 0.35rem 0.6rem;
 }
-tr.group td {
-  background: var(--ground-raised);
-  border-bottom: 1px solid var(--rule);
+tr.group.money th { --group: var(--blue); }
+tr.group.days th { --group: var(--violet); }
+tr.group.exposure th { --group: var(--orange); }
+tr.group.follows th { --group: var(--sky); }
+
+td.ticker { font-family: var(--mono); }
+
+/* Which way a difference or a change went. Never good or bad. */
+td.above, td.score span.above, .change.rise, .direction.higher { color: var(--rise); }
+td.below, td.score span.below, .change.fall, .direction.lower { color: var(--fall); }
+.direction.about_the_same { color: var(--ink-faint); }
+.direction { font-family: var(--display); font-weight: 700; letter-spacing: 0.02em; }
+
+.trend-then {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--ink-faint);
 }
 
-/* At least `shift_threshold` points from this row's twelve-month reading.
- * A dot, not a badge — the number is what the reader is here for. */
+/* --- markers -------------------------------------------------------------- */
+
+.thin-mark {
+  text-decoration: underline dotted;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  cursor: help;
+}
+
 .shift-dot {
   display: inline-block;
-  width: 0.7rem;
-  height: 0.7rem;
-  margin-left: 0.6rem;
+  width: 0.55rem;
+  height: 0.55rem;
   border-radius: 50%;
-  background: var(--accent);
-  vertical-align: 0.15em;
+  background: var(--gold);
+  margin-left: 0.35rem;
+  vertical-align: middle;
 }
 
-/* Fewer days behind this reading than the floor. A dotted underline rather than
- * an icon: it sits on the number it qualifies and costs no width in a column
- * that is already narrow. */
-.thin-mark {
-  text-decoration: underline dotted var(--ink-faint);
-  text-underline-offset: 0.35rem;
-  text-decoration-thickness: 2px;
-}
+/* --- the lead sentence and the costs line ----------------------------------- */
 
-/* Nothing to work a number out from. A dash, and the legend says a dash is not
- * a zero — on a page of numbers that is the easiest of the two to misread. */
-td.score .absent { color: var(--ink-faint); }
-
-.legend {
-  margin: 1.25rem 0;
-  padding: 1rem 1.25rem;
-  background: var(--ground-sunken);
-  border: 1px solid var(--rule-soft);
-  border-radius: 3px;
-  font-size: 1.5rem;
-  color: var(--ink-quiet);
-}
-.legend p { margin: 0 0 0.6rem; }
-.legend p:last-child { margin-bottom: 0; }
-
-/* The sentence the report leads with. */
 .lead {
-  font-size: 1.75rem;
-  line-height: 1.45;
-  margin: 1rem 0 1.25rem;
+  font-size: 1.2rem;
+  border-left: 4px solid var(--blue);
+  padding-left: 0.85rem;
+  margin: 0.5rem 0 0.75rem;
 }
+.costs { font-size: 1.05rem; color: var(--ink-quiet); }
 
-/* The basis of the money figures. Context, not a failure, so read as the caveat is. */
-.limits {
-  background: var(--ground-raised);
-  border: 1px solid var(--rule);
-  border-radius: 3px;
-  padding: 1rem 1.25rem;
-  margin: 1.25rem 0;
+/* --- explanations, closed by default --------------------------------------- */
+
+details.explain, details.detail, details.caveat {
+  border-top: 1px solid var(--rule-soft);
+  margin: 0.5rem 0 0;
+  padding: 0.4rem 0;
 }
-.limits h3 { margin: 0 0 0.5rem; font-size: 1.59375rem; }
-.limits ul { margin: 0; padding-left: 1.25rem; color: var(--ink-quiet); }
-.limits li { margin-bottom: 0.4rem; }
-
-/* The same-direction readings, closed until asked for. */
-.detail { margin: 1.25rem 0; }
-.detail summary {
+details > summary {
   cursor: pointer;
   font-family: var(--display);
-  font-size: 1.59375rem;
   font-weight: 700;
-  color: var(--ink);
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  color: var(--link);
+  list-style: none;
+  padding: 0.2rem 0;
 }
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before {
+  content: '+';
+  display: inline-block;
+  width: 1.2em;
+  font-family: var(--mono);
+}
+details[open] > summary::before { content: '\2212'; }
+details[open] > summary { margin-bottom: 0.5rem; }
+details.explain > :not(summary), details.caveat > :not(summary) { font-size: 1.05rem; }
 
-/* The caveat every defined-outcome fund carries. Not a blocker — nothing is
- * missing — so it reads as context rather than as a failure. */
-.caveat {
-  background: var(--ground-raised);
-  border: 1px solid var(--rule);
-  border-left: 4px solid var(--accent);
-  border-radius: 3px;
-  padding: 1rem 1.25rem;
-  margin: 1.25rem 0;
+details.caveat {
+  background: var(--ground-soft);
+  border-top: 0;
+  border-left: 4px solid var(--gold);
+  padding: 0.5rem 0.85rem;
+  margin: 0.75rem 0;
 }
-.caveat h3 { margin: 0 0 0.5rem; font-size: 1.59375rem; }
-.caveat p { margin: 0; color: var(--ink-quiet); }
+details.caveat > summary { color: var(--ink); }
+
+.legend p { margin: 0 0 0.5rem; color: var(--ink-quiet); }
+.limits ul { margin: 0; padding-left: 1.25rem; }
+.limits li { margin-bottom: 0.4rem; }
+
+/* --- notices -------------------------------------------------------------- */
+
+.blocker {
+  border-left: 4px solid var(--gold);
+  background: var(--ground-soft);
+  padding: 0.6rem 0.85rem;
+  margin: 0.75rem 0;
+  font-size: 1.05rem;
+}
+.blocker p { margin: 0; }
+.blocker .remedy { margin-top: 0.4rem; color: var(--ink-quiet); }
+
+.benchmark-index, .benchmark-note { font-size: 1rem; color: var(--ink-quiet); margin: 0.25rem 0; }
+
+/* --- controls ------------------------------------------------------------- */
 
 .controls {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem 1.5rem;
+  gap: 0.75rem 1.5rem;
   align-items: flex-end;
-  margin: 1.25rem 0;
+  margin: 0.75rem 0;
 }
 .controls > div { min-width: 0; }
-.controls label { margin-top: 0; }
 
-.benchmark-note { font-size: 1.40625rem; color: var(--ink-faint); margin-top: 0.4rem; }
-
-/* What the benchmark ticker tracks. Quieter than the reading it qualifies, but
- * not as faint as the fund's own caveat below it — a reader who does not know
- * what VOO is cannot read the table at all. */
-.benchmark-index { font-size: 1.40625rem; color: var(--ink-quiet); margin-top: 0.5rem; }
-
-/* --- the history table (Lens B) ------------------------------------------- */
-
-/* The change column carries direction on a span inside the cell, not on the
- * cell itself, because the cell also holds the shift dot. Colour is the second
- * channel only: the sign is always in the text, so the reading survives
- * greyscale and readers who do not separate red from green (SF-21). */
-td.score span.above { color: var(--above); }
-td.score span.below { color: var(--below); }
-
-/* The two periods being compared are not the row tint's business — a change of
- * −0.37 is not "bad" — so the history table keeps the row tint off its numeric
- * cells and leaves it on the row label alone. */
-
-/* --- capture over time ----------------------------------------------------- */
-
-/* The earlier level sits under its change in the same cell, so the difference
- * is never on the page without the two readings it came from (3F D-14). */
-.trend-then {
+label {
   display: block;
-  font-size: 0.8em;
+  margin: 0 0 0.25rem;
+  font-family: var(--display);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--ink-quiet);
-  white-space: nowrap;
+}
+
+.toggle { display: flex; align-items: center; gap: 0.6rem; margin: 0.5rem 0 0.25rem; }
+.toggle label { margin: 0; font-size: 1.05rem; text-transform: none; letter-spacing: 0; color: var(--ink); cursor: pointer; }
+.toggle input { width: 1.35rem; height: 1.35rem; accent-color: var(--violet); cursor: pointer; }
+
+select, input[type='text'], input[type='date'] {
+  font: inherit;
+  font-size: 1.05rem;
+  color: var(--ink);
+  background: var(--ground);
+  border: 2px solid var(--rule);
+  border-radius: 0.25rem;
+  padding: 0.35rem 0.5rem;
+  max-width: 100%;
+}
+
+button {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  background: var(--ground);
+  border: 2px solid var(--rule);
+  border-radius: 0.25rem;
+  padding: 0.4rem 0.9rem;
+  margin: 0 0.5rem 0.5rem 0;
+  cursor: pointer;
+}
+button:hover { background: var(--ground-tint); }
+button.primary { background: var(--blue); border-color: var(--blue); color: #ffffff; }
+button.back { border: 0; padding: 0.2rem 0; color: var(--link); background: none; }
+button.back:hover { text-decoration: underline; background: none; }
+
+/* --- the fund list -------------------------------------------------------- */
+
+.cards {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  margin: 1.25rem 0;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-top: 4px solid var(--blue);
+  border-radius: 0;
+  background: var(--ground-soft);
+  padding: 0.75rem 0.9rem;
+  font-family: var(--serif);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--ink);
+  cursor: pointer;
+}
+.card:hover { background: var(--ground-tint); }
+.card .card-ticker {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 1.6rem;
+  margin: 0;
+  color: var(--blue);
+}
+.card h3 { margin: 0.1rem 0 0.35rem; font-size: 1.15rem; }
+.card p { margin: 0; color: var(--ink-quiet); font-size: 0.95rem; line-height: 1.4; }
+
+/* --- misc ----------------------------------------------------------------- */
+
+.toast {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--ground);
+  padding: 0.6rem 1rem;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+}
+
+hr { border: 0; border-top: 1px solid var(--rule-soft); margin: 2rem 0; }
+
+footer {
+  margin-top: 3.5rem;
+  padding-top: 1rem;
+  border-top: 3px solid var(--rule);
+  color: var(--ink-quiet);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 56rem) {
+  .hero-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 40rem) {
+  .hero-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  :root { --body-size: 1.125rem; }
+  th.row-label { min-width: 8.5rem; }
+  td.score { font-size: 1rem; }
+  th, td { padding: 0.45rem 0.4rem; }
 }

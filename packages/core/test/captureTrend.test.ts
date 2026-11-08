@@ -200,3 +200,14 @@ test('only windows that computed are offered', () => {
   deepStrictEqual(trendColumns(blocked, Object.keys(blocked.benchmarks)[0]!), ['13wk']);
   deepStrictEqual(trendColumns(base, 'NOPE'), []);
 });
+
+test('the archive engine reads downside capture; the page asks for the loss buffer', () => {
+  const months = full(0.5, 0.7);
+  const asCapture = buildCaptureTrend(at('2026-07', 0.5, 0.7), months, 'VOO', '13wk');
+  const asBuffer = buildCaptureTrend(at('2026-07', 0.5, 0.7), months, 'VOO', '13wk', 'loss_buffer');
+  const down = (t: typeof asCapture) => t.legs.find((l) => l.side === 'down')!;
+  ok(Math.abs(down(asCapture).now.value! - 0.7) < 1e-12);
+  ok(Math.abs(down(asBuffer).now.value! - 0.3) < 1e-12);
+  // The up side is the same either way.
+  strictEqual(asBuffer.legs[0]!.now.value, asCapture.legs[0]!.now.value);
+});
