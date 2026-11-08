@@ -1,25 +1,41 @@
 {
-  "schema_version": "1.2",
+  "schema_version": "1.3",
   "locked_at": "2026-08-23",
   "note": "Locked coverage set of 31 individually-verified Options-Integrated (OI) and comparison tickers. Not organically grown — see AGENTS.md 'Coverage model'. Wrapper instruments preferred over individual monthly-dated rungs of the same strategy.",
   "benchmark_anchors": [
     {
       "ticker": "VOO",
+      "sec_series_id": "S000002839",
+      "sec_class_id": "C000092055",
       "role": "universal_anchor",
       "note": "Computed for every tracked ticker, always. Used for Lens C cross-fund comparison."
     },
     {
       "ticker": "QQQ",
+      "sec_series_id": "S000101292",
+      "sec_class_id": "C000271435",
       "role": "named_benchmark_option",
-      "note": "Used where a fund's own literature names the Nasdaq-100."
+      "note": "Used where a fund's own literature names the Nasdaq-100.",
+      "manual_fees": [
+        {
+          "from": "2024-01-26",
+          "gross": 0.002,
+          "url": "https://www.sec.gov/Archives/edgar/data/1067839/000119312524016662/d881880d485bpos.htm",
+          "note": "Before 22 December 2025 QQQ was a unit investment trust, whose prospectus states 'Annual Trust Ordinary Operating Expenses: 0.20% of the Trust's average net assets' in prose rather than a tagged fee table. The same figure appears in the 2025-01-27 prospectus. Tagged fee tables begin with the open-end fund's 485BPOS of 2025-12-19 (0.18%)."
+        }
+      ]
     },
     {
       "ticker": "IWM",
+      "sec_series_id": "S000004344",
+      "sec_class_id": "C000012074",
       "role": "named_benchmark_option",
       "note": "Used where a fund's own literature names the Russell 2000 / small-cap segment."
     },
     {
       "ticker": "EFA",
+      "sec_series_id": "S000004351",
+      "sec_class_id": "C000012081",
       "role": "named_benchmark_option",
       "note": "iShares MSCI EAFE ETF. Used where a fund's own literature names MSCI EAFE. Added by 3F D-01, which closed benchmark_gap."
     }
@@ -37,6 +53,8 @@
   "tickers": [
     {
       "ticker": "SFLR",
+      "sec_series_id": "S000077117",
+      "sec_class_id": "C000237286",
       "name": "Innovator Equity Managed Floor ETF",
       "issuer": "Innovator (Goldman Sachs Asset Management)",
       "category": "options_integrated",
@@ -47,6 +65,8 @@
     },
     {
       "ticker": "QFLR",
+      "sec_series_id": "S000077118",
+      "sec_class_id": "C000237287",
       "name": "Innovator Nasdaq-100 Managed Floor ETF",
       "issuer": "Innovator (Goldman Sachs Asset Management)",
       "category": "options_integrated",
@@ -57,6 +77,8 @@
     },
     {
       "ticker": "RFLR",
+      "sec_series_id": "S000087661",
+      "sec_class_id": "C000253536",
       "name": "Innovator U.S. Small Cap Managed Floor ETF",
       "issuer": "Innovator (Goldman Sachs Asset Management)",
       "category": "options_integrated",
@@ -69,6 +91,8 @@
     },
     {
       "ticker": "BALT",
+      "sec_series_id": "S000072431",
+      "sec_class_id": "C000228657",
       "name": "Innovator Defined Wealth Shield ETF",
       "issuer": "Innovator (Goldman Sachs Asset Management)",
       "category": "options_integrated",
@@ -79,6 +103,8 @@
     },
     {
       "ticker": "BUFF",
+      "sec_series_id": "S000073679",
+      "sec_class_id": "C000230751",
       "name": "Innovator Laddered Power Buffer ETF",
       "issuer": "Innovator (Goldman Sachs Asset Management)",
       "category": "options_integrated",
@@ -90,6 +116,8 @@
     },
     {
       "ticker": "HELO",
+      "sec_series_id": "S000081816",
+      "sec_class_id": "C000244865",
       "name": "JPMorgan Hedged Equity Laddered Overlay ETF",
       "issuer": "JPMorgan",
       "category": "options_integrated",
@@ -100,6 +128,8 @@
     },
     {
       "ticker": "HOLA",
+      "sec_series_id": "S000090419",
+      "sec_class_id": "C000257466",
       "name": "JPMorgan International Hedged Equity Laddered Overlay ETF",
       "issuer": "JPMorgan",
       "category": "options_integrated",
@@ -112,6 +142,8 @@
     },
     {
       "ticker": "HEQQ",
+      "sec_series_id": "S000090211",
+      "sec_class_id": "C000257148",
       "name": "JPMorgan Nasdaq Hedged Equity Laddered Overlay ETF",
       "issuer": "JPMorgan",
       "category": "options_integrated",
@@ -122,6 +154,8 @@
     },
     {
       "ticker": "IVVM",
+      "sec_series_id": "S000080645",
+      "sec_class_id": "C000243161",
       "name": "iShares Large Cap Moderate Quarterly Laddered ETF",
       "issuer": "iShares / BlackRock",
       "category": "options_integrated",
@@ -134,6 +168,8 @@
     },
     {
       "ticker": "IVVB",
+      "sec_series_id": "S000080646",
+      "sec_class_id": "C000243162",
       "name": "iShares Large Cap Deep Quarterly Laddered ETF",
       "issuer": "iShares / BlackRock",
       "category": "options_integrated",
@@ -146,6 +182,8 @@
     },
     {
       "ticker": "MAXJ",
+      "sec_series_id": "S000085271",
+      "sec_class_id": "C000250242",
       "name": "iShares Large Cap Max Buffer Jun ETF",
       "issuer": "iShares / BlackRock",
       "category": "options_integrated",
@@ -158,6 +196,8 @@
     },
     {
       "ticker": "SMAX",
+      "sec_series_id": "S000085272",
+      "sec_class_id": "C000250243",
       "name": "iShares Large Cap Max Buffer Sep ETF",
       "issuer": "iShares / BlackRock",
       "category": "options_integrated",
@@ -170,6 +210,8 @@
     },
     {
       "ticker": "DMAX",
+      "sec_series_id": "S000085273",
+      "sec_class_id": "C000250244",
       "name": "iShares Large Cap Max Buffer Dec ETF",
       "issuer": "iShares / BlackRock",
       "category": "options_integrated",
@@ -182,6 +224,8 @@
     },
     {
       "ticker": "MMAX",
+      "sec_series_id": "S000085270",
+      "sec_class_id": "C000250241",
       "name": "iShares Large Cap Max Buffer Mar ETF",
       "issuer": "iShares / BlackRock",
       "category": "options_integrated",
@@ -194,6 +238,8 @@
     },
     {
       "ticker": "BUFR",
+      "sec_series_id": "S000068605",
+      "sec_class_id": "C000219511",
       "name": "FT Cboe Vest Fund of Buffer ETFs",
       "issuer": "First Trust",
       "category": "options_integrated",
@@ -204,6 +250,8 @@
     },
     {
       "ticker": "BUFQ",
+      "sec_series_id": "S000076430",
+      "sec_class_id": "C000236305",
       "name": "FT Cboe Vest Fund of Nasdaq-100 Buffer ETFs",
       "issuer": "First Trust",
       "category": "options_integrated",
@@ -214,6 +262,8 @@
     },
     {
       "ticker": "BUFZ",
+      "sec_series_id": "S000080712",
+      "sec_class_id": "C000243241",
       "name": "FT Cboe Vest Laddered Moderate Buffer ETF",
       "issuer": "First Trust",
       "category": "options_integrated",
@@ -224,6 +274,8 @@
     },
     {
       "ticker": "BUFX",
+      "sec_series_id": "S000093228",
+      "sec_class_id": "C000261390",
       "name": "FT Vest Laddered Enhance & Moderate Buffer ETF",
       "issuer": "First Trust",
       "category": "options_integrated",
@@ -235,6 +287,8 @@
     },
     {
       "ticker": "BUFD",
+      "sec_series_id": "S000070644",
+      "sec_class_id": "C000224383",
       "name": "FT Cboe Vest Fund of Deep Buffer ETFs",
       "issuer": "First Trust",
       "category": "options_integrated",
@@ -245,6 +299,8 @@
     },
     {
       "ticker": "BUFY",
+      "sec_series_id": "S000085091",
+      "sec_class_id": "C000249956",
       "name": "FT Vest Laddered International Moderate Buffer ETF",
       "issuer": "First Trust",
       "category": "options_integrated",
@@ -257,6 +313,8 @@
     },
     {
       "ticker": "FHDG",
+      "sec_series_id": "S000088334",
+      "sec_class_id": "C000254587",
       "name": "FT Vest U.S. Equity Quarterly Dynamic Buffer ETF",
       "issuer": "First Trust",
       "category": "options_integrated",
@@ -267,6 +325,8 @@
     },
     {
       "ticker": "DHDG",
+      "sec_series_id": "S000088336",
+      "sec_class_id": "C000254589",
       "name": "FT Vest U.S. Equity Quarterly 2.5 to 15 Buffer ETF",
       "issuer": "First Trust",
       "category": "options_integrated",
@@ -277,6 +337,8 @@
     },
     {
       "ticker": "SQMX",
+      "sec_series_id": "S000089322",
+      "sec_class_id": "C000255841",
       "name": "FT Vest U.S. Equity Quarterly Max Buffer ETF",
       "issuer": "First Trust",
       "category": "options_integrated",
@@ -287,6 +349,8 @@
     },
     {
       "ticker": "FGSI",
+      "sec_series_id": "S000090698",
+      "sec_class_id": "C000257988",
       "name": "FT Vest Growth Strength & Target Income ETF",
       "issuer": "First Trust",
       "category": "options_integrated",
@@ -299,6 +363,8 @@
     },
     {
       "ticker": "CPSL",
+      "sec_series_id": "S000088047",
+      "sec_class_id": "C000254075",
       "name": "Calamos Laddered S&P 500 Structured Alt Protection ETF",
       "issuer": "Calamos",
       "category": "options_integrated",
@@ -309,6 +375,8 @@
     },
     {
       "ticker": "PSFF",
+      "sec_series_id": "S000070378",
+      "sec_class_id": "C000223810",
       "name": "Pacer Swan SOS Fund of Funds ETF",
       "issuer": "Pacer / Swan Global Investments",
       "category": "options_integrated",
@@ -320,6 +388,8 @@
     },
     {
       "ticker": "LADM",
+      "sec_series_id": "S000102853",
+      "sec_class_id": "C000273363",
       "name": "Pacer Swan SOS Laddered Moderate ETF",
       "issuer": "Pacer / Swan Global Investments",
       "category": "options_integrated",
@@ -330,6 +400,8 @@
     },
     {
       "ticker": "BUFC",
+      "sec_series_id": "S000082566",
+      "sec_class_id": "C000245882",
       "name": "AB Conservative Buffer ETF",
       "issuer": "AllianceBernstein",
       "category": "options_integrated",
@@ -340,6 +412,8 @@
     },
     {
       "ticker": "BUFM",
+      "sec_series_id": "S000088374",
+      "sec_class_id": "C000254635",
       "name": "AB Moderate Buffer ETF",
       "issuer": "AllianceBernstein",
       "category": "options_integrated",
@@ -350,6 +424,8 @@
     },
     {
       "ticker": "BUFI",
+      "sec_series_id": "S000088373",
+      "sec_class_id": "C000254634",
       "name": "AB International Buffer ETF",
       "issuer": "AllianceBernstein",
       "category": "options_integrated",
@@ -362,6 +438,8 @@
     },
     {
       "ticker": "DBMF",
+      "sec_series_id": "S000072813",
+      "sec_class_id": "C000229357",
       "name": "iMGP DBi Managed Futures Strategy ETF",
       "issuer": "iMGP / DBi",
       "category": "managed_futures",

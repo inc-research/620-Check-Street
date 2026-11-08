@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://third-floor.example/schemas/rates.schema.json",
+  "title": "Third Floor rate series",
+  "description": "One FRED series, whole, at data/_rates/<SERIES>.json (3F D-23). CPIAUCNS is consumer prices, not seasonally adjusted, monthly; DGS3MO is the three-month Treasury yield in percent a year, daily. A run may add observations and may never change one already published: neither series is revised by its publisher, and the ingest refuses a change.",
+  "type": "object",
+  "required": ["app", "rates_schema_version", "series_id", "title", "units", "frequency", "source", "source_url", "fetched_at", "missing_days_dropped", "observations"],
+  "additionalProperties": false,
+  "properties": {
+    "app": { "const": "Third Floor" },
+    "rates_schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+    "series_id": { "enum": ["CPIAUCNS", "DGS3MO"] },
+    "title": { "type": "string" },
+    "units": { "type": "string" },
+    "frequency": { "enum": ["monthly", "daily"] },
+    "source": { "enum": ["fred_api", "fred_csv"] },
+    "source_url": { "type": "string" },
+    "fetched_at": { "type": "string", "format": "date-time" },
+    "missing_days_dropped": {
+      "description": "Days FRED lists with no reading ('.'), counted and left out rather than read as zero. October 2025's consumer prices were never collected.",
+      "type": "integer", "minimum": 0
+    },
+    "observations": {
+      "type": "array",
+      "minItems": 12,
+      "items": {
+        "type": "array",
+        "prefixItems": [{ "type": "string", "format": "date" }, { "type": "number", "minimum": 0 }],
+        "minItems": 2,
+        "maxItems": 2
+      }
+    }
+  }
+}

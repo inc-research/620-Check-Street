@@ -11,11 +11,15 @@
 
 import {
   DEFAULT_TREND_COLUMN,
+  isFeeDocument,
+  isRateSeries,
   isReport,
   isSnapshot,
   validateReport,
   validateSnapshot,
+  type FeeDocument,
   type HorizonName,
+  type RateSeries,
   type ReportDocument,
   type Snapshot,
 } from './shim.ts';
@@ -56,6 +60,15 @@ export interface State {
   benchmark: string | null;
   /** The window the capture-over-time section reads, kept across a change of month. */
   trendColumn: HorizonName;
+  /** Fee files already fetched this visit, keyed `TICKER/YYYY-MM`. Null where none was published. */
+  readonly fees: Map<string, FeeDocument | null>;
+  /** The two rate series, read once a visit. */
+  rates: { cpi: RateSeries; bills: RateSeries } | null;
+  /**
+   * Whether the adviser's fee is taken off (3F D-23). On by default: most people
+   * reach these funds through an adviser. Kept across a change of fund or month.
+   */
+  adviser: boolean;
 }
 
 export const state: State = {
@@ -66,6 +79,9 @@ export const state: State = {
   month: null,
   benchmark: null,
   trendColumn: DEFAULT_TREND_COLUMN,
+  fees: new Map(),
+  rates: null,
+  adviser: true,
 };
 
 export function snapshotKey(ticker: string, month: string): string {
@@ -154,4 +170,40 @@ export async function loadReport(ticker: string, month: string): Promise<ReportD
 
   state.reports.set(key, parsed);
   return parsed;
+}
+
+/**
+ * Read one month's fee file (3F D-22). A missing or unreadable one is null, not
+ * an error: the returns are already after the fund's costs, so the page loses a
+ * line of disclosure and nothing else.
+ */
+export async function loadFees(ticker: string, month: string): Promise<FeeDocument | null> {
+  const key = snapshotKey(ticker, month);
+  if (state.fees.has(key)) return state.fees.get(key) ?? null;
+  let parsed: unknown = null;
+  try {
+    const response = await fetch(`./data/_fees/${ticker}/${month}.json`);
+    if (response.ok) parsed = await response.json();
+  } catch {
+    parsed = null;
+  }
+  const doc = isFeeDocument(parsed) ? parsed : null;
+  state.fees.set(key, doc);
+  return doc;
+}
+
+/** Consumer prices and bill rates (3F D-23), read once a visit. Throws if either is unusable. */
+export async function loadRates(): Promise<{ cpi: RateSeries; bills: RateSeries }> {
+  if (state.rates) return state.rates;
+  const [cpi, bills] = await Promise.all(
+    ['CPIAUCNS', 'DGS3MO'].map(async (id) => {
+      const response = await fetch(`./data/_rates/${id}.json`);
+      if (!response.ok) throw new Error('The consumer price and bill-rate figures could not be read.');
+      const parsed: unknown = await response.json();
+      if (!isRateSeries(parsed)) throw new Error('The consumer price and bill-rate figures could not be read.');
+      return parsed;
+    }),
+  );
+  state.rates = { cpi: cpi!, bills: bills! };
+  return state.rates;
 }

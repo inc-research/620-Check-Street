@@ -39,6 +39,10 @@ class Fund:
     #: The same fact in the reader's voice. This is the one the site renders,
     #: and it is linted against the copy deck's own rules (3F D-15).
     benchmark_note_plain: str | None
+    #: Where the fund's own fee table is filed (3F D-22). Optional here so a
+    #: fund built by hand in a test needs none; the registry schema requires both.
+    sec_series_id: str | None = None
+    sec_class_id: str | None = None
 
     @property
     def benchmarks(self) -> list[str]:
@@ -61,11 +65,21 @@ class Fund:
 
 
 @dataclass(frozen=True)
+class Anchor:
+    ticker: str
+    sec_series_id: str | None
+    sec_class_id: str | None
+    #: Fee periods recorded by hand where no tagged fee table exists.
+    manual_fees: tuple[dict[str, Any], ...] = ()
+
+
+@dataclass(frozen=True)
 class Registry:
     schema_version: str
     locked_at: str
     anchors: tuple[str, ...]
     funds: tuple[Fund, ...]
+    anchor_records: tuple[Anchor, ...] = ()
 
     @property
     def instruments(self) -> list[str]:
@@ -131,6 +145,8 @@ def load_registry(path: str | Path) -> Registry:
                 benchmark_source=entry["benchmark_source"],
                 benchmark_note=note,
                 benchmark_note_plain=plain,
+                sec_series_id=entry.get("sec_series_id"),
+                sec_class_id=entry.get("sec_class_id"),
             )
         )
 
@@ -139,4 +155,13 @@ def load_registry(path: str | Path) -> Registry:
         locked_at=raw["locked_at"],
         anchors=anchors,
         funds=tuple(funds),
+        anchor_records=tuple(
+            Anchor(
+                a["ticker"],
+                a.get("sec_series_id"),
+                a.get("sec_class_id"),
+                tuple(a.get("manual_fees", ())),
+            )
+            for a in raw["benchmark_anchors"]
+        ),
     )

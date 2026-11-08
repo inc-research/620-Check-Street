@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shaped on real oef: prospectus instances (First Trust 485BPOS 2025-12-29, and
+     Vanguard's three-dimension contexts), cut down to what the parser reads.
+     Values for C000219511 are BUFR's as filed on 2024-12-30. -->
+<xbrli:xbrl xmlns:xbrli="http://www.xbrl.org/2003/instance"
+            xmlns:xbrldi="http://xbrl.org/2006/xbrldi"
+            xmlns:oef="http://xbrl.sec.gov/oef/2024"
+            xmlns:dei="http://xbrl.sec.gov/dei/2024">
+  <xbrli:context id="bufr">
+    <xbrli:entity><xbrli:identifier scheme="http://www.sec.gov/CIK">0001667919</xbrli:identifier>
+      <xbrli:segment>
+        <xbrldi:explicitMember dimension="dei:LegalEntityAxis">ft:S000068605Member</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="oef:ClassAxis">ft:C000219511Member</xbrldi:explicitMember>
+      </xbrli:segment></xbrli:entity>
+    <xbrli:period><xbrli:startDate>2024-12-30</xbrli:startDate><xbrli:endDate>2024-12-30</xbrli:endDate></xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="bufr_narrowed">
+    <xbrli:entity><xbrli:identifier scheme="http://www.sec.gov/CIK">0001667919</xbrli:identifier>
+      <xbrli:segment>
+        <xbrldi:explicitMember dimension="oef:ClassAxis">ft:C000219511Member</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="rr:PerformanceMeasureAxis">ft:AfterTaxesOnDistributionsMember</xbrldi:explicitMember>
+      </xbrli:segment></xbrli:entity>
+    <xbrli:period><xbrli:instant>2024-12-30</xbrli:instant></xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="voo">
+    <xbrli:entity><xbrli:identifier scheme="http://www.sec.gov/CIK">0000036405</xbrli:identifier>
+      <xbrli:segment>
+        <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">index:ETFProspectusMember</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="dei:LegalEntityAxis">index:S000002839Member</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="oef:ClassAxis">index:C000092055Member</xbrldi:explicitMember>
+      </xbrli:segment></xbrli:entity>
+    <xbrli:period><xbrli:instant>2026-04-28</xbrli:instant></xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="voo_2025">
+    <xbrli:entity><xbrli:identifier scheme="http://www.sec.gov/CIK">0000036405</xbrli:identifier>
+      <xbrli:segment>
+        <xbrldi:explicitMember dimension="dei:DocumentInformationDocumentAxis">index:ETFMember</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="dei:LegalEntityAxis">index:S000002839Member</xbrldi:explicitMember>
+        <xbrldi:explicitMember dimension="rr:ProspectusShareClassAxis">index:C000092099Member</xbrldi:explicitMember>
+      </xbrli:segment></xbrli:entity>
+    <xbrli:period><xbrli:instant>2025-04-29</xbrli:instant></xbrli:period>
+  </xbrli:context>
+  <xbrli:context id="sym_only">
+    <xbrli:entity><xbrli:identifier scheme="http://www.sec.gov/CIK">0001415726</xbrli:identifier>
+      <xbrli:segment>
+        <xbrldi:explicitMember dimension="oef:ClassAxis">inn:InnovatorEquityManagedFloorMember</xbrldi:explicitMember>
+      </xbrli:segment></xbrli:entity>
+    <xbrli:period><xbrli:instant>2026-02-27</xbrli:instant></xbrli:period>
+  </xbrli:context>
+
+  <oef:ManagementFeesOverAssets contextRef="bufr_narrowed" unitRef="pure" decimals="4">0.0400</oef:ManagementFeesOverAssets>
+  <oef:ManagementFeesOverAssets contextRef="bufr" unitRef="pure" decimals="4">0.0020</oef:ManagementFeesOverAssets>
+  <oef:DistributionAndService12b1FeesOverAssets contextRef="bufr" unitRef="pure" decimals="4">0.0000</oef:DistributionAndService12b1FeesOverAssets>
+  <oef:OtherExpensesOverAssets contextRef="bufr" unitRef="pure" decimals="4">0.0000</oef:OtherExpensesOverAssets>
+  <oef:AcquiredFundFeesAndExpensesOverAssets contextRef="bufr" unitRef="pure" decimals="4">0.0085</oef:AcquiredFundFeesAndExpensesOverAssets>
+  <oef:ExpensesOverAssets contextRef="bufr" unitRef="pure" decimals="4">0.0105</oef:ExpensesOverAssets>
+  <oef:FeeWaiverOrReimbursementOverAssets contextRef="bufr" unitRef="pure" decimals="4">-0.0010</oef:FeeWaiverOrReimbursementOverAssets>
+  <oef:NetExpensesOverAssets contextRef="bufr" unitRef="pure" decimals="4">0.0095</oef:NetExpensesOverAssets>
+
+  <oef:ManagementFeesOverAssets contextRef="voo" unitRef="pure" decimals="4">0.0002</oef:ManagementFeesOverAssets>
+  <oef:OtherExpensesOverAssets contextRef="voo" unitRef="pure" decimals="4">0.0001</oef:OtherExpensesOverAssets>
+  <oef:ExpensesOverAssets contextRef="voo" unitRef="pure" decimals="4">0.0003</oef:ExpensesOverAssets>
+
+  <oef:ManagementFeesOverAssets contextRef="voo_2025" unitRef="pure" decimals="4">0.0002</oef:ManagementFeesOverAssets>
+  <oef:ExpensesOverAssets contextRef="voo_2025" unitRef="pure" decimals="4">0.0003</oef:ExpensesOverAssets>
+
+  <dei:TradingSymbol contextRef="sym_only">SFLR</dei:TradingSymbol>
+  <oef:ManagementFeesOverAssets contextRef="sym_only" unitRef="pure" decimals="4">0.0089</oef:ManagementFeesOverAssets>
+  <oef:ExpensesOverAssets contextRef="sym_only" unitRef="pure" decimals="4">0.0089</oef:ExpensesOverAssets>
+</xbrli:xbrl>

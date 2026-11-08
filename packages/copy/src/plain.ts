@@ -203,7 +203,8 @@ export const TABLE: TableCopy = {
     heading: 'What these figures are, and what they are not',
     items: [
       'Worked out from closing market prices, with distributions reinvested. A fund’s market price can sit a little above or below the value of what it holds.',
-      'The fund’s fees are already in its price. Taxes and the cost of buying and selling are not counted.',
+      'The fund’s own costs are already in its price, so every figure here is after them. They are shown below as an amount, never taken off a second time. Taxes and the cost of buying and selling are not counted.',
+      'Inflation is measured by the national consumer price index, which follows the spending of an average city household rather than any one person’s.',
       'These are past stretches of time. They say nothing about what comes next.',
       'A cap or a buffer applies over the fund’s own outcome period, to someone who held from its start. These windows do not line up with that period, so these figures do not show whether a cap or a buffer delivered what it set out to.',
       'An average is not a ceiling. On a single sharp day a fund can fall further than these figures suggest.',
@@ -244,6 +245,42 @@ export const TABLE: TableCopy = {
     '12mo': { short: '12 mo', full: 'the past twelve months' },
     '6mo': { short: '6 mo', full: 'the past six months' },
     '13wk': { short: '13 wk', full: 'the past thirteen weeks' },
+  },
+
+  real: {
+    heading: 'After an adviser’s fee and inflation',
+    intro:
+      'What the same $100 was worth at the end of each period in money of {month}, once rising prices are allowed for. Treasury bills show what lending the money to the US government three months at a time would have paid over the same period.',
+    adviserToggle: 'Take off a 1% yearly adviser’s fee',
+    adviserOn:
+      'An adviser’s fee of 1% a year is taken off the fund, the market and the bills alike, because an adviser charges on whatever they hold for you.',
+    adviserOff: 'No adviser’s fee is taken off. Someone who buys the fund for themselves pays none.',
+    rows: {
+      fund: { label: '$100 in this fund', full: 'What $100 in this fund was worth at the end, in money of the last month' },
+      market: { label: '$100 in the market', full: 'What $100 in the market was worth at the end, in money of the last month' },
+      bills: { label: '$100 in Treasury bills', full: 'What $100 in three-month Treasury bills was worth at the end, in money of the last month' },
+      prices: { label: 'Prices rose by', full: 'How much consumer prices rose over the period' },
+    },
+    costs:
+      'This fund’s own costs, {total}% a year, are already inside every figure on this page: they come out of its price day by day.',
+    costsWrapper:
+      'This fund’s own costs, {total}% a year, are already inside every figure on this page: {manager}% to its manager and {acquired}% to the funds it holds, taken out of its price day by day.',
+    costsOver: 'Over {window} they came to about ${dollars} of every $100.',
+    costsWaiver: 'Its manager is currently forgoing {waiver}% of a {gross}% charge.',
+    costsMarket: '{benchmark} costs {total}% a year, which is likewise already inside its figures.',
+    costsMissing: 'This fund’s cost table could not be read for this month, so its costs are not shown.',
+    provisional:
+      'Consumer prices for {month} are not published yet, so {used} stands in until they are, and this figure moves a little when they arrive.',
+    estimated:
+      'Consumer prices were not collected for {month}, so a figure halfway between the months either side stands in.',
+    billsProvisional:
+      'Bill rates are not yet published up to the end of this period, so the last published rate stands in for the days after it.',
+    legend:
+      'A dotted underline in this table marks a figure that rests on a stand-in for consumer prices or bill rates. What stands in is in its tooltip.',
+    dash:
+      'A dash means the fund has no figure for that period, or the published price and bill-rate figures do not reach back that far. The reason is in its tooltip. It does not mean nought.',
+    unavailable:
+      'The consumer price and bill-rate figures could not be read, so this section is not shown. The figures above are unaffected.',
   },
 
   trend: {

@@ -16,10 +16,27 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["ticker", "role", "note"],
+        "required": ["ticker", "sec_series_id", "sec_class_id", "role", "note"],
         "additionalProperties": false,
         "properties": {
           "ticker": { "type": "string", "pattern": "^[A-Z.]{1,6}$" },
+          "sec_series_id": { "description": "The SEC's identifier for this fund series. The fee table in the fund's own prospectus is filed under it, which is where its costs are read from (3F D-22).", "type": "string", "pattern": "^S\\d{9}$" },
+          "sec_class_id": { "description": "The SEC's identifier for the exchange-traded share class within the series. Fee-table facts are tagged per class. Seven classes are on EDGAR with no ticker attached, so the identifier, not the ticker, is what finds them.", "type": "string", "pattern": "^C\\d{9}$" },
+          "manual_fees": {
+            "description": "Fee periods recorded by hand where no tagged fee table exists, each with its source: an instrument that was not an open-end fund for part of the archive's history.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["from", "gross", "url", "note"],
+              "additionalProperties": false,
+              "properties": {
+                "from": { "type": "string", "format": "date" },
+                "gross": { "type": "number", "minimum": 0, "maximum": 0.05 },
+                "url": { "type": "string", "minLength": 1 },
+                "note": { "type": "string", "minLength": 1 }
+              }
+            }
+          },
           "role": { "enum": ["universal_anchor", "named_benchmark_option"] },
           "note": { "type": "string", "minLength": 1 }
         }
@@ -31,13 +48,15 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["ticker", "name", "issuer", "category", "defined_outcome_caveat", "named_benchmark", "benchmark_source"],
+        "required": ["ticker", "sec_series_id", "sec_class_id", "name", "issuer", "category", "defined_outcome_caveat", "named_benchmark", "benchmark_source"],
         "dependentRequired": {
           "benchmark_note": ["benchmark_note_plain"]
         },
         "additionalProperties": true,
         "properties": {
           "ticker": { "type": "string", "pattern": "^[A-Z.]{1,6}$" },
+          "sec_series_id": { "description": "The SEC's identifier for this fund series. The fee table in the fund's own prospectus is filed under it, which is where its costs are read from (3F D-22).", "type": "string", "pattern": "^S\\d{9}$" },
+          "sec_class_id": { "description": "The SEC's identifier for the exchange-traded share class within the series. Fee-table facts are tagged per class. Seven classes are on EDGAR with no ticker attached, so the identifier, not the ticker, is what finds them.", "type": "string", "pattern": "^C\\d{9}$" },
           "name": { "type": "string", "minLength": 1 },
           "issuer": { "type": "string", "minLength": 1 },
           "category": {

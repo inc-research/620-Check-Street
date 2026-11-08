@@ -27,7 +27,7 @@ import {
   type ReportDocument,
   type Snapshot,
 } from './shim.ts';
-import { findFund, loadIndex, loadReport, loadSnapshot, state } from './state.ts';
+import { findFund, loadFees, loadIndex, loadRates, loadReport, loadSnapshot, state } from './state.ts';
 import { renderFunds } from './views/funds.ts';
 import { renderReport } from './views/report.ts';
 import { renderHistory } from './views/history.ts';
@@ -320,11 +320,20 @@ async function renderRoute(): Promise<void> {
     if (result.status === 'fulfilled') earlier.set(reachable[i]!, result.value);
   });
 
+  // Costs and rates add a section; none of them is needed for the rest of the
+  // page, so a failure here costs that section and nothing else (3F D-23).
+  const [rates, fundFees, marketFees] = await Promise.all([
+    loadRates().catch(() => null),
+    loadFees(fund.ticker, wanted),
+    loadFees(state.benchmark, wanted),
+  ]);
+
   show(
     renderReport(
       {
         report,
         snapshot,
+        real: { rates, fundFees, marketFees, adviser: state.adviser },
         benchmark: state.benchmark,
         months: fund.months,
         earlier,
@@ -348,6 +357,11 @@ async function renderRoute(): Promise<void> {
         },
         onCompare: (t) => gotoCompare(fund.ticker, wanted, t),
         onBack: () => goto(null),
+        onAdviser: (on) => {
+          state.adviser = on;
+          const y = window.scrollY;
+          void renderRoute().then(() => window.scrollTo(0, y));
+        },
       },
     ),
   );

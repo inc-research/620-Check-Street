@@ -31,3 +31,9 @@ build/
 # Work kept beside the project and outside its history. Holds intraday volume bars
 # that cannot be pulled again, so it is not disposable.
 OUT_OF_GIT/
+
+# API keys. The FRED key is read from Colab secrets or the FRED_API_KEY
+# environment variable; a local key file must never be committed (3F D-23).
+fred_opendoors.txt
+*.key
+secrets/

@@ -19,7 +19,7 @@ import argparse
 import json
 import sys
 import zipfile
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
@@ -32,9 +32,31 @@ from .backfill import (
 )
 from .emit import build_all_snapshots, build_report
 from .exposure import compute_readings
+from .fees import FeeRecord, FeeRefused, InstanceCache, build_fee_file, fee_history, fee_in_force, manual_record
 from .fetch import FetchRefused, PriceSeries, SourceRecord, fetch_daily_prices
+from .rates import SERIES as RATE_SERIES, RatesRefused, fetch_series, find_api_key, merge_append_only
 from .registry import UNIVERSAL_ANCHOR, Registry, load_registry
 from .semibeta import MIN_OBSERVATIONS_PER_CELL, daily_returns, pair_returns
+
+
+def write_json(path: Path, doc: dict[str, Any]) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
+    return path
+
+
+def archive_report_months(archive: Path) -> dict[str, dict[str, date]]:
+    """Report months already published, with their as-of dates: what a fees-and-rates
+    run covers when it adds those files to months that already exist."""
+    out: dict[str, dict[str, date]] = {}
+    root = archive / "_reports"
+    if not root.is_dir():
+        return out
+    for ticker_dir in sorted(p for p in root.iterdir() if p.is_dir()):
+        for f in sorted(ticker_dir.glob("*.json")):
+            doc = json.loads(f.read_text(encoding="utf-8"))
+            out.setdefault(ticker_dir.name, {})[f.stem] = date.fromisoformat(doc["as_of"])
+    return out
 
 
 def most_recent_completed_month_end(today: date) -> date:
@@ -70,6 +92,14 @@ class Run:
         self.sources: dict[str, SourceRecord] = {}
         self.failures: dict[str, str] = {}
         self.started = datetime.now(timezone.utc)
+        # Fund costs and the rate series (3F D-22, D-23). Their failures are
+        # recorded apart from price failures: a fee table that cannot be read
+        # this month leaves the returns untouched.
+        self.fees: dict[str, dict[str, dict[str, Any]]] = {}
+        self.fee_failures: dict[str, str] = {}
+        self.rates: dict[str, dict[str, Any]] = {}
+        self.rates_failures: dict[str, str] = {}
+        self.mode = "prices"
 
     def log(self, message: str) -> None:
         self.lines.append(message)
@@ -95,6 +125,77 @@ class Run:
                 continue
             self.prices[ticker] = series
             self.sources[ticker] = record
+
+    def report_months(self) -> dict[str, dict[str, date]]:
+        """Every report month this run produced, with its as-of date, per fund."""
+        return {
+            t: {m: date.fromisoformat(doc["as_of"]) for m, doc in months.items()}
+            for t, months in self.reports.items()
+        }
+
+    def fetch_fees(self, months: dict[str, dict[str, date]]) -> None:
+        """One fee file per report month, for each fund and each anchor it is read against.
+
+        Reads only as far back through each series' filings as the earliest month
+        needs, and downloads a trust's prospectus once however many funds it covers.
+        """
+        stamp = self.started.replace(microsecond=0).isoformat().replace("+00:00", "Z")
+        cache = InstanceCache()
+        anchor_months: dict[str, dict[str, date]] = {}
+        jobs: list[tuple[str, str, str | None, str | None, tuple, dict[str, date]]] = []
+        for fund in self.registry.funds:
+            wanted = months.get(fund.ticker)
+            if not wanted:
+                continue
+            jobs.append((fund.ticker, "fund", fund.sec_series_id, fund.sec_class_id, (), wanted))
+            for b in fund.benchmarks:
+                anchor_months.setdefault(b, {}).update(wanted)
+        for anchor in self.registry.anchor_records:
+            if anchor.ticker in anchor_months:
+                jobs.append((
+                    anchor.ticker, "benchmark", anchor.sec_series_id, anchor.sec_class_id,
+                    anchor.manual_fees, anchor_months[anchor.ticker],
+                ))
+
+        self.log(f"reading fee tables for {len(jobs)} instruments")
+        for ticker, role, series_id, class_id, manual, wanted in jobs:
+            earliest = min(wanted.values())
+            try:
+                history: list[FeeRecord] = [manual_record(ticker, m) for m in manual]
+                if series_id:
+                    history += fee_history(ticker, series_id, class_id, earliest, cache, self.log)
+            except (FeeRefused, OSError, ValueError) as exc:
+                self.fee_failures[ticker] = str(exc)
+                self.log(f"  {ticker}: NO FEE TABLE — {exc}")
+                continue
+            self.fees[ticker] = {
+                month: build_fee_file(ticker, role, month, as_of, fee_in_force(history, as_of), stamp)
+                for month, as_of in sorted(wanted.items())
+            }
+            latest = self.fees[ticker][max(wanted)]["fees"]
+            self.log(f"{ticker}: {len(wanted)} fee file(s), latest net {latest['net'] if latest else 'none'}")
+
+    def fetch_rates(self, start: date) -> None:
+        """Consumer prices and three-month bill yields, merged onto what is published."""
+        stamp = self.started.replace(microsecond=0).isoformat().replace("+00:00", "Z")
+        key = find_api_key(Path(self.archive_dir).parent if self.archive_dir else None)
+        self.log(f"fetching rate series from {start} ({'with' if key else 'without'} a FRED key)")
+        for series_id in RATE_SERIES:
+            try:
+                series = fetch_series(series_id, start, key, log=self.log)
+                fresh = series.to_json(stamp)
+                existing = None
+                if self.archive_dir is not None:
+                    path = self.archive_dir / "_rates" / f"{series_id}.json"
+                    if path.is_file():
+                        existing = json.loads(path.read_text(encoding="utf-8"))
+                self.rates[series_id] = merge_append_only(existing, fresh)
+            except (RatesRefused, OSError) as exc:
+                self.rates_failures[series_id] = str(exc)
+                self.log(f"  {series_id}: NO SOURCE — {exc}")
+                continue
+            obs = self.rates[series_id]["observations"]
+            self.log(f"{series_id}: {series.source}, {len(obs)} observations to {obs[-1][0]}")
 
     # --- compute ------------------------------------------------------------
 
@@ -196,6 +297,11 @@ class Run:
         for months in self.reports.values():
             for month, report in months.items():
                 paths.append(write_report(self.out_dir / "data", report, month))
+        for ticker, months in self.fees.items():
+            for month, doc in months.items():
+                paths.append(write_json(self.out_dir / "data" / "_fees" / ticker / f"{month}.json", doc))
+        for series_id, doc in self.rates.items():
+            paths.append(write_json(self.out_dir / "data" / "_rates" / f"{series_id}.json", doc))
         return paths
 
     def manifest(
@@ -203,6 +309,7 @@ class Run:
     ) -> dict[str, Any]:
         return {
             "app": "Third Floor",
+            "mode": self.mode,
             "run_started_at": self.started.replace(microsecond=0).isoformat().replace("+00:00", "Z"),
             "run_finished_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
             "registry_schema_version": self.registry.schema_version,
@@ -227,6 +334,13 @@ class Run:
                 0 if self.reports_only else sum(len(m) for m in documents.values())
             ),
             "total_report_files": sum(len(m) for m in self.reports.values()),
+            "total_fee_files": sum(len(m) for m in self.fees.values()),
+            "fee_failures": self.fee_failures,
+            "rate_series": {
+                s: {"source": d["source"], "last": d["observations"][-1][0]}
+                for s, d in sorted(self.rates.items())
+            },
+            "rates_failures": self.rates_failures,
         }
 
     def package(self, documents, snapshot_dates, depth, zip_path: str | Path) -> Path:
@@ -280,6 +394,12 @@ def main(argv: list[str] | None = None) -> int:
         help="write report files and no snapshots: the one-off backfill of "
         "data/_reports over months already published (3F D-18)",
     )
+    parser.add_argument(
+        "--fees-and-rates-only",
+        action="store_true",
+        help="write fee files for report months already published, and the rate "
+        "series, with no price pull: the one-off backfill of data/_fees (3F D-22)",
+    )
     parser.add_argument("--today", help="override today's date, for reproducible runs")
     args = parser.parse_args(argv)
 
@@ -306,8 +426,25 @@ def main(argv: list[str] | None = None) -> int:
         f"Third Floor run — {'backfill' if args.backfill else 'monthly'}, "
         f"{depth} snapshot(s) ending {snapshot_dates[-1]}"
     )
+    if args.fees_and_rates_only:
+        # Fee files for months already published, and the rate series. No price
+        # pull and no new snapshot or report: the one-off backfill of data/_fees
+        # (3F D-22), and a way to refresh the rates between monthly runs.
+        months = archive_report_months(Path(args.archive))
+        if args.only:
+            months = {t: m for t, m in months.items() if t in set(args.only)}
+        run.reports_only = True
+        run.mode = "fees_and_rates_only"
+        run.fetch_fees(months)
+        earliest = min(d for m in months.values() for d in m.values())
+        run.fetch_rates(date(earliest.year - 1, earliest.month, 1) - timedelta(days=31))
+        run.package({}, snapshot_dates, args.depth, args.zip_path)
+        return 0 if not (run.fee_failures or run.rates_failures) else 1
+
     run.fetch_all(fetch_start_for(snapshot_dates), args.only)
     documents = run.build(snapshot_dates, args.depth)
+    run.fetch_fees(run.report_months())
+    run.fetch_rates(fetch_start_for(snapshot_dates))
     run.package(documents, snapshot_dates, args.depth, args.zip_path)
     return 0 if not run.failures else 1
 

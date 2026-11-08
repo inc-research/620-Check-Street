@@ -39,6 +39,12 @@ export {
   isReport,
   isSnapshot,
   normaliseScore,
+  ADVISER_FEE,
+  isFeeDocument,
+  isRateSeries,
+  realReading,
+  validateFeeDocument,
+  validateRateSeries,
   validateReport,
   validateSnapshot,
   type BenchmarkBlock,
@@ -69,6 +75,10 @@ export {
   type TableRow,
   type TrendReading,
   type TrendStep,
+  type FeeDocument,
+  type RateSeries,
+  type RealReading,
+  type RealResult,
 } from '@third-floor/core';
 
 export {

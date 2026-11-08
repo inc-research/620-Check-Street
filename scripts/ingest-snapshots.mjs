@@ -57,16 +57,45 @@ function main(argv) {
 
   const added = [];
   const conflicts = [];
+  const series = [];
 
   for (const path of snapshots) {
     const month = basename(path);
     const ticker = basename(dirname(path));
-    // Reports sit one level deeper and follow the same append-only rule (3F D-18).
-    const reports = basename(dirname(dirname(path))) === '_reports';
-    const label = reports ? `_reports/${ticker}/${month}` : `${ticker}/${month}`;
+    // The rate series are whole files, merged rather than added (3F D-23).
+    if (ticker === '_rates') {
+      series.push(path);
+      continue;
+    }
+    // Reports and fee files sit one level deeper and follow the same
+    // append-only rule (3F D-18, D-22).
+    const archive = basename(dirname(dirname(path)));
+    const nested = archive === '_reports' || archive === '_fees';
+    const label = nested ? `${archive}/${ticker}/${month}` : `${ticker}/${month}`;
     const destination = join(DATA, ...label.split('/'));
     if (existsSync(destination) && !force) conflicts.push(label);
     else added.push([path, destination, label]);
+  }
+
+  // A rate series may grow, never change: neither is revised by its publisher,
+  // so a published observation that comes back different is refused.
+  const merged = [];
+  for (const path of series) {
+    const label = `_rates/${basename(path)}`;
+    const fresh = JSON.parse(readFileSync(path, 'utf8'));
+    const destination = join(DATA, '_rates', basename(path));
+    if (existsSync(destination)) {
+      const published = new Map(JSON.parse(readFileSync(destination, 'utf8')).observations);
+      const incoming = new Map(fresh.observations);
+      const changed = [...published].filter(([d, v]) => incoming.has(d) && incoming.get(d) !== v);
+      if (changed.length > 0 && !force) {
+        conflicts.push(`${label} (${changed.length} published observation(s) changed, first ${changed[0][0]})`);
+        continue;
+      }
+      for (const [d, v] of published) if (!incoming.has(d)) incoming.set(d, v);
+      fresh.observations = [...incoming].sort((a, b) => (a[0] < b[0] ? -1 : 1));
+    }
+    merged.push([fresh, destination, label]);
   }
 
   if (conflicts.length > 0) {
@@ -85,7 +114,7 @@ function main(argv) {
   }
 
   if (dryRun) {
-    console.log(`would add ${added.length} file(s); nothing written`);
+    console.log(`would add ${added.length} file(s) and merge ${merged.length} rate series; nothing written`);
     return 0;
   }
 
@@ -93,6 +122,11 @@ function main(argv) {
     mkdirSync(dirname(to), { recursive: true });
     cpSync(from, to);
     if (process.env['VERBOSE']) console.log(`  + ${label}`);
+  }
+  for (const [doc, to, label] of merged) {
+    mkdirSync(dirname(to), { recursive: true });
+    writeFileSync(to, JSON.stringify(doc, null, 2) + '\n');
+    console.log(`  merged ${label}: ${doc.observations.length} observations to ${doc.observations.at(-1)[0]}`);
   }
 
   const manifestSource = join(source, 'MANIFEST.json');

@@ -157,4 +157,10 @@ export const BLOCKERS = {
     remedy: 'This site follows a fixed list of options-based funds, shown on the front page. Pick one from that list.',
     subjects: [ticker],
   }),
+
+  ratesNotCovered: (start: string, end: string): Blocker => ({
+    code: 'rates_not_covered',
+    message: `The published figures for consumer prices and Treasury bill rates do not reach back over ${start} to ${end}, so this period cannot be shown in today’s money.`,
+    remedy: 'Read the figures before inflation in the rows above, or pick a shorter period.',
+  }),
 } as const;

@@ -100,6 +100,12 @@ sliced in memory at every snapshot date. This is a hard ceiling worth
 respecting deliberately: don't scale the tracked universe up materially
 without re-examining this.
 
+Fees and rates go to other hosts and leave that count unchanged. SEC EDGAR gets a
+feed and one or two filings per instrument each month, throttled under its
+fair-access limit, and identifies itself with a project contact, never a person's
+address. FRED gets two requests. The FRED key comes from Colab secrets or
+`FRED_API_KEY` and is never committed.
+
 ## Benchmark model — universal anchor + fund-specific named benchmark
 
 Every tracked fund gets computed against **VOO**, a universal anchor,
@@ -301,6 +307,15 @@ holds what the page leads with: growth, net capture, worst fall, fit. Those need
 full-window returns, which a snapshot does not store, and a committed snapshot is
 not rewritten. Same months, one for one, also append-only. The snapshot archive
 goes on being written and is what the semibeta detail section reads.
+
+**Costs and rates (3F D-22, D-23).** `/data/_fees/<TICKER>/<YYYY-MM>.json` holds the
+fee table in force for each report month, for every fund and every anchor its
+report reads. It is append-only and read from the prospectus XBRL the SEC holds.
+These costs are already inside every return, so they are disclosed and never
+subtracted. `/data/_rates/CPIAUCNS.json` and `DGS3MO.json` are whole FRED series:
+a run may add observations but never change one. The page works out "after an
+adviser's fee and inflation" from these when it loads, so a stand-in for this
+month's consumer prices gives way by itself once they are published.
 
 ## Three lenses — keep these distinct
 
@@ -506,6 +521,14 @@ distinguishes nothing.
   true` (nearly the entire coverage set), a visible note that the reading
   reflects current position within the fund's outcome period. The premise is
   untested (3F-O-07).
+- **Costs, adviser's fee and inflation (3F D-22, D-23):** after the money rows, a
+  line stating the fund's own costs as an amount already inside every figure, with
+  acquired-fund fees named for a fund of funds and the anchor's cost beside it.
+  Then $100 in the fund, the market and three-month Treasury bills in money of the
+  last month, and how much prices rose. A 1% yearly adviser's fee is a checkbox,
+  on by default, charged to all three alike. A stand-in for unpublished consumer
+  prices or bill rates gets the dotted underline, with the stand-in named in the
+  tooltip. The fund's costs are never taken off. Taxes are not counted yet.
 - A short legend explaining each marker the page can actually draw.
 
 A static reference implementation of this layout was produced during
@@ -690,6 +713,11 @@ Each step has a gate. Run the gate; do not assume the step.
     folder outside the repository; the build refuses a published formula that
     disagrees with the archive; no archive file touched.
 
-**All fifteen steps are built.** The two open questions the site was waiting on
+16. ✅ Fund costs, the adviser's fee and inflation (3F D-22, D-23). *Gate:* all
+    31 funds and 4 anchors have a fee file for every report month, each tying out
+    line by line; no snapshot or report file touched; the rate series append-only
+    in the ingest; the FRED key gitignored and absent from every written file.
+
+**All sixteen steps are built.** The two open questions the site was waiting on
 are closed: 3F-O-05 no (the archive contradicts the caveat's premise) and
 3F-O-06 yes, LADM stays.

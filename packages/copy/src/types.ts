@@ -115,6 +115,27 @@ export interface TableCopy {
     steady: string;
     unavailable: string;
   };
+  /** After an adviser's fee and inflation (3F D-22, D-23). {placeholders} are filled by the view. */
+  real: {
+    heading: string;
+    intro: string;
+    adviserToggle: string;
+    adviserOn: string;
+    adviserOff: string;
+    rows: Record<'fund' | 'market' | 'bills' | 'prices', { label: string; full: string }>;
+    costs: string;
+    costsWrapper: string;
+    costsOver: string;
+    costsWaiver: string;
+    costsMarket: string;
+    costsMissing: string;
+    provisional: string;
+    estimated: string;
+    billsProvisional: string;
+    legend: string;
+    dash: string;
+    unavailable: string;
+  };
   /** Net capture across recent month-end reports (3F D-20). {placeholders} are filled by the view. */
   trend: {
     window: string;

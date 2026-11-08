@@ -133,6 +133,33 @@ if missing:
     print(f"no snapshots for: {', '.join(missing)}")
 
 # %% [markdown]
+# ## 4b · Fund costs and rates
+#
+# Each fund's costs are read from the fee table in its own prospectus, as filed
+# with the SEC, for every month just produced. They are already inside the
+# fund's price, so the page states them and never takes them off again
+# (3F D-22). Consumer prices and three-month Treasury bill rates come from FRED,
+# for the page's "after an adviser's fee and inflation" section (3F D-23).
+#
+# **The FRED key lives in Colab's secrets, never in this notebook.** Once: open
+# the key icon in the left sidebar, add a secret named `FRED_API_KEY`, and allow
+# this notebook to read it. Without a key the run falls back to FRED's public
+# download, which is slower and sometimes refuses.
+
+# %%
+run.fetch_fees(run.report_months())
+run.fetch_rates(fetch_start_for(snapshot_dates))
+
+if run.fee_failures:
+    print("NO FEE TABLE FOR:")
+    for ticker, why in run.fee_failures.items():
+        print(f"  {ticker}: {why}")
+if run.rates_failures:
+    print("NO RATE SERIES FOR:")
+    for series_id, why in run.rates_failures.items():
+        print(f"  {series_id}: {why}")
+
+# %% [markdown]
 # ## 5 · Package and download
 #
 # One zip: every snapshot, the manifest and the run log. The manifest records
@@ -156,6 +183,7 @@ except ImportError:
 # node scripts/ingest-snapshots.mjs /tmp/third-floor-run --dry-run
 # node scripts/ingest-snapshots.mjs /tmp/third-floor-run
 # node scripts/validate-snapshots.mjs
+# npm run validate:reports && npm run validate:fees
 # npm run build:index
 # git add data
 # git commit -m "data: monthly run"
@@ -168,6 +196,10 @@ except ImportError:
 # `data/_runs/`, and there is no MANIFEST.json at the repository root to add.
 # `build:index` regenerates `data/index.json`, which the page reads first and
 # which `npm run check:index` will otherwise flag as stale.
+#
+# The rate series in `data/_rates/` are merged rather than added: later
+# observations are appended, and a published observation that comes back
+# different is refused, because neither series is revised (3F D-23).
 #
 # `ingest-snapshots.mjs` refuses to overwrite a snapshot that is already
 # committed. That is the append-only rule (3F D-08) made mechanical: adjustment

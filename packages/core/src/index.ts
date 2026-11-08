@@ -11,3 +11,5 @@ export * from './lensB.ts';
 export * from './lensC.ts';
 export * from './captureTrend.ts';
 export { fsum, fsumBy } from './sum.ts';
+export * from './report/real.ts';
+export * from './report/validateCosts.ts';

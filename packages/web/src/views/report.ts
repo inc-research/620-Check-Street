@@ -33,6 +33,7 @@ import {
   type Snapshot,
   type TableCell,
 } from '../shim.ts';
+import { renderReal, type RealContext } from './real.ts';
 import { renderTrend } from './trend.ts';
 
 export interface ReportHandlers {
@@ -42,6 +43,7 @@ export interface ReportHandlers {
   onTrendColumn: (column: HorizonName) => void;
   onCompare: (ticker: string) => void;
   onBack: () => void;
+  onAdviser: (on: boolean) => void;
 }
 
 export interface ReportContext {
@@ -67,6 +69,8 @@ export interface ReportContext {
    * an open question (3F D-15).
    */
   benchmarkNote?: string | undefined;
+  /** Costs, rates and the adviser setting, for the section after the money rows (3F D-23). */
+  real: Omit<RealContext, 'report' | 'benchmark'>;
 }
 
 /** A month key as something a person says out loud. */
@@ -535,6 +539,10 @@ export function renderReport(ctx: ReportContext, handlers: ReportHandlers): HTML
 
   const blocked = blockedNotes(model);
   if (blocked) append(root, [blocked]);
+
+  append(root, [
+    renderReal({ ...ctx.real, report: ctx.report, benchmark: ctx.benchmark }, handlers.onAdviser),
+  ]);
 
   append(root, [limits()]);
   append(root, [

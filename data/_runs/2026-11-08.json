@@ -1,0 +1,67 @@
+{
+  "app": "Third Floor",
+  "mode": "fees_and_rates_only",
+  "run_started_at": "2026-11-08T14:16:45Z",
+  "run_finished_at": "2026-11-08T14:21:35Z",
+  "registry_schema_version": "1.3",
+  "registry_locked_at": "2026-08-23",
+  "requested_backfill_depth_months": 19,
+  "snapshot_range": {
+    "from": "2026-10",
+    "to": "2026-10"
+  },
+  "min_observations_per_cell": 20,
+  "instruments_fetched": 0,
+  "sources": {},
+  "fetch_failures": {},
+  "snapshot_counts": {},
+  "tickers_with_no_snapshots": [
+    "BALT",
+    "BUFC",
+    "BUFD",
+    "BUFF",
+    "BUFI",
+    "BUFM",
+    "BUFQ",
+    "BUFR",
+    "BUFX",
+    "BUFY",
+    "BUFZ",
+    "CPSL",
+    "DBMF",
+    "DHDG",
+    "DMAX",
+    "FGSI",
+    "FHDG",
+    "HELO",
+    "HEQQ",
+    "HOLA",
+    "IVVB",
+    "IVVM",
+    "LADM",
+    "MAXJ",
+    "MMAX",
+    "PSFF",
+    "QFLR",
+    "RFLR",
+    "SFLR",
+    "SMAX",
+    "SQMX"
+  ],
+  "coverage": {},
+  "total_snapshot_files": 0,
+  "total_report_files": 0,
+  "total_fee_files": 703,
+  "fee_failures": {},
+  "rate_series": {
+    "CPIAUCNS": {
+      "source": "fred_api",
+      "last": "2026-09-01"
+    },
+    "DGS3MO": {
+      "source": "fred_api",
+      "last": "2026-11-05"
+    }
+  },
+  "rates_failures": {}
+}

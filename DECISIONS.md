@@ -706,6 +706,95 @@ copy still says none, and one day in 63 or 126 does not change any figure's read
 layer moves to the stricter rule, or a terms check clears the prices for inclusion,
 which would let a reader rebuild the sums.
 
+## 3F D-22 · A fund's costs are disclosed, never deducted, and kept in their own archive
+
+The owner wants returns after fees, an adviser's fee and inflation. The first of
+those is already done. A fund's costs come out of its net assets every day, so its
+price, and every return worked out from adjusted closes, is already after them. That
+includes the costs of the funds it holds. Taking the expense ratio off the archive's
+returns would charge the reader twice. So the page states the costs as an amount
+already inside its figures, and nothing subtracts them.
+
+**Source: the fund's own prospectus, as filed.** Every open-end fund's fee table is
+filed with the SEC in XBRL (`oef:` taxonomy), per share class: management fee,
+12b-1, other expenses, acquired-fund fees, gross, waiver, net. That is the fund's
+regulatory statement of its costs, free and machine-readable, with no issuer pages
+to scrape. All 31 funds and all four anchors were found on 2026-11-08. Each fund
+and anchor now carries `sec_series_id` and `sec_class_id` in the registry. Seven
+classes (SFLR, RFLR, BALT, BUFF, IVVM, IVVB, CPSL) are on EDGAR with no ticker
+attached, and only their identifier finds them.
+
+**For a fund of funds, the management fee is the small part.** BUFR, BUFQ, BUFZ,
+BUFX, BUFD, BUFY, BUFF, CPSL, PSFF and LADM charge 0.10% themselves and 0.49% to
+0.90% through the funds they hold. The page names both.
+
+**`data/_fees/<TICKER>/<YYYY-MM>.json`, one per report month, append-only.** It
+records the fee in force at that month's as-of date: the latest fee-tagged filing
+dated on or before it. Fees do change. BUFR's December 2024 table was a 0.20% fee
+with 0.10% waived, and its December 2025 table is 0.10% with nothing waived, with
+the same net either way. A file per month keeps that history without rewriting
+anything. The anchors get files too, under their own tickers.
+
+**Filing date stands in for effective date.** A 485BPOS can take effect on filing or
+on a later stated date, and the tagged facts do not say which. Every file says so.
+
+**QQQ is recorded by hand before 22 December 2025.** Until then it was a unit
+investment trust, whose prospectus states 0.20% in prose and files no tagged fee
+table. The registry carries that period with its source. Tagged tables start with
+the open-end fund's filing of 19 December 2025, at 0.18%.
+
+*Reverses if:* the archive's returns stop coming from prices net of costs, for
+instance from an index rather than a fund. Then the costs would have to be taken
+off, and this decision argued again.
+
+## 3F D-23 · After an adviser's fee and inflation, worked out on the page
+
+**What it shows.** For each window: $100 in the fund, in the market and in
+three-month Treasury bills, in money of the window's last month, plus how much
+prices rose. An adviser's fee of 1% a year can be switched on or off. It starts
+on, because the owner expects most readers to hold these funds through an
+adviser. It is charged to the fund, the market and the bills alike, since an
+adviser charges on whatever they hold for you.
+
+**Worked out when the page is drawn, not archived.** Consumer prices for the newest
+month are not out on the monthly run date, and the owner chose to show the latest
+published month as a marked stand-in rather than withhold the figure. A stand-in has
+to give way by itself when the real figure arrives, and an append-only file cannot
+do that. Every input is already committed (the report's growth and window dates,
+the fee file, and the two series), so `realReading` in `packages/core` computes the
+figures from them when the page loads. The same is done for Lens C (3F D-14).
+
+**Consumer prices: CPIAUCNS**, all urban consumers, not seasonally adjusted. The
+adjusted series is revised every year, which would move figures already shown, and
+over a whole window the season washes out of a ratio of two levels anyway. A window
+is deflated by the ratio of its end month's level to its start month's.
+
+**October 2025 was never collected** (the federal shutdown), and FRED lists it as
+missing. A window that starts or ends there uses the geometric midpoint of
+September and November and says so in the cell's tooltip. The committed series
+keeps the gap as published.
+
+**Bills: DGS3MO**, the three-month constant-maturity yield. It is a bond-equivalent
+rate, so it compounds directly, unlike the discount-basis auction rate. Each daily
+reading holds until the next one.
+
+**Rate series are whole files, merged.** `data/_rates/CPIAUCNS.json` and
+`DGS3MO.json` gain observations each run. The ingest refuses one already published
+that comes back different. Neither series is revised, so such a change means
+something upstream is wrong.
+
+**The FRED key is never in the repository.** In Colab it is read from secrets,
+locally from `FRED_API_KEY`, or from a local file that is now gitignored. When no
+key is present, the run uses FRED's public CSV instead.
+
+**Taxes are not included yet.** Short- and long-term rates depend on the reader, on
+the account type and on how the fund's distributions are characterised. That
+calls for its own decision.
+
+*Reverses if:* the stand-in for the newest month proves misleading in practice, in
+which case it is withheld until published, or readers turn out mostly to hold these
+funds themselves, in which case the adviser's fee starts off.
+
 ---
 
 ## Open
