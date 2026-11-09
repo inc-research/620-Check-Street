@@ -73,6 +73,12 @@
   --sign: #00693e;
   --sign-ink: #ffffff;
 
+  /* The market behind a fund in a chart: pale fills and edges of the two directions. */
+  --rise-fill: #dbe7fa;
+  --rise-edge: #8fb3ec;
+  --fall-fill: #fde6d2;
+  --fall-edge: #f3b27b;
+
   --link: var(--blue);
 
   --measure: 68ch;
@@ -526,3 +532,108 @@ footer {
   td.score { font-size: 1rem; }
   th, td { padding: 0.45rem 0.4rem; }
 }
+
+/* --- selected reports (3F D-25) -------------------------------------------- */
+/* The first charts on the site. Inline SVG drawn from the published document;
+   colour marks a section, or which way the market moved, and never a verdict:
+   whether a fund's E sits above or below 1 is said in words, in plain ink. */
+
+.kicker { font-family: var(--display); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-quiet); font-size: 1rem; margin: 0.25rem 0 0; }
+.chart { position: relative; margin: 0.5rem 0 0.25rem; }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart.wide { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.chart.wide svg { min-width: 640px; }
+.chart text { font-family: var(--mono); font-size: 11px; fill: var(--ink-quiet); }
+.chart text.lab { font-family: var(--display); font-size: 13px; font-weight: 700; }
+.chart text.lab.up { fill: var(--blue); }
+.chart text.lab.down { fill: var(--orange); }
+.chart text.lab.ink { fill: var(--ink); }
+.chart .grid { stroke: var(--rule-soft); stroke-width: 1; }
+.chart .zero { stroke: var(--rule); stroke-width: 1; }
+.chart .stem { stroke: var(--ink); stroke-width: 4; stroke-linecap: round; }
+.chart .mk-up { fill: var(--rise-fill); }
+.chart .mk-down { fill: var(--fall-fill); }
+.chart .mk-up-line { stroke: var(--rise-edge); stroke-width: 1.5; fill: none; }
+.chart .mk-down-line { stroke: var(--fall-edge); stroke-width: 1.5; fill: none; }
+.chart .fd-up { stroke: var(--blue); stroke-width: 2.5; fill: none; }
+.chart .fd-down { stroke: var(--orange); stroke-width: 2.5; fill: none; }
+.chart .special { stroke: var(--ink); stroke-width: 1; stroke-dasharray: 2 3; }
+.chart .sp-dot { stroke: var(--ground); stroke-width: 2; }
+.chart .cross { stroke: var(--ink-faint); stroke-width: 1; }
+.chart .thin-up { stroke: var(--blue); stroke-width: 1.25; fill: none; opacity: 0.45; }
+.chart .thin-down { stroke: var(--orange); stroke-width: 1.25; fill: none; opacity: 0.45; }
+.chart .thin-up.hot, .chart .thin-down.hot { opacity: 1; stroke-width: 2.5; }
+.chart .hit { stroke: transparent; stroke-width: 10; fill: none; cursor: pointer; }
+.chart .diag { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 6 4; }
+.chart .pt-syn { fill: var(--violet); }
+.chart .pt-eq { fill: var(--sky); }
+.chart .pt-hollow { fill: var(--ground); stroke-width: 2; }
+.chart .pt-hollow.pt-syn { stroke: var(--violet); }
+.chart .pt-hollow.pt-eq { stroke: var(--sky); }
+.chart .pt-ref { fill: var(--ground); stroke: var(--ink-faint); stroke-width: 2; }
+.chart .arrow { stroke: var(--ink-faint); stroke-width: 1.25; fill: none; }
+.chart .ring { stroke: var(--ground); stroke-width: 2; }
+.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--ground); font-family: var(--mono);
+  font-size: 0.8rem; line-height: 1.45; padding: 0.45rem 0.6rem; border-radius: 0.2rem; max-width: 19rem;
+  font-variant-numeric: tabular-nums; z-index: 5; }
+.tip b { font-family: var(--display); letter-spacing: 0.03em; }
+.tip .sw { display: inline-block; width: 0.7em; height: 0.7em; margin-right: 0.35em; vertical-align: -0.05em; }
+.key { display: flex; flex-wrap: wrap; gap: 0.35rem 1.25rem; font-size: 0.95rem; color: var(--ink-quiet); margin: 0.25rem 0 0.5rem; }
+.key span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.key i { display: inline-block; width: 1.4rem; height: 0.7rem; }
+.key i.line { height: 0; border-top: 3px solid; }
+.key i.dash { height: 0; border-top: 2px dashed; }
+.key i.dot { width: 0.75rem; height: 0.75rem; border-radius: 50%; }
+.key i.sq { width: 0.7rem; height: 0.7rem; }
+.panels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.panels > div { min-width: 0; }
+.panels h4 { margin: 0.25rem 0 0; }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+th.num { white-space: nowrap; }
+thead th.span { text-align: center; border-bottom: 1px solid var(--rule-soft); }
+thead tr.sub th { font-size: 0.95rem; }
+td.num.dim { color: var(--ink-faint); }
+td .tag { font-family: var(--display); font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-quiet); white-space: nowrap; }
+td[class^="settled-"] { white-space: nowrap; }
+.chart .ci { stroke: var(--ink-quiet); stroke-width: 2; }
+.chart .ci-cap { stroke: var(--ink-quiet); stroke-width: 2; }
+.chart .day5 { fill: var(--ground); stroke: var(--orange); stroke-width: 2.5; }
+.chart text.row { font-family: var(--mono); font-size: 12px; fill: var(--ink); }
+.chart text.ghead { font-family: var(--display); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; fill: var(--ink-quiet); text-transform: uppercase; }
+tr.group.syn th { --group: var(--violet); }
+tr.group.eq th { --group: var(--sky); }
+tr.group.ref th { --group: var(--ink-quiet); }
+tr.hl td { background: var(--ground-tint); }
+.settled-above_1 { color: var(--ink); font-family: var(--display); font-weight: 700; }
+.settled-below_1 { color: var(--ink); font-family: var(--display); font-weight: 700; }
+.settled-not_settled { color: var(--ink-faint); font-family: var(--display); }
+.lead.vs-voo { border-left-color: var(--sky); font-family: var(--display); font-size: 1.3rem; line-height: 1.4; }
+.formula { font-family: var(--mono); font-size: 1rem; background: var(--ground-soft); padding: 0.6rem 0.85rem;
+  border-left: 4px solid var(--violet); margin: 0.5rem 0 0.85rem; overflow-x: auto; }
+.lead.fund { border-left-color: var(--violet); }
+.small { font-size: 0.95rem; }
+@media (max-width: 40rem) { .panels { grid-template-columns: minmax(0, 1fr); } }
+.study-cards { display: grid; gap: 0.75rem; margin: 1.25rem 0 0.5rem; }
+.study-card { border-top: 5px solid var(--violet); background: var(--ground-soft); padding: 0.75rem 0.9rem; }
+.study-card h3 { font-size: 1.35rem; margin: 0.15rem 0 0.35rem; }
+.study-card p { margin: 0 0 0.5rem; }
+.key i.k-mk-up { background: var(--rise-fill); border-top: 2px solid var(--rise-edge); }
+.key i.k-mk-down { background: var(--fall-fill); border-top: 2px solid var(--fall-edge); }
+.key i.line.k-up { border-color: var(--blue); }
+.key i.line.k-down { border-color: var(--orange); }
+.key i.line.k-quiet { border-color: var(--ink-quiet); }
+.key i.dash.k-ink { border-color: var(--ink); }
+.key i.dot.k-syn { background: var(--violet); }
+.key i.sq.k-eq { background: var(--sky); }
+.key i.dot.k-day5 { background: var(--ground); border: 2.5px solid var(--orange); }
+.tip .sw.k-mk-up { background: var(--rise-edge); }
+.tip .sw.k-up { background: var(--blue); }
+.tip .sw.k-mk-down { background: var(--fall-edge); }
+.tip .sw.k-down { background: var(--orange); }
+.tip span.line { display: block; }
+.study-back { margin: 0.5rem 0 0; }
+.chart .sp-dot.up { fill: var(--blue); }
+.chart .sp-dot.down { fill: var(--orange); }
+.chart .sp-dot.up { fill: var(--blue); }
+.chart .sp-dot.down { fill: var(--orange); }

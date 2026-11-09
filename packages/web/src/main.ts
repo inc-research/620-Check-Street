@@ -26,8 +26,11 @@ import {
   type Lookback,
   type ReportDocument,
   type Snapshot,
+  GAIN_EXPOSURE,
 } from './shim.ts';
-import { findFund, loadFees, loadIndex, loadRates, loadReport, loadSnapshot, state } from './state.ts';
+import { SELECTED_REPORTS, findFund, loadFees, loadIndex, loadRates, loadReport, loadSnapshot, loadStudy, state } from './state.ts';
+import { renderGainExposure } from './views/study/gainExposure.ts';
+import { fill } from './views/report.ts';
 import { renderFunds } from './views/funds.ts';
 import { renderReport } from './views/report.ts';
 import { renderHistory } from './views/history.ts';
@@ -124,7 +127,33 @@ function gotoCompare(
 }
 
 
+/** `#/selected/<id>`: a selected report (3F D-25), routed before any ticker. */
+function selectedId(): string | null {
+  const m = /^#\/selected\/([a-z0-9-]+)$/.exec(location.hash);
+  return m ? m[1]! : null;
+}
+
+async function renderSelected(id: string): Promise<void> {
+  if (!SELECTED_REPORTS.includes(id)) {
+    show(message(fill(GAIN_EXPOSURE.notFound.message, { id }), GAIN_EXPOSURE.notFound.remedy));
+    return;
+  }
+  show(busy());
+  try {
+    const doc = await loadStudy(id);
+    show(renderGainExposure(doc, { onBack: () => goto(null) }));
+    window.scrollTo(0, 0);
+  } catch (e) {
+    show(message((e as Error).message, GAIN_EXPOSURE.notFound.remedy));
+  }
+}
+
 async function renderRoute(): Promise<void> {
+  const selected = selectedId();
+  if (selected) {
+    await renderSelected(selected);
+    return;
+  }
   const { ticker, month, lookback, other, horizon } = parseHash();
 
   let index;

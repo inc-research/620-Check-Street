@@ -2,7 +2,7 @@
 //
 // The front page: what this site follows, and how to open one of them.
 
-import { PLAIN, TABLE, append, el } from '../shim.ts';
+import { GAIN_EXPOSURE, PLAIN, SELECTED, TABLE, append, el } from '../shim.ts';
 import { explainer } from './layout.ts';
 import type { ArchiveIndex, IndexFund } from '../state.ts';
 import { monthLabel } from './report.ts';
@@ -45,8 +45,31 @@ function card(fund: IndexFund, handlers: FundsHandlers): HTMLElement {
   return node;
 }
 
+/**
+ * The selected reports (3F D-25), above the list. A plain link to a hash route:
+ * nothing is fetched until a reader opens one.
+ */
+function selectedReports(): HTMLElement {
+  const c = GAIN_EXPOSURE.card;
+  return el(
+    'section',
+    { id: 'selected', class: 'study-cards' },
+    el('h2', {}, SELECTED.heading),
+    el('p', { class: 'caption' }, SELECTED.caption),
+    el(
+      'div',
+      { class: 'study-card' },
+      el('p', { class: 'kicker' }, c.kicker),
+      el('h3', {}, el('a', { href: '#/selected/gain-exposure-2026-11' }, c.title)),
+      el('p', {}, c.blurb),
+      el('p', {}, el('a', { href: '#/selected/gain-exposure-2026-11' }, c.open)),
+    ),
+  );
+}
+
 export function renderFunds(index: ArchiveIndex, handlers: FundsHandlers): HTMLElement {
   const root = el('section', {});
+  append(root, [selectedReports()]);
 
   // The list leads; what the site does and why is a click away (620 Check Street).
   append(root, [

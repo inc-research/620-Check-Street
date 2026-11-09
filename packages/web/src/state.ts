@@ -15,13 +15,16 @@ import {
   isRateSeries,
   isReport,
   isSnapshot,
+  isStudy,
   validateReport,
+  validateStudy,
   validateSnapshot,
   type FeeDocument,
   type HorizonName,
   type RateSeries,
   type ReportDocument,
   type Snapshot,
+  type StudyDocument,
 } from './shim.ts';
 
 /** One fund, as the index describes it. Enough to list and route without a fetch. */
@@ -169,6 +172,30 @@ export async function loadReport(ticker: string, month: string): Promise<ReportD
   }
 
   state.reports.set(key, parsed);
+  return parsed;
+}
+
+/**
+ * The selected reports (3F D-25), newest first. Each is one frozen document in
+ * data/_studies/, and scripts/validate-studies.mjs checks this list against the
+ * folder in both directions, so the front page never links to a missing file.
+ */
+export const SELECTED_REPORTS: readonly string[] = ['gain-exposure-2026-11'];
+
+const studies = new Map<string, StudyDocument>();
+
+/** Read one selected report, refused rather than half-drawn if it does not check out. */
+export async function loadStudy(id: string): Promise<StudyDocument> {
+  const already = studies.get(id);
+  if (already) return already;
+  const response = await fetch(`./data/_studies/${id}.json`);
+  if (!response.ok) throw new Error(`The selected report ${id} could not be read.`);
+  const parsed: unknown = await response.json();
+  if (!isStudy(parsed)) {
+    const problems = validateStudy(parsed).slice(0, 3).map((p) => `${p.path}: ${p.message}`).join('; ');
+    throw new Error(`The selected report ${id} does not check out — ${problems}`);
+  }
+  studies.set(id, parsed);
   return parsed;
 }
 

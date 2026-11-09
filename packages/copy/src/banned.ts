@@ -31,8 +31,9 @@ const FAMILY_WORDS = [
 
 /**
  * Third Floor's own. Second Floor's seventeen weighting verdicts are dropped:
- * they are about how much of a holding a fund owns, and this app never looks at
- * holdings at all.
+ * they are about how much of a holding a fund owns. The fund reports never look
+ * at holdings. A selected report (3F D-25) reads them only to put a fund in a
+ * group, and still makes no judgement about how much of anything a fund owns.
  *
  * These are the words the funds themselves use. A fund that calls itself
  * "buffered" is making a claim, and this app exists to set that claim beside

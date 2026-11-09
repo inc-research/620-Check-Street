@@ -13,3 +13,6 @@ export * from './captureTrend.ts';
 export { fsum, fsumBy } from './sum.ts';
 export * from './report/real.ts';
 export * from './report/validateCosts.ts';
+export * from './study/types.ts';
+export * from './study/validate.ts';
+export * from './study/build.ts';

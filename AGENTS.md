@@ -656,6 +656,23 @@ Floor takes no user file at all:
   the reader is disclosed to anyone — is untouched, because the files
   being read were published before the reader arrived.
 
+## Selected reports (3F D-25)
+
+Dated, one-off studies across the funds, each frozen as of its publication date.
+The analysis lives in `analysis/<study>/` (scripts, the owner-approved
+`grouping.json`, tests, `results.json`). Its `export.py` writes
+`data/_studies/<id>.json`, the only file the page reads, and `--check` proves the
+committed file is current. `packages/core/src/study/` validates the identities a
+document can prove about itself, `packages/copy/src/studies.ts` holds every
+sentence, and `packages/web/src/views/study/` draws it at `#/selected/<id>`.
+`SELECTED_REPORTS` in `packages/web/src/state.ts` lists them, and
+`scripts/validate-studies.mjs` checks that list against the folder both ways.
+
+Selected reports may set funds side by side; fund pages may not. They are never
+rebuilt monthly, and a new one is a new id, never an edit of a published one.
+The rolling Gain Exposure study (`OUT_OF_GIT/studies/rolling_E_2026-11/`) is not
+published yet.
+
 ## Build order
 
 Each step has a gate. Run the gate; do not assume the step.
@@ -725,6 +742,12 @@ Each step has a gate. Run the gate; do not assume the step.
     line by line; no snapshot or report file touched; the rate series append-only
     in the ingest; the FRED key gitignored and absent from every written file.
 
-**All sixteen steps are built.** The two open questions the site was waiting on
+17. ✅ Selected reports, starting with Gain Exposure (3F D-25). *Gate:* the
+    analysis tests pass; `export.py --check` matches the committed document;
+    `validate-studies` passes, its identities included; the deck passes the lint;
+    the page draws from the document with no `innerHTML`; no archive, snapshot,
+    report, fee, rate or OBSERVER file touched.
+
+**All seventeen steps are built.** The two open questions the site was waiting on
 are closed: 3F-O-05 no (the archive contradicts the caveat's premise) and
 3F-O-06 yes, LADM stays.

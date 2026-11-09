@@ -1,0 +1,747 @@
+{
+ "approved": "2026-11-09",
+ "approved_by": "project owner, in session",
+ "rule": "Group from the largest block of value in the latest public NPORT-P, not the largest single line. Held ETFs are looked through one level.",
+ "groups": {
+  "equity_sleeve": "stocks, held directly or through a plain index ETF, with options beside them",
+  "synthetic_long": "purchased (FLEX) calls are the largest block, held directly or through a ladder of rungs that are themselves synthetic longs"
+ },
+ "funds": [
+  {
+   "ticker": "SFLR",
+   "name": "Innovator Equity Managed Floor ETF",
+   "issuer": "Innovator (Goldman Sachs Asset Management)",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1415726/000089418926028314/0000894189-26-028314-index.htm",
+   "blocks": {
+    "stocks": 97.27,
+    "cash_bills": 2.66,
+    "purchased_put": 1.21,
+    "funds": 0.69,
+    "written_call": -0.26
+   },
+   "look_through": null,
+   "reason": "stocks are the largest block, with options beside them",
+   "group": "equity_sleeve",
+   "subgroup": "direct_stocks"
+  },
+  {
+   "ticker": "QFLR",
+   "name": "Innovator Nasdaq-100 Managed Floor ETF",
+   "issuer": "Innovator (Goldman Sachs Asset Management)",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1415726/000089418926028306/0000894189-26-028306-index.htm",
+   "blocks": {
+    "stocks": 95.42,
+    "cash_bills": 4.73,
+    "purchased_put": 2.27,
+    "written_call": -0.21
+   },
+   "look_through": null,
+   "reason": "stocks are the largest block, with options beside them",
+   "group": "equity_sleeve",
+   "subgroup": "direct_stocks"
+  },
+  {
+   "ticker": "RFLR",
+   "name": "Innovator U.S. Small Cap Managed Floor ETF",
+   "issuer": "Innovator (Goldman Sachs Asset Management)",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1415726/000089418926028381/0000894189-26-028381-index.htm",
+   "blocks": {
+    "stocks": 95.09,
+    "cash_bills": 13.66,
+    "purchased_put": 1.54,
+    "written_call": -0.04,
+    "other:EP": 0.02
+   },
+   "look_through": null,
+   "reason": "stocks are the largest block, with options beside them",
+   "group": "equity_sleeve",
+   "subgroup": "direct_stocks"
+  },
+  {
+   "ticker": "BALT",
+   "name": "Innovator Defined Wealth Shield ETF",
+   "issuer": "Innovator (Goldman Sachs Asset Management)",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1415726/000089418926028237/0000894189-26-028237-index.htm",
+   "blocks": {
+    "purchased_call": 99.18,
+    "purchased_put": 2.08,
+    "written_call": -1.18,
+    "cash_bills": 0.38,
+    "written_put": -0.16
+   },
+   "look_through": null,
+   "reason": "purchased calls are the largest block",
+   "group": "synthetic_long",
+   "subgroup": "direct_flex"
+  },
+  {
+   "ticker": "BUFF",
+   "name": "Innovator Laddered Power Buffer ETF",
+   "issuer": "Innovator (Goldman Sachs Asset Management)",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1415726/000089418926028277/0000894189-26-028277-index.htm",
+   "blocks": {
+    "funds": 99.93,
+    "cash_bills": 0.07
+   },
+   "look_through": {
+    "ticker": "PNOV",
+    "title": "Innovator U.S. Equity Power Buffer ETF - November",
+    "period": "2026-07-31",
+    "source": "https://www.sec.gov/Archives/edgar/data/1415726/000089418926028376/0000894189-26-028376-index.htm",
+    "blocks": {
+     "purchased_call": 100.67,
+     "written_call": -1.57,
+     "purchased_put": 0.94,
+     "cash_bills": 0.3,
+     "written_put": -0.27
+    },
+    "note": "rung located by EDGAR full-text search; no ticker on EDGAR"
+   },
+   "reason": "holds buffer rungs whose largest block is purchased calls (synthetic long rungs)",
+   "group": "synthetic_long",
+   "subgroup": "ladder_of_synthetic_long_rungs"
+  },
+  {
+   "ticker": "HELO",
+   "name": "JPMorgan Hedged Equity Laddered Overlay ETF",
+   "issuer": "JPMorgan",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1485894/000207169126023551/0002071691-26-023551-index.htm",
+   "blocks": {
+    "stocks": 97.15,
+    "cash_bills": 2.34,
+    "purchased_put": 0.44,
+    "funds": 0.26,
+    "written_call": -0.14,
+    "written_put": -0.07
+   },
+   "look_through": null,
+   "reason": "stocks are the largest block, with options beside them",
+   "group": "equity_sleeve",
+   "subgroup": "direct_stocks"
+  },
+  {
+   "ticker": "HOLA",
+   "name": "JPMorgan International Hedged Equity Laddered Overlay ETF",
+   "issuer": "JPMorgan",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1485894/000207169126023559/0002071691-26-023559-index.htm",
+   "blocks": {
+    "stocks": 99.2,
+    "cash_bills": 0.57,
+    "purchased_put": 0.36,
+    "written_call": -0.27,
+    "written_put": -0.09
+   },
+   "look_through": null,
+   "reason": "stocks are the largest block, with options beside them",
+   "group": "equity_sleeve",
+   "subgroup": "direct_stocks"
+  },
+  {
+   "ticker": "HEQQ",
+   "name": "JPMorgan Nasdaq Hedged Equity Laddered Overlay ETF",
+   "issuer": "JPMorgan",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1485894/000207169126023569/0002071691-26-023569-index.htm",
+   "blocks": {
+    "stocks": 95.19,
+    "purchased_put": 2.46,
+    "cash_bills": 2.18,
+    "funds": 1.55,
+    "written_put": -0.26,
+    "written_call": -0.06
+   },
+   "look_through": null,
+   "reason": "stocks are the largest block, with options beside them",
+   "group": "equity_sleeve",
+   "subgroup": "direct_stocks"
+  },
+  {
+   "ticker": "IVVM",
+   "name": "iShares Large Cap Moderate Quarterly Laddered ETF",
+   "issuer": "iShares / BlackRock",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1804196/000094040026037976/0000940400-26-037976-index.htm",
+   "blocks": {
+    "funds": 98.75,
+    "purchased_put": 1.32,
+    "cash_bills": 0.54,
+    "written_put": -0.49,
+    "written_call": -0.14,
+    "other:DE": 0.0
+   },
+   "look_through": {
+    "ticker": "IVV",
+    "title": "ISHARES TRUST CORE S&amp;P500 ETF",
+    "pct": 98.75365656523,
+    "period": "2026-06-30",
+    "source": "https://www.sec.gov/Archives/edgar/data/1100663/000207169126019760/0002071691-26-019760-index.htm",
+    "blocks": {
+     "stocks": 99.37,
+     "funds": 0.47,
+     "cash_bills": 0.28,
+     "other:DE": 0.0,
+     "other:": 0.0
+    }
+   },
+   "reason": "sleeve held through a plain index ETF, with options beside it",
+   "group": "equity_sleeve",
+   "subgroup": "index_etf_sleeve"
+  },
+  {
+   "ticker": "IVVB",
+   "name": "iShares Large Cap Deep Quarterly Laddered ETF",
+   "issuer": "iShares / BlackRock",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1804196/000094040026037983/0000940400-26-037983-index.htm",
+   "blocks": {
+    "funds": 99.03,
+    "cash_bills": 0.62,
+    "purchased_put": 0.5,
+    "written_call": -0.11,
+    "written_put": -0.07,
+    "other:DE": 0.01
+   },
+   "look_through": {
+    "ticker": "IVV",
+    "title": "ISHARES TRUST CORE S&amp;P500 ETF",
+    "pct": 99.03277038517,
+    "period": "2026-06-30",
+    "source": "https://www.sec.gov/Archives/edgar/data/1100663/000207169126019760/0002071691-26-019760-index.htm",
+    "blocks": {
+     "stocks": 99.37,
+     "funds": 0.47,
+     "cash_bills": 0.28,
+     "other:DE": 0.0,
+     "other:": 0.0
+    }
+   },
+   "reason": "sleeve held through a plain index ETF, with options beside it",
+   "group": "equity_sleeve",
+   "subgroup": "index_etf_sleeve"
+  },
+  {
+   "ticker": "MAXJ",
+   "name": "iShares Large Cap Max Buffer Jun ETF",
+   "issuer": "iShares / BlackRock",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1100663/000094040026037980/0000940400-26-037980-index.htm",
+   "blocks": {
+    "funds": 98.22,
+    "purchased_put": 5.1,
+    "written_call": -3.79,
+    "other:DE": 0.01
+   },
+   "look_through": {
+    "ticker": "IVV",
+    "title": "ISHARES TRUST CORE S&amp;P500 ETF",
+    "pct": 98.2233748663,
+    "period": "2026-06-30",
+    "source": "https://www.sec.gov/Archives/edgar/data/1100663/000207169126019760/0002071691-26-019760-index.htm",
+    "blocks": {
+     "stocks": 99.37,
+     "funds": 0.47,
+     "cash_bills": 0.28,
+     "other:DE": 0.0,
+     "other:": 0.0
+    }
+   },
+   "reason": "sleeve held through a plain index ETF, with options beside it",
+   "group": "equity_sleeve",
+   "subgroup": "index_etf_sleeve"
+  },
+  {
+   "ticker": "SMAX",
+   "name": "iShares Large Cap Max Buffer Sep ETF",
+   "issuer": "iShares / BlackRock",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1100663/000094040026037978/0000940400-26-037978-index.htm",
+   "blocks": {
+    "funds": 103.82,
+    "written_call": -5.63,
+    "cash_bills": 1.26,
+    "purchased_put": 0.45,
+    "other:DE": 0.01
+   },
+   "look_through": {
+    "ticker": "IVV",
+    "title": "ISHARES TRUST CORE S&amp;P500 ETF",
+    "pct": 103.8238316065,
+    "period": "2026-06-30",
+    "source": "https://www.sec.gov/Archives/edgar/data/1100663/000207169126019760/0002071691-26-019760-index.htm",
+    "blocks": {
+     "stocks": 99.37,
+     "funds": 0.47,
+     "cash_bills": 0.28,
+     "other:DE": 0.0,
+     "other:": 0.0
+    }
+   },
+   "reason": "sleeve held through a plain index ETF, with options beside it",
+   "group": "equity_sleeve",
+   "subgroup": "index_etf_sleeve"
+  },
+  {
+   "ticker": "DMAX",
+   "name": "iShares Large Cap Max Buffer Dec ETF",
+   "issuer": "iShares / BlackRock",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1100663/000094040026037975/0000940400-26-037975-index.htm",
+   "blocks": {
+    "funds": 104.21,
+    "written_call": -6.87,
+    "purchased_put": 1.72,
+    "cash_bills": 0.84,
+    "other:DE": 0.01
+   },
+   "look_through": {
+    "ticker": "IVV",
+    "title": "ISHARES TRUST CORE S&amp;P500 ETF",
+    "pct": 104.2134296787,
+    "period": "2026-06-30",
+    "source": "https://www.sec.gov/Archives/edgar/data/1100663/000207169126019760/0002071691-26-019760-index.htm",
+    "blocks": {
+     "stocks": 99.37,
+     "funds": 0.47,
+     "cash_bills": 0.28,
+     "other:DE": 0.0,
+     "other:": 0.0
+    }
+   },
+   "reason": "sleeve held through a plain index ETF, with options beside it",
+   "group": "equity_sleeve",
+   "subgroup": "index_etf_sleeve"
+  },
+  {
+   "ticker": "MMAX",
+   "name": "iShares Large Cap Max Buffer Mar ETF",
+   "issuer": "iShares / BlackRock",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1100663/000094040026037973/0000940400-26-037973-index.htm",
+   "blocks": {
+    "funds": 110.07,
+    "written_call": -12.98,
+    "purchased_put": 2.03,
+    "cash_bills": 0.78,
+    "other:DE": 0.01
+   },
+   "look_through": {
+    "ticker": "IVV",
+    "title": "ISHARES TRUST CORE S&amp;P500 ETF",
+    "pct": 110.0670510489,
+    "period": "2026-06-30",
+    "source": "https://www.sec.gov/Archives/edgar/data/1100663/000207169126019760/0002071691-26-019760-index.htm",
+    "blocks": {
+     "stocks": 99.37,
+     "funds": 0.47,
+     "cash_bills": 0.28,
+     "other:DE": 0.0,
+     "other:": 0.0
+    }
+   },
+   "reason": "sleeve held through a plain index ETF, with options beside it",
+   "group": "equity_sleeve",
+   "subgroup": "index_etf_sleeve"
+  },
+  {
+   "ticker": "BUFR",
+   "name": "FT Cboe Vest Fund of Buffer ETFs",
+   "issuer": "First Trust",
+   "period": "2026-08-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1667919/000094040026040918/0000940400-26-040918-index.htm",
+   "blocks": {
+    "funds": 99.95,
+    "cash_bills": 0.06
+   },
+   "look_through": {
+    "ticker": "FOCT",
+    "title": "FT Vest U.S. Equity Buffer ETF - October",
+    "pct": 8.339661092132,
+    "period": "2026-08-31",
+    "source": "https://www.sec.gov/Archives/edgar/data/1667919/000094040026041003/0000940400-26-041003-index.htm",
+    "blocks": {
+     "purchased_call": 101.76,
+     "written_call": -2.18,
+     "cash_bills": 0.39,
+     "purchased_put": 0.17,
+     "written_put": -0.07
+    }
+   },
+   "reason": "holds options funds whose largest block is purchased calls (synthetic long rungs)",
+   "group": "synthetic_long",
+   "subgroup": "ladder_of_synthetic_long_rungs"
+  },
+  {
+   "ticker": "BUFQ",
+   "name": "FT Cboe Vest Fund of Nasdaq-100 Buffer ETFs",
+   "issuer": "First Trust",
+   "period": "2026-08-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1667919/000094040026040932/0000940400-26-040932-index.htm",
+   "blocks": {
+    "funds": 99.97,
+    "cash_bills": 0.04
+   },
+   "look_through": {
+    "ticker": "QSPT",
+    "title": "FT Vest Nasdaq-100 Buffer ETF - September",
+    "pct": 25.18641646901,
+    "period": "2026-08-31",
+    "source": "https://www.sec.gov/Archives/edgar/data/1667919/000094040026040933/0000940400-26-040933-index.htm",
+    "blocks": {
+     "purchased_call": 102.99,
+     "written_call": -3.23,
+     "cash_bills": 0.29,
+     "purchased_put": 0.04,
+     "written_put": -0.02
+    }
+   },
+   "reason": "holds options funds whose largest block is purchased calls (synthetic long rungs)",
+   "group": "synthetic_long",
+   "subgroup": "ladder_of_synthetic_long_rungs"
+  },
+  {
+   "ticker": "BUFZ",
+   "name": "FT Cboe Vest Laddered Moderate Buffer ETF",
+   "issuer": "First Trust",
+   "period": "2026-08-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1667919/000094040026040909/0000940400-26-040909-index.htm",
+   "blocks": {
+    "funds": 99.9,
+    "cash_bills": 0.11
+   },
+   "look_through": {
+    "ticker": "GJAN",
+    "title": "FT Vest U.S. Equity Moderate Buffer ETF - January",
+    "pct": 8.334656712417,
+    "period": "2026-08-31",
+    "source": "https://www.sec.gov/Archives/edgar/data/1667919/000094040026041085/0000940400-26-041085-index.htm",
+    "blocks": {
+     "purchased_call": 102.48,
+     "written_call": -3.77,
+     "purchased_put": 1.11,
+     "cash_bills": 0.63,
+     "written_put": -0.38
+    }
+   },
+   "reason": "holds options funds whose largest block is purchased calls (synthetic long rungs)",
+   "group": "synthetic_long",
+   "subgroup": "ladder_of_synthetic_long_rungs"
+  },
+  {
+   "ticker": "BUFX",
+   "name": "FT Vest Laddered Enhance & Moderate Buffer ETF",
+   "issuer": "First Trust",
+   "period": "2026-08-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1667919/000094040026040922/0000940400-26-040922-index.htm",
+   "blocks": {
+    "funds": 99.95,
+    "cash_bills": 0.06
+   },
+   "look_through": {
+    "ticker": "XMAY",
+    "title": "FT Vest U.S. Equity Enhance &amp; Moderate Buffer ETF - May",
+    "pct": 8.365802656884,
+    "period": "2026-08-31",
+    "source": "https://www.sec.gov/Archives/edgar/data/1667919/000094040026041009/0000940400-26-041009-index.htm",
+    "blocks": {
+     "purchased_call": 108.78,
+     "written_call": -11.71,
+     "purchased_put": 3.25,
+     "written_put": -1.22,
+     "cash_bills": 0.97
+    }
+   },
+   "reason": "holds options funds whose largest block is purchased calls (synthetic long rungs)",
+   "group": "synthetic_long",
+   "subgroup": "ladder_of_synthetic_long_rungs"
+  },
+  {
+   "ticker": "BUFD",
+   "name": "FT Cboe Vest Fund of Deep Buffer ETFs",
+   "issuer": "First Trust",
+   "period": "2026-08-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1667919/000094040026040925/0000940400-26-040925-index.htm",
+   "blocks": {
+    "funds": 99.93,
+    "cash_bills": 0.08
+   },
+   "look_through": {
+    "ticker": "DFEB",
+    "title": "FT Vest U.S. Equity Deep Buffer ETF - February",
+    "pct": 8.339736225254,
+    "period": "2026-08-31",
+    "source": "https://www.sec.gov/Archives/edgar/data/1667919/000094040026041088/0000940400-26-041088-index.htm",
+    "blocks": {
+     "purchased_call": 103.46,
+     "written_call": -4.83,
+     "purchased_put": 0.98,
+     "cash_bills": 0.68,
+     "written_put": -0.23
+    }
+   },
+   "reason": "holds options funds whose largest block is purchased calls (synthetic long rungs)",
+   "group": "synthetic_long",
+   "subgroup": "ladder_of_synthetic_long_rungs"
+  },
+  {
+   "ticker": "BUFY",
+   "name": "FT Vest Laddered International Moderate Buffer ETF",
+   "issuer": "First Trust",
+   "period": "2026-08-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1667919/000094040026040930/0000940400-26-040930-index.htm",
+   "blocks": {
+    "funds": 99.98,
+    "cash_bills": 0.02
+   },
+   "look_through": {
+    "ticker": "YDEC",
+    "title": "FT Vest International Equity Moderate Buffer ETF - December",
+    "pct": 25.02891589357,
+    "period": "2026-08-31",
+    "source": "https://www.sec.gov/Archives/edgar/data/1667919/000094040026040931/0000940400-26-040931-index.htm",
+    "blocks": {
+     "purchased_call": 102.4,
+     "written_call": -3.43,
+     "purchased_put": 0.73,
+     "cash_bills": 0.58,
+     "written_put": -0.21
+    }
+   },
+   "reason": "holds options funds whose largest block is purchased calls (synthetic long rungs)",
+   "group": "synthetic_long",
+   "subgroup": "ladder_of_synthetic_long_rungs"
+  },
+  {
+   "ticker": "FHDG",
+   "name": "FT Vest U.S. Equity Quarterly Dynamic Buffer ETF",
+   "issuer": "First Trust",
+   "period": "2026-08-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1667919/000094040026041308/0000940400-26-041308-index.htm",
+   "blocks": {
+    "purchased_call": 98.65,
+    "purchased_put": 2.15,
+    "cash_bills": 1.13,
+    "written_call": -1.11,
+    "written_put": -0.75
+   },
+   "look_through": null,
+   "reason": "purchased calls are the largest block",
+   "group": "synthetic_long",
+   "subgroup": "direct_flex"
+  },
+  {
+   "ticker": "DHDG",
+   "name": "FT Vest U.S. Equity Quarterly 2.5 to 15 Buffer ETF",
+   "issuer": "First Trust",
+   "period": "2026-08-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1667919/000094040026041303/0000940400-26-041303-index.htm",
+   "blocks": {
+    "purchased_call": 99.98,
+    "written_call": -1.34,
+    "cash_bills": 1.03,
+    "purchased_put": 0.51,
+    "written_put": -0.11
+   },
+   "look_through": null,
+   "reason": "purchased calls are the largest block",
+   "group": "synthetic_long",
+   "subgroup": "direct_flex"
+  },
+  {
+   "ticker": "SQMX",
+   "name": "FT Vest U.S. Equity Quarterly Max Buffer ETF",
+   "issuer": "First Trust",
+   "period": "2026-08-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1667919/000094040026041306/0000940400-26-041306-index.htm",
+   "blocks": {
+    "purchased_call": 99.64,
+    "cash_bills": 0.94,
+    "written_call": -0.85,
+    "purchased_put": 0.37,
+    "written_put": -0.03
+   },
+   "look_through": null,
+   "reason": "purchased calls are the largest block",
+   "group": "synthetic_long",
+   "subgroup": "direct_flex"
+  },
+  {
+   "ticker": "FGSI",
+   "name": "FT Vest Growth Strength & Target Income ETF",
+   "issuer": "First Trust",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1517936/000094040026038377/0000940400-26-038377-index.htm",
+   "blocks": {
+    "stocks": 97.63,
+    "funds": 2.03,
+    "cash_bills": 0.32,
+    "written_call": -0.13
+   },
+   "look_through": null,
+   "reason": "stocks are the largest block, with options beside them",
+   "group": "equity_sleeve",
+   "subgroup": "direct_stocks",
+   "flag": "No purchased puts in its latest filing; written calls 0.13% of value. An income overlay rather than a downside hedge."
+  },
+  {
+   "ticker": "CPSL",
+   "name": "Calamos Laddered S&P 500 Structured Alt Protection ETF",
+   "issuer": "Calamos",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1579881/000141036826101658/0001410368-26-101658-index.htm",
+   "blocks": {
+    "funds": 99.91
+   },
+   "look_through": {
+    "ticker": null,
+    "title": "Calamos S&P 500 Structured Alt Protection ETF - September",
+    "period": "2026-04-30",
+    "source": "https://www.sec.gov/Archives/edgar/data/1579881/000141036826067642/0001410368-26-067642-index.htm",
+    "blocks": {
+     "purchased_call": 106.41,
+     "written_call": -7.98,
+     "purchased_put": 1.29
+    },
+    "note": "rung located by EDGAR full-text search; no ticker on EDGAR"
+   },
+   "reason": "holds buffer rungs whose largest block is purchased calls (synthetic long rungs)",
+   "group": "synthetic_long",
+   "subgroup": "ladder_of_synthetic_long_rungs"
+  },
+  {
+   "ticker": "PSFF",
+   "name": "Pacer Swan SOS Fund of Funds ETF",
+   "issuer": "Pacer / Swan Global Investments",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1616668/000089418926029004/0000894189-26-029004-index.htm",
+   "blocks": {
+    "funds": 99.58,
+    "cash_bills": 0.77
+   },
+   "look_through": {
+    "ticker": "PSMO",
+    "title": "Pacer Swan SOS Moderate October ETF",
+    "pct": 14.5678587257,
+    "period": "2026-07-31",
+    "source": "https://www.sec.gov/Archives/edgar/data/1616668/000089418926029006/0000894189-26-029006-index.htm",
+    "blocks": {
+     "purchased_call": 102.08,
+     "written_call": -2.73,
+     "purchased_put": 0.43,
+     "cash_bills": 0.37,
+     "written_put": -0.11
+    }
+   },
+   "reason": "holds options funds whose largest block is purchased calls (synthetic long rungs)",
+   "group": "synthetic_long",
+   "subgroup": "ladder_of_synthetic_long_rungs"
+  },
+  {
+   "ticker": "LADM",
+   "name": "Pacer Swan SOS Laddered Moderate ETF",
+   "issuer": "Pacer / Swan Global Investments",
+   "period": "2026-07-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1616668/000089418926029050/0000894189-26-029050-index.htm",
+   "blocks": {
+    "funds": 98.94,
+    "cash_bills": 1.07
+   },
+   "look_through": {
+    "ticker": "PSMO",
+    "title": "Pacer Swan SOS Moderate October ETF",
+    "pct": 8.275447336,
+    "period": "2026-07-31",
+    "source": "https://www.sec.gov/Archives/edgar/data/1616668/000089418926029006/0000894189-26-029006-index.htm",
+    "blocks": {
+     "purchased_call": 102.08,
+     "written_call": -2.73,
+     "purchased_put": 0.43,
+     "cash_bills": 0.37,
+     "written_put": -0.11
+    }
+   },
+   "reason": "holds options funds whose largest block is purchased calls (synthetic long rungs)",
+   "group": "synthetic_long",
+   "subgroup": "ladder_of_synthetic_long_rungs"
+  },
+  {
+   "ticker": "BUFC",
+   "name": "AB Conservative Buffer ETF",
+   "issuer": "AllianceBernstein",
+   "period": "2026-08-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1496608/000141036826108319/0001410368-26-108319-index.htm",
+   "blocks": {
+    "purchased_call": 98.43,
+    "purchased_put": 2.53,
+    "written_call": -1.12,
+    "cash_bills": 0.61,
+    "written_put": -0.41
+   },
+   "look_through": null,
+   "reason": "purchased calls are the largest block",
+   "group": "synthetic_long",
+   "subgroup": "direct_flex"
+  },
+  {
+   "ticker": "BUFM",
+   "name": "AB Moderate Buffer ETF",
+   "issuer": "AllianceBernstein",
+   "period": "2026-08-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1496608/000141036826108308/0001410368-26-108308-index.htm",
+   "blocks": {
+    "purchased_call": 98.9,
+    "purchased_put": 0.87,
+    "cash_bills": 0.54,
+    "written_call": -0.15,
+    "written_put": -0.1
+   },
+   "look_through": null,
+   "reason": "purchased calls are the largest block",
+   "group": "synthetic_long",
+   "subgroup": "direct_flex"
+  },
+  {
+   "ticker": "BUFI",
+   "name": "AB International Buffer ETF",
+   "issuer": "AllianceBernstein",
+   "period": "2026-08-31",
+   "source": "https://www.sec.gov/Archives/edgar/data/1496608/000141036826108318/0001410368-26-108318-index.htm",
+   "blocks": {
+    "purchased_call": 100.12,
+    "written_call": -1.17,
+    "purchased_put": 0.86,
+    "cash_bills": 0.51,
+    "written_put": -0.27
+   },
+   "look_through": null,
+   "reason": "purchased calls are the largest block",
+   "group": "synthetic_long",
+   "subgroup": "direct_flex"
+  },
+  {
+   "ticker": "DBMF",
+   "name": "iMGP DBi Managed Futures Strategy ETF",
+   "issuer": "iMGP / DBi",
+   "period": "2026-06-30",
+   "source": "https://www.sec.gov/Archives/edgar/data/1020425/000141036826086561/0001410368-26-086561-index.htm",
+   "blocks": {
+    "cash_bills": 77.27,
+    "other:RA": 3.33,
+    "other:DE": 1.04,
+    "other:DFE": 0.82,
+    "other:DIR": -0.1,
+    "other:DCO": -0.01
+   },
+   "look_through": null,
+   "reason": "managed futures; outside both groups",
+   "group": "reference_only",
+   "subgroup": "reference_only"
+  }
+ ]
+}

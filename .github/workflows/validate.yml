@@ -63,6 +63,15 @@ jobs:
           npm run validate:reports
           npm run validate:fees
 
+      # A selected report is frozen, so it is checked against its own analysis
+      # rather than rebuilt: the committed file matches what export.py makes from
+      # the committed results, and it proves its identities (3F D-25).
+      - name: Selected reports
+        run: |
+          python3 -m unittest discover analysis/gain_exposure_2026-11/test -v
+          npm run check:studies
+          npm run validate:studies
+
       # Conformance says the folder is well formed, replication says its numbers
       # follow from its own formulas and rows. Neither stands in for the other.
       - name: The OBSERVER Folder is current and checks out (3F D-21)

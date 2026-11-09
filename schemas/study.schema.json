@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://third-floor.example/schemas/study.schema.json",
+  "title": "Third Floor selected report",
+  "description": "One dated study across the funds (3F D-25), computed once in analysis/ and fixed as of its publication date. Never rebuilt monthly. The identities a document can prove about itself (E from U and B, legs ending at their sums, group medians from their rows) are checked by packages/core/src/study/validate.ts, which a schema cannot express.",
+  "type": "object",
+  "required": ["app", "kind", "study_schema_version", "id", "title", "published", "window", "special_days", "provenance", "benchmarks", "funds", "summaries"],
+  "additionalProperties": false,
+  "$defs": {
+    "ratio": { "type": ["number", "null"] },
+    "stat": {
+      "type": ["object", "null"],
+      "required": ["n", "median", "min", "max"],
+      "properties": { "n": { "type": "integer", "minimum": 1 }, "median": { "type": "number" }, "min": { "type": "number" }, "max": { "type": "number" } }
+    },
+    "leg": {
+      "type": "array",
+      "items": { "type": "array", "prefixItems": [{ "type": "string", "format": "date" }, { "type": "number" }, { "type": "number" }], "minItems": 3, "maxItems": 3 }
+    },
+    "band": {
+      "type": "object",
+      "required": ["u", "b", "up_days", "down_days"],
+      "properties": { "u": { "$ref": "#/$defs/ratio" }, "b": { "$ref": "#/$defs/ratio" }, "up_days": { "type": "integer" }, "down_days": { "type": "integer" } }
+    },
+    "reading": {
+      "type": "object",
+      "required": ["first_day", "days", "up_days", "down_days", "flat_days", "sums", "u", "b", "u_plus_b", "E", "E_range", "E_settled", "market_gain_loss", "fund_net_sum", "bench_net_sum", "nov4", "nov5", "bands", "both_up", "both_down", "legs"],
+      "properties": {
+        "first_day": { "type": "string", "format": "date" },
+        "days": { "type": "integer", "minimum": 0 },
+        "up_days": { "type": "integer", "minimum": 0 },
+        "down_days": { "type": "integer", "minimum": 0 },
+        "flat_days": { "type": "integer", "minimum": 0 },
+        "sums": {
+          "description": "Summed daily returns over the market's rising and falling days, never compounded (3F D-17).",
+          "type": "object", "required": ["fund_up", "bench_up", "fund_down", "bench_down"]
+        },
+        "u": { "description": "Upside capture: the fund's summed rises over the benchmark's.", "type": "number" },
+        "b": { "description": "Loss buffer: one minus the fund's summed falls over the benchmark's (3F D-24).", "type": "number" },
+        "u_plus_b": { "type": "number" },
+        "E": { "description": "Gain Exposure, (1 − B) ÷ U. Null where the fund kept none of the rises.", "$ref": "#/$defs/ratio" },
+        "E_range": {
+          "description": "95% range from a week-block bootstrap (3F D-20: daily residuals reverse the next day).",
+          "type": ["array", "null"], "items": { "type": "number" }, "minItems": 2, "maxItems": 2
+        },
+        "E_settled": { "enum": ["above_1", "below_1", "not_settled", null] },
+        "market_gain_loss": { "type": "number" },
+        "fund_net_sum": { "type": "number" },
+        "bench_net_sum": { "type": "number" },
+        "nov4": { "type": "object", "required": ["fund", "bench", "kept", "rank"] },
+        "nov5": { "type": "object", "required": ["fund", "bench", "avoided", "given_back_fund", "given_back_bench", "E", "rank", "of"] },
+        "bands": {
+          "type": "object", "required": ["small", "medium", "large", "top_decile"],
+          "additionalProperties": { "$ref": "#/$defs/band" }
+        },
+        "both_up": { "type": "object", "required": ["capture", "days"] },
+        "both_down": { "type": "object", "required": ["capture", "days"] },
+        "legs": { "type": "object", "required": ["up", "down"], "properties": { "up": { "$ref": "#/$defs/leg" }, "down": { "$ref": "#/$defs/leg" } } }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["tickers", "u", "b", "E", "u_plus_b", "E_settled_above_1", "E_settled_below_1", "E_not_settled", "nov4_day_capture", "nov5_day_buffer", "nov5_takeback_ratio", "bands"],
+      "properties": {
+        "tickers": { "type": "array", "items": { "type": "string" } },
+        "u": { "$ref": "#/$defs/stat" }, "b": { "$ref": "#/$defs/stat" }, "E": { "$ref": "#/$defs/stat" }, "u_plus_b": { "$ref": "#/$defs/stat" },
+        "nov4_day_capture": { "$ref": "#/$defs/stat" }, "nov5_day_buffer": { "$ref": "#/$defs/stat" }, "nov5_takeback_ratio": { "$ref": "#/$defs/stat" }
+      }
+    }
+  },
+  "properties": {
+    "app": { "const": "Third Floor" },
+    "kind": { "const": "selected_report" },
+    "study_schema_version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "Also the filename, data/_studies/<id>.json." },
+    "title": { "type": "string", "minLength": 1 },
+    "published": { "type": "string", "format": "date" },
+    "window": { "type": "object", "required": ["start", "end"], "properties": { "start": { "type": "string", "format": "date" }, "end": { "type": "string", "format": "date" } } },
+    "special_days": { "type": "array", "items": { "type": "string", "format": "date" }, "minItems": 2, "maxItems": 2 },
+    "provenance": {
+      "type": "object",
+      "required": ["prices_fetched_at", "price_basis", "price_source", "holdings_source", "grouping_approved", "grouping_rule", "bootstrap", "min_days_to_report", "analysis"]
+    },
+    "benchmarks": {
+      "type": "object",
+      "required": ["VOO"],
+      "additionalProperties": {
+        "type": "object", "required": ["moves", "band_edges"],
+        "properties": { "band_edges": { "type": "object", "required": ["t1", "t2", "d9"] } }
+      }
+    },
+    "funds": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["ticker", "name", "issuer", "group", "subgroup", "flag", "named_benchmark", "holdings", "readings"],
+        "properties": {
+          "ticker": { "type": "string", "pattern": "^[A-Z.]{1,6}$" },
+          "group": { "enum": ["equity_sleeve", "synthetic_long", "reference_only"] },
+          "subgroup": { "enum": ["direct_stocks", "index_etf_sleeve", "direct_flex", "ladder_of_synthetic_long_rungs", "reference_only"] },
+          "flag": { "type": ["string", "null"] },
+          "named_benchmark": { "type": ["string", "null"] },
+          "holdings": {
+            "description": "The latest public NPORT-P at the SEC, summed by kind of holding; the group comes from the largest kind. Read only to set the group (3F D-25).",
+            "type": "object", "required": ["period", "source", "blocks", "reason", "look_through"]
+          },
+          "readings": { "type": "object", "required": ["VOO"], "additionalProperties": { "$ref": "#/$defs/reading" } }
+        }
+      }
+    },
+    "summaries": {
+      "type": "object", "required": ["named", "VOO"],
+      "additionalProperties": { "type": "object", "additionalProperties": { "$ref": "#/$defs/summary" } }
+    }
+  }
+}

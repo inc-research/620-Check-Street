@@ -84,6 +84,12 @@ with nothing on the page to separate the two — so each one refuses rather than
 approximating. The two comparisons name what they could not compare, and why.
 See 3F D-13 and 3F D-14.
 
+Above the fund list sit the **selected reports**: dated studies across the funds,
+fixed as of the day they were published, each read from one file in
+`data/_studies/`. The first is Gain Exposure, which sets synthetic longs beside
+equity sleeves for 2026 and on 4 and 5 November. See 3F D-25 and
+`analysis/gain_exposure_2026-11/`.
+
 ## The OBSERVER Folder
 
 `OBSERVER/` is this analysis in OBSERVER Format 0.1: the five highest and lowest

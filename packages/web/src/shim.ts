@@ -79,6 +79,21 @@ export {
   type RateSeries,
   type RealReading,
   type RealResult,
+  STUDY_BANDS,
+  bandFinding,
+  indexEtfSpread,
+  isStudy,
+  readingFor,
+  studyHero,
+  studyRows,
+  upbRange,
+  validateStudy,
+  type Basis,
+  type LegPoint,
+  type StudyDocument,
+  type StudyFund,
+  type StudyReading,
+  type StudyRow,
 } from '@third-floor/core';
 
 export {
@@ -94,6 +109,9 @@ export {
   type SectionKey,
   type StateKey,
   type TableCopy,
+  GAIN_EXPOSURE,
+  SELECTED,
+  STUDY_LABELS,
 } from '@third-floor/copy';
 
 // The widened `el` (see dom3f.ts). The vendored primitives come through it, so

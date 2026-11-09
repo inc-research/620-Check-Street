@@ -65,6 +65,12 @@ jobs:
       - name: Validate the reports
         run: npm run validate:reports
 
+      - name: Selected reports (3F D-25)
+        run: |
+          python3 -m unittest discover analysis/gain_exposure_2026-11/test
+          npm run check:studies
+          npm run validate:studies
+
       - name: The OBSERVER Folder is current and checks out (3F D-21)
         run: |
           python3 -m pip install pyyaml
@@ -97,7 +103,10 @@ jobs:
             exit 1
           fi
 
-          if grep -qE 'https?://' styles.css main.js; then
+          # The SVG namespace is the one exception, and only as that exact
+          # string: createElementNS takes it as a name and never fetches it
+          # (3F D-25, the first charts on the site).
+          if grep -ohE 'https?://[^"'"'"'`) ]*' styles.css main.js | grep -vxF 'http://www.w3.org/2000/svg' | grep -q .; then
             echo "::error::the bundle references an external origin"
             exit 1
           fi

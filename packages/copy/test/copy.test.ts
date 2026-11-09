@@ -228,3 +228,19 @@ test('a ticker with no line written returns nothing rather than a guess', () => 
   strictEqual(benchmarkIndexNote('ZZZZ'), '');
   strictEqual(benchmarkIndexShort('ZZZZ'), '');
 });
+
+// Selected reports (3F D-25): the same lint over every sentence the page can show.
+import { GAIN_EXPOSURE, SELECTED, STUDY_LABELS } from '../src/studies.ts';
+
+test('the Gain Exposure report passes the lint', () => {
+  deepStrictEqual(lintDeep(GAIN_EXPOSURE), [], JSON.stringify(lintDeep(GAIN_EXPOSURE), null, 2));
+  deepStrictEqual(lintDeepExtended(GAIN_EXPOSURE), [], JSON.stringify(lintDeepExtended(GAIN_EXPOSURE), null, 2));
+  deepStrictEqual(lintDeepExtended(STUDY_LABELS), []);
+  deepStrictEqual(lintDeepExtended(SELECTED), []);
+});
+
+test('the index-ETF sub-group reads the same everywhere it is named', () => {
+  strictEqual(STUDY_LABELS.subgroups.index_etf_sleeve, 'Stocks held through an index ETF');
+  ok(STUDY_LABELS.bandRows['subgroup:index_etf_sleeve'].endsWith('stocks held through an index ETF'));
+  ok(!JSON.stringify({ GAIN_EXPOSURE, STUDY_LABELS }).includes('IVV'));
+});

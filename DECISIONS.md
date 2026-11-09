@@ -841,6 +841,60 @@ by" is now "Inflation". The fund list leads the front page.
 that case the per-1% sentence, which always states what was carried, moves above
 the cards.
 
+## 3F D-25 · Selected reports: dated studies that set funds side by side
+
+The owner asked for the Gain Exposure study (YTD 2026, with 4 and 5 November) to
+live on the site as a selected report rather than only as a private draft, and
+authorized each departure below on 2026-11-09.
+
+**Dated and frozen.** A selected report is computed once in `analysis/<study>/`
+and committed to `data/_studies/<id>.json`. It is not rebuilt by the monthly run
+and says on its face that its figures are fixed as of its publication date. Its
+price cache is not committed, as with `analysis/capture_trend.py`. What is
+committed is the analysis, its tests, its `results.json`, and the document the
+page reads, which `export.py --check` proves is what those results produce.
+
+**Funds side by side, on this page only.** The report sets every fund in a table
+and a chart, against 3F D-20's "no list across funds", which 3F D-21 had already
+narrowed to the site's pages. This narrows it once more, to selected reports:
+fund pages still read one fund at a time. Rows run by group, then sub-group, then
+by E, with every figure and its range shown and a Limits line saying the order is
+not a ranking. No grades, verdicts or predictions, as everywhere else.
+
+**Holdings set the groups.** Each fund's latest public NPORT-P at the SEC is
+summed by kind of holding, and the largest kind sets the group: equity sleeve with
+a hedge, or synthetic long, each with two sub-groups. A held fund is looked through
+one level. The owner approved every grouping by hand, and each filing's address is
+in the document. Holdings are read for nothing else. The sub-group whose stocks
+come through IVV is named "Stocks held through an index ETF", and the page states
+how far its funds' upside capture runs, from quarterly ladders near 0.58 to Max
+Buffer funds near 0.11, rather than splitting it.
+
+**Gain Exposure.** E = (1 − B) ÷ U, down capture over upside capture on the
+site's net capture (3F D-17), summed and never compounded. The market reads 1, and
+E is above 1 exactly when U + B is below 1. Each fund's E carries a 95% range from
+a week-block bootstrap, 4,000 draws (3F D-20: daily residuals reverse the next
+day), and is called above or below 1 only where the whole range is.
+
+**What the rolling study found is a caveat, not a section.** Read monthly over the
+archive's thirteen-week windows, a fund's E changes from quarter to quarter by
+about as much as shuffled weeks would give (4% to 7% of changes beat them, against
+5% by chance), while U and down capture are steady facts about a fund. The page
+says, in Limits, that each fund's E is this year's reading and not a fixed trait.
+The rolling study itself stays unpublished while two more of its dynamics are
+examined.
+
+**The first charts on the site.** Inline SVG, drawn from the document by the view,
+with text through `textContent` only. Colour marks a section or which way the
+market moved. Whether a fund's E sits above or below 1 is said in words, in plain
+ink: blue for one and orange for the other would read as a verdict.
+The SVG namespace, `http://www.w3.org/2000/svg`, now sits in the bundle as a
+name passed to `createElementNS`. It is never fetched, and the Pages workflow's
+external-origin check allows that one exact string and nothing else.
+
+*Reverses if:* readers take the side-by-side tables as a ranking. In that case the
+tables move behind the fund chooser and only the group figures stay in the open.
+
 ---
 
 ## Open
