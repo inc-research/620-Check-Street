@@ -67,7 +67,7 @@ jobs:
 
       - name: Selected reports (3F D-25)
         run: |
-          python3 -m unittest discover analysis/gain_exposure_2026-11/test
+          python3 -m unittest discover analysis/gain_exposure_2026-11-23/test
           npm run check:studies
           npm run validate:studies
 
