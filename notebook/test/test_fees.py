@@ -1,13 +1,17 @@
 # SPDX-License-Identifier: MIT
 """Fee tables read from prospectus XBRL (3F D-22). Offline, on a committed instance."""
 
+import io
 import sys
 import unittest
+import urllib.error
 from datetime import date
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from thirdfloor import fees  # noqa: E402
 from thirdfloor.fees import (  # noqa: E402
     FeeRecord,
     FeeRefused,
@@ -139,6 +143,53 @@ class TestHistory(unittest.TestCase):
         history = fee_history("BUFR", "S000068605", "C000219511", date(2025, 1, 31), InstanceCache(get))
         self.assertEqual([r.filed for r in history], [date(2024, 12, 30), date(2025, 12, 29)])
         self.assertFalse(any(c.endswith("D-index.htm") for c in calls))
+
+
+class TestRetry(unittest.TestCase):
+    """EDGAR's unsteady answers are tried again after a pause; nothing is skipped (2026-11-24)."""
+
+    def setUp(self):
+        self.pauses = []
+        patcher = mock.patch.object(fees, "_sleep", self.pauses.append)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def flaky(self, answers):
+        calls = []
+
+        def fetch(url):
+            calls.append(url)
+            a = answers[min(len(calls) - 1, len(answers) - 1)]
+            if isinstance(a, int):
+                raise urllib.error.HTTPError(url, a, "unsteady", {}, io.BytesIO(b""))
+            if isinstance(a, Exception):
+                raise a
+            return a
+
+        return fetch, calls
+
+    def test_a_404_then_an_answer_is_read(self):
+        fetch, calls = self.flaky([404, b"ok"])
+        self.assertEqual(fees.http_get("u", fetch), b"ok")
+        self.assertEqual(len(calls), 2)
+        self.assertIn(fees._RETRY_DELAYS[0], self.pauses)
+
+    def test_503_and_504_and_timeouts_are_tried_again(self):
+        fetch, _ = self.flaky([503, 504, TimeoutError("slow"), b"ok"])
+        self.assertEqual(fees.http_get("u", fetch), b"ok")
+
+    def test_every_attempt_failing_raises_and_says_how_many(self):
+        fetch, calls = self.flaky([503])
+        with self.assertRaises(urllib.error.HTTPError) as caught:
+            fees.http_get("u", fetch)
+        self.assertEqual(len(calls), len(fees._RETRY_DELAYS) + 1)
+        self.assertIn("attempts", str(caught.exception))
+
+    def test_an_answer_that_will_not_change_is_not_tried_again(self):
+        fetch, calls = self.flaky([403])
+        with self.assertRaises(urllib.error.HTTPError):
+            fees.http_get("u", fetch)
+        self.assertEqual(len(calls), 1)
 
 
 if __name__ == "__main__":

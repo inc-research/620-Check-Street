@@ -97,6 +97,9 @@ class Run:
         # this month leaves the returns untouched.
         self.fees: dict[str, dict[str, dict[str, Any]]] = {}
         self.fee_failures: dict[str, str] = {}
+        # Months whose fee file was carried forward from the last one published,
+        # because EDGAR would not answer for the fund: {ticker: {month: from_month}}.
+        self.fee_carried: dict[str, dict[str, str]] = {}
         self.rates: dict[str, dict[str, Any]] = {}
         self.rates_failures: dict[str, str] = {}
         self.mode = "prices"
@@ -167,13 +170,56 @@ class Run:
             except (FeeRefused, OSError, ValueError) as exc:
                 self.fee_failures[ticker] = str(exc)
                 self.log(f"  {ticker}: NO FEE TABLE — {exc}")
+                self.carry_fees_forward(ticker, role, wanted, str(exc), stamp)
                 continue
+            # A rerun of this step that now gets an answer replaces any carried file.
+            self.fee_failures.pop(ticker, None)
+            self.fee_carried.pop(ticker, None)
             self.fees[ticker] = {
                 month: build_fee_file(ticker, role, month, as_of, fee_in_force(history, as_of), stamp)
                 for month, as_of in sorted(wanted.items())
             }
             latest = self.fees[ticker][max(wanted)]["fees"]
             self.log(f"{ticker}: {len(wanted)} fee file(s), latest net {latest['net'] if latest else 'none'}")
+
+    def carry_fees_forward(self, ticker: str, role: str, wanted: dict[str, date], why: str, stamp: str) -> None:
+        """Last month's published fee table, for months EDGAR would not answer for.
+
+        A fund's fees rarely change from one month to the next, and its returns
+        are already after them, so a fee table carried forward and marked as such
+        is better than none. Only a month not yet published is written (ingest
+        never overwrites one), only from a published file that has a fee table.
+        The file says where it came from in its source note, the one place the
+        fee schema leaves for it, and the run manifest lists every carried month.
+        A fee table filed since that file is not reflected, which the note says.
+        """
+        folder = self.archive_dir / "_fees" / ticker if self.archive_dir else None
+        published = sorted(p.stem for p in folder.glob("*.json")) if folder and folder.is_dir() else []
+        out: dict[str, dict[str, Any]] = {}
+        for month, as_of in sorted(wanted.items()):
+            if month in published:
+                continue
+            earlier = [m for m in published if m < month]
+            if not earlier:
+                continue
+            source_month = earlier[-1]
+            prior = json.loads((folder / f"{source_month}.json").read_text(encoding="utf-8"))
+            if not prior.get("fees"):
+                continue
+            doc = build_fee_file(ticker, role, month, as_of, None, stamp)
+            fees = json.loads(json.dumps(prior["fees"]))
+            fees["source"]["note"] = (
+                f"Carried forward from the {source_month} fee file: SEC EDGAR did not answer for "
+                f"this fund during the run ({why}). A fee table filed since {source_month} is not reflected."
+            )
+            doc["fees"] = fees
+            doc["blockers"] = []
+            out[month] = doc
+            self.fee_carried.setdefault(ticker, {})[month] = source_month
+        if out:
+            self.fees[ticker] = out
+            self.log(f"  {ticker}: CARRIED FORWARD {', '.join(f'{m} from {self.fee_carried[ticker][m]}' for m in out)}"
+                     f" — to read it fresh, rerun the fee step (notebook 4b) before ingesting; once ingested it is the record")
 
     def fetch_rates(self, start: date) -> None:
         """Consumer prices and three-month bill yields, merged onto what is published."""
@@ -336,6 +382,7 @@ class Run:
             "total_report_files": sum(len(m) for m in self.reports.values()),
             "total_fee_files": sum(len(m) for m in self.fees.values()),
             "fee_failures": self.fee_failures,
+            "fee_carried_forward": self.fee_carried,
             "rate_series": {
                 s: {"source": d["source"], "last": d["observations"][-1][0]}
                 for s, d in sorted(self.rates.items())

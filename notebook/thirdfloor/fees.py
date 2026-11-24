@@ -28,6 +28,7 @@ import json
 import math
 import re
 import time
+import urllib.error
 import urllib.request
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
@@ -41,6 +42,15 @@ SEC = "https://www.sec.gov"
 
 # SEC's fair-access limit is ten requests a second; stay well under it.
 _THROTTLE_SECONDS = 0.15
+
+# EDGAR is not always steady. On 2026-11-24 it answered 503 and 504 for whole
+# stretches, and 404 for filings it had served on 2026-11-08 and served again
+# minutes later. So these are tried again after a pause before a fund is given
+# up on; a filing is never passed over on one answer, which would put an older
+# fee table in its place without saying so.
+_RETRY_STATUS = frozenset({404, 429, 500, 502, 503, 504})
+_RETRY_DELAYS = (5.0, 15.0, 45.0)
+_sleep = time.sleep
 
 FEE_FORMS = ("485BPOS", "497", "485APOS")
 
@@ -84,11 +94,29 @@ class FeeRefused(Exception):
 Getter = Callable[[str], bytes]
 
 
-def http_get(url: str) -> bytes:
-    time.sleep(_THROTTLE_SECONDS)
+def _get_once(url: str) -> bytes:
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     with urllib.request.urlopen(request, timeout=90) as response:
         return response.read()
+
+
+def http_get(url: str, fetch: Callable[[str], bytes] = _get_once) -> bytes:
+    """One throttled read, tried again after a pause on an answer EDGAR is known to give
+    when it is unsteady. The last error is raised once every attempt has failed."""
+    for attempt, pause in enumerate((*_RETRY_DELAYS, None)):
+        _sleep(_THROTTLE_SECONDS)
+        try:
+            return fetch(url)
+        except urllib.error.HTTPError as exc:
+            if exc.code not in _RETRY_STATUS or pause is None:
+                if attempt:
+                    exc.msg = f"{exc.msg} (after {attempt + 1} attempts)"
+                raise
+        except (urllib.error.URLError, TimeoutError):
+            if pause is None:
+                raise
+        _sleep(pause)
+    raise AssertionError("unreachable")
 
 
 @dataclass(frozen=True)

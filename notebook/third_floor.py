@@ -154,6 +154,13 @@ if run.fee_failures:
     print("NO FEE TABLE FOR:")
     for ticker, why in run.fee_failures.items():
         print(f"  {ticker}: {why}")
+if run.fee_carried:
+    # EDGAR would not answer for these, so last month's published fee table was
+    # carried forward and marked. Run this cell again before packaging to try
+    # once more: a fund that answers replaces its carried file.
+    print("CARRIED FORWARD FROM LAST MONTH:")
+    for ticker, months in run.fee_carried.items():
+        print(f"  {ticker}: " + ", ".join(f"{m} from {src}" for m, src in months.items()))
 if run.rates_failures:
     print("NO RATE SERIES FOR:")
     for series_id, why in run.rates_failures.items():
