@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 //
-// The Gain Exposure selected report (3F D-25).
+// The Gain Exposure selected report (3F D-25), over the year and the special
+// window of 4 to 23 November (3F D-26).
 //
 // Renders only. Every figure comes from the published document and every
 // sentence from the deck; orderings and selections come from the core's study
@@ -21,12 +22,14 @@ import {
   studyHero,
   studyRows,
   upbRange,
+  windowStrip,
   type Basis,
   type LegPoint,
   type StudyDocument,
   type StudyFund,
   type StudyReading,
   type StudyRow,
+  type WindowDay,
 } from '../../shim.ts';
 import { fill } from '../report.ts';
 import { svg, svgText } from '../svg.ts';
@@ -46,8 +49,6 @@ const share = (x: number | null | undefined, d = 1): string =>
 const day = (iso: string): string => `${Number(iso.slice(8, 10))} ${MON[Number(iso.slice(5, 7)) - 1]}`;
 const longDate = (iso: string): string =>
   `${Number(iso.slice(8, 10))} ${MONTHS[Number(iso.slice(5, 7)) - 1]} ${iso.slice(0, 4)}`;
-const ordinal = (n: number): string =>
-  n + (n % 10 === 1 && n % 100 !== 11 ? 'st' : n % 10 === 2 && n % 100 !== 12 ? 'nd' : n % 10 === 3 && n % 100 !== 13 ? 'rd' : 'th');
 const ms = (iso: string): number => Date.UTC(Number(iso.slice(0, 4)), Number(iso.slice(5, 7)) - 1, Number(iso.slice(8, 10)));
 const GCLS = { equity_sleeve: 'eq', synthetic_long: 'syn', reference_only: 'ref' } as const;
 
@@ -129,7 +130,7 @@ function kFrame(host: HTMLElement, doc: StudyDocument, H: number, yMin: number, 
   clear(host);
   const W = opts.width ?? 900, Lm = 52, R = opts.right ?? 200, T = 18, B = 30;
   const year = doc.window.start.slice(0, 4);
-  const X0 = ms(`${year}-01-01`), X1 = ms(doc.special_days[1]) + 86400000;
+  const X0 = ms(`${year}-01-01`), X1 = ms(doc.special_window.end) + 86400000;
   const root = svg('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img', 'aria-label': opts.aria }, host) as SVGSVGElement;
   const x = (iso: string) => Lm + (ms(iso) - X0) / (X1 - X0) * (W - Lm - R);
   const y = (v: number) => T + (yMax - v) / (yMax - yMin) * (H - T - B);
@@ -138,7 +139,7 @@ function kFrame(host: HTMLElement, doc: StudyDocument, H: number, yMin: number, 
     svg('line', { x1: Lm, x2: W - R, y1: y(v), y2: y(v), class: Math.abs(v) < 1e-9 ? 'zero' : 'grid' }, root);
     svgText(root, Lm - 6, y(v) + 4, pct(v, 0), '', 'end');
   }
-  const lastMonth = Number(doc.special_days[1].slice(5, 7));
+  const lastMonth = Number(doc.special_window.end.slice(5, 7));
   for (let m = 1; m <= lastMonth; m++) {
     const iso = `${year}-${String(m).padStart(2, '0')}-01`;
     if (m > 1) svg('line', { x1: x(iso), x2: x(iso), y1: H - B, y2: H - B + 4, class: 'zero' }, root);
@@ -161,22 +162,28 @@ function area(points: [string, number][], F: Frame, from: string): string {
   return `${d}L${F.x(points[points.length - 1]![0])},${F.y(0)}Z`;
 }
 
-/** Each leg with its special day added as a last step. */
-function withSpecial(doc: StudyDocument, r: StudyReading): { up: LegPoint[]; down: LegPoint[] } {
-  const [d4, d5] = doc.special_days;
-  const lu = r.legs.up[r.legs.up.length - 1]!, ld = r.legs.down[r.legs.down.length - 1]!;
-  return {
-    up: [...r.legs.up, [d4, lu[1] + r.nov4.fund, lu[2] + r.nov4.bench]],
-    down: [...r.legs.down, [d5, ld[1] + r.nov5.fund, ld[2] + r.nov5.bench]],
-  };
+/** A leg split where the window starts: the year, then the window joined on from the year's last point. */
+function split(pts: LegPoint[], from: string): { year: LegPoint[]; window: LegPoint[] } {
+  const year = pts.filter((p) => p[0] < from);
+  const rest = pts.filter((p) => p[0] >= from);
+  return { year, window: year.length ? [year[year.length - 1]!, ...rest] : rest };
 }
+
+const WORDS = ['none', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen'];
+const countWord = (n: number): string => WORDS[n] ?? String(n);
+const capital = (t: string): string => t.charAt(0).toUpperCase() + t.slice(1);
+const sizeOf = (d: WindowDay): string => (d.band ? L.sizes[d.band] : '—');
 
 /* ---- sections ---------------------------------------------------------------- */
 
 function hero(doc: StudyDocument): HTMLElement {
   const h = studyHero(doc);
+  const both = h.worstRank === 1 && h.bestRank === 1;
   const cards: [string, string, string, string][] = [
-    ['orange', C.hero.fall.label, pct(h.marketFall, 2), fill(C.hero.fall.sub, { days: String(h.marketDays), qqq: pct(h.qqqFall, 2) })],
+    ['orange', C.hero.window.label, pct(h.marketWindow, 2), fill(C.hero.window.sub, {
+      days: String(h.windowDays), up: String(h.upDays), down: String(h.downDays),
+      worst: pct(h.worstMove, 2), worstDay: day(h.worstDay), best: pct(h.bestMove, 2), bestDay: day(h.bestDay),
+      beyond: both ? C.hero.window.beyond : C.hero.window.notBeyond, qqq: pct(h.qqqWindow, 2) })],
     ['sky', C.hero.direct.label, fmt(h.directE), fill(C.hero.direct.sub, { n: String(h.directCount), below: String(h.directBelowOne) })],
     ['violet', C.hero.syn.label, fmt(h.synE), fill(C.hero.syn.sub, { n: String(h.synCount), settled: String(h.synSettledBelow) })],
     ['sky', C.hero.index.label, fmt(h.indexE), fill(C.hero.index.sub, { n: String(h.indexCount), max: fmt(h.indexUMax), min: fmt(h.indexUMin) })],
@@ -191,8 +198,8 @@ function hero(doc: StudyDocument): HTMLElement {
 
 function drawK(host: HTMLElement, v: View, f: StudyFund): void {
   const { benchmark: bn, reading: r } = readingFor(f, v.basis);
-  const legs = withSpecial(v.doc, r);
-  const [d4, d5] = v.doc.special_days;
+  const legs = r.legs;
+  const d4 = v.doc.special_window.start, end = v.doc.special_window.end;
   const sp4 = legs.up[legs.up.length - 1]!, sp5 = legs.down[legs.down.length - 1]!;
   const yMax = Math.max(...legs.up.map((p) => Math.max(p[1], p[2]))) * 1.06;
   const yMin = Math.min(...legs.down.map((p) => Math.min(p[1], p[2]))) * 1.06;
@@ -205,16 +212,16 @@ function drawK(host: HTMLElement, v: View, f: StudyFund): void {
   svg('path', { d: line(bench(legs.up), F, [from, 0]), class: 'mk-up-line' }, F.root);
   svg('path', { d: line(bench(legs.down), F, [from, 0]), class: 'mk-down-line' }, F.root);
   svg('line', { x1: F.x(d4) - 1, x2: F.x(d4) - 1, y1: F.y(yMax), y2: F.y(yMin), class: 'special' }, F.root);
-  svg('path', { d: line(fund(r.legs.up), F, [from, 0]), class: 'fd-up' }, F.root);
-  svg('path', { d: line(fund(r.legs.down), F, [from, 0]), class: 'fd-down' }, F.root);
-  const lu = r.legs.up[r.legs.up.length - 1]!, ld = r.legs.down[r.legs.down.length - 1]!;
-  svg('path', { d: `M${F.x(lu[0])},${F.y(lu[1])}L${F.x(d4)},${F.y(sp4[1])}`, class: 'fd-up', 'stroke-width': 4 }, F.root);
-  svg('path', { d: `M${F.x(ld[0])},${F.y(ld[1])}L${F.x(d5)},${F.y(sp5[1])}`, class: 'fd-down', 'stroke-width': 4 }, F.root);
-  svg('circle', { cx: F.x(d4), cy: F.y(sp4[1]), r: 5, class: 'sp-dot up' }, F.root);
-  svg('circle', { cx: F.x(d5), cy: F.y(sp5[1]), r: 5, class: 'sp-dot down' }, F.root);
+  const up = split(legs.up, d4), down = split(legs.down, d4);
+  svg('path', { d: line(fund(up.year), F, [from, 0]), class: 'fd-up' }, F.root);
+  svg('path', { d: line(fund(down.year), F, [from, 0]), class: 'fd-down' }, F.root);
+  svg('path', { d: line(fund(up.window), F), class: 'fd-up', 'stroke-width': 4 }, F.root);
+  svg('path', { d: line(fund(down.window), F), class: 'fd-down', 'stroke-width': 4 }, F.root);
+  svg('circle', { cx: F.x(sp4[0]), cy: F.y(sp4[1]), r: 5, class: 'sp-dot up' }, F.root);
+  svg('circle', { cx: F.x(sp5[0]), cy: F.y(sp5[1]), r: 5, class: 'sp-dot down' }, F.root);
 
   // Direct labels on the right, spaced so they never collide.
-  const lx = F.x(d5) + 14;
+  const lx = F.x(end) + 14;
   const labels = ([
     [sp4[2], fill(C.k.labels.benchUp, { bench: bn, value: pct(sp4[2]) }), 'lab up'],
     [sp4[1], fill(C.k.labels.fundUp, { ticker: f.ticker, value: pct(sp4[1]) }), 'lab up'],
@@ -269,12 +276,25 @@ function kLead(v: View, f: StudyFund): string {
 
 function kSpecial(v: View, f: StudyFund): string {
   const { benchmark: bn, reading: r } = readingFor(f, v.basis);
+  const w = r.window;
+  const counts = { bench: bn, upDays: String(w.up_days), downDays: String(w.down_days) };
   return fill(C.k.special, {
-    bench: bn, ticker: f.ticker, m4: pct(r.nov4.bench, 2), f4: pct(r.nov4.fund, 2), kept: fmt(r.nov4.kept), u: fmt(r.u),
-    m5: pct(r.nov5.bench, 2), rank: r.nov5.rank === 1 ? C.k.rankFirst : fill(C.k.rankNth, { nth: ordinal(r.nov5.rank) }),
-    f5: pct(r.nov5.fund, 2), avoided: fmt(r.nov5.avoided), b: fmt(r.b),
-    gbf: share(r.nov5.given_back_fund), gbm: share(r.nov5.given_back_bench), ratio: fmt(r.nov5.E),
+    ...counts, ticker: f.ticker, bg: pct(w.growth.bench - 1, 2), fg: pct(w.growth.fund - 1, 2),
+    wb: fmt(w.b), b: fmt(r.b),
+    kept: w.u === null ? fill(C.k.keptTooFew, counts) : fill(C.k.keptWindow, { wu: fmt(w.u), u: fmt(r.u) }),
+    gbf: share(r.giveback.fund), gbm: share(r.giveback.bench), ratio: fmt(r.giveback.ratio),
   });
+}
+
+function kDaysTable(v: View, f: StudyFund): HTMLElement {
+  const { reading: r } = readingFor(f, v.basis);
+  const h = C.k.days.head;
+  return el('table', {},
+    el('thead', {}, el('tr', {}, th(h.date), th(h.bench, 'num'), th(h.size), th(h.fund, 'num'), th(h.share, 'num'))),
+    el('tbody', {}, ...r.days_in_window.map((d) =>
+      el('tr', {}, td(day(d.date), 'ticker'), td(pct(d.bench, 2), `num ${d.side}`),
+        td(d.rank === 1 ? `${sizeOf(d)}, ${C.k.days.beyond}` : sizeOf(d)),
+        td(pct(d.fund, 2), 'num'), el('td', { class: 'num' }, el('b', {}, fmt(d.share)))))));
 }
 
 function drawPlane(host: HTMLElement, v: View): void {
@@ -312,13 +332,13 @@ function drawPlane(host: HTMLElement, v: View): void {
       if (f.group === 'equity_sleeve') svg('rect', { x: x(r.E) - 5.5, y: cy - 5.5, width: 11, height: 11, class: `ring ${cls}` }, root);
       else svg('circle', { cx: x(r.E), cy, r: 6, class: `ring ${cls}` }, root);
     }
-    if (v.showDay5 && r.nov5.E !== null) svg('circle', { cx: x(r.nov5.E), cy, r: 5, class: 'day5' }, root);
+    if (v.showDay5 && r.giveback.ratio !== null) svg('circle', { cx: x(r.giveback.ratio), cy, r: 5, class: 'day5' }, root);
     const hit = svg('rect', { x: 0, y: cy - RH / 2, width: W, height: RH, fill: 'transparent' }, root);
     hit.addEventListener('pointerenter', (e) => showTip(host, tip, e as PointerEvent, [
       [el('b', {}, fill(C.exposure.tip.head, { ticker: f.ticker, held: L.subgroups[f.subgroup], bench: bn }))],
       [fill(C.exposure.tip.shares, { u: fmt(r.u), b: fmt(r.b) })],
       [fill(C.exposure.tip.e, { E: fmt(r.E), range: r.E_range ? `${fmt(r.E_range[0])}–${fmt(r.E_range[1])}` : '—' })],
-      [fill(C.exposure.tip.day, { avoided: fmt(r.nov5.avoided), E5: fmt(r.nov5.E) })],
+      [fill(C.exposure.tip.day, { avoided: fmt(r.window.b), E5: fmt(r.giveback.ratio) })],
     ]));
     hit.addEventListener('pointerleave', () => { tip.hidden = true; });
   });
@@ -344,13 +364,13 @@ function daysTable(v: View): HTMLElement {
     el('thead', {},
       el('tr', {}, th(C.exposure.table.fund, undefined, { rowspan: '2' }), th(C.exposure.table.against, undefined, { rowspan: '2' }),
         th(t.kept, 'span', { colspan: '2' }), th(t.avoided, 'span', { colspan: '2' }), th(t.exposure, 'span', { colspan: '2' })),
-      el('tr', { class: 'sub' }, ...[t.nov4, t.uYear, t.nov5, t.bYear, t.e5, t.eYear].map((s) => th(s, 'num')))),
+      el('tr', { class: 'sub' }, ...[t.uWin, t.uYear, t.bWin, t.bYear, t.eWin, t.eYear].map((s) => th(s, 'num')))),
     el('tbody', {}, ...rowsByGroup(studyRows(v.doc, v.basis), 8, ({ fund: f, reading: r, benchmark: bn }) =>
       el('tr', { class: f.ticker === v.ticker ? 'hl' : undefined },
         td(f.ticker + (f.flag ? ' *' : ''), 'ticker'), td(bn, 'ticker'),
-        el('td', { class: 'num' }, el('b', {}, fmt(r.nov4.kept))), td(fmt(r.u), 'num dim'),
-        el('td', { class: 'num' }, el('b', {}, fmt(r.nov5.avoided))), td(fmt(r.b), 'num dim'),
-        el('td', { class: 'num' }, el('b', {}, r.nov5.E === null ? '—' : `${fmt(r.nov5.E)}×`)), td(fmt(r.E), 'num dim')))));
+        el('td', { class: 'num' }, el('b', {}, fmt(r.window.u))), td(fmt(r.u), 'num dim'),
+        el('td', { class: 'num' }, el('b', {}, fmt(r.window.b))), td(fmt(r.b), 'num dim'),
+        el('td', { class: 'num' }, el('b', {}, r.giveback.ratio === null ? '—' : `${fmt(r.giveback.ratio)}×`)), td(fmt(r.E), 'num dim')))));
 }
 
 function drawGroup(host: HTMLElement, caption: HTMLElement, v: View, group: 'equity_sleeve' | 'synthetic_long'): void {
@@ -358,7 +378,7 @@ function drawGroup(host: HTMLElement, caption: HTMLElement, v: View, group: 'equ
   const members = doc.funds.filter((f) => f.group === group);
   // VOO's own legs: the benchmark column is the same for every fund read over the whole window.
   const full = doc.funds.map((f) => f.readings['VOO']!).reduce((a, b) => (b.days > a.days ? b : a));
-  const market = withSpecial(doc, full);
+  const market = full.legs;
   const mUp = market.up.map((p) => [p[0], p[2]] as [string, number]);
   const mDn = market.down.map((p) => [p[0], p[2]] as [string, number]);
   const yMax = mUp[mUp.length - 1]![1] * 1.06, yMin = mDn[mDn.length - 1]![1] * 1.06;
@@ -368,7 +388,7 @@ function drawGroup(host: HTMLElement, caption: HTMLElement, v: View, group: 'equ
   const tip = tipFor(host);
   for (const f of members) {
     const r = f.readings['VOO']!;
-    const legs = withSpecial(doc, r);
+    const legs = r.legs;
     const start: [string, number] = [r.first_day, 0];
     const drawn: SVGElement[] = [];
     for (const [pts, cls] of [[legs.up, 'thin-up'], [legs.down, 'thin-down']] as const) {
@@ -388,7 +408,7 @@ function drawGroup(host: HTMLElement, caption: HTMLElement, v: View, group: 'equ
       });
     }
   }
-  const end = doc.special_days[1];
+  const end = doc.special_window.end;
   svgText(F.root, F.x(end) + 6, F.y(mUp[mUp.length - 1]![1]) + 4, 'VOO', 'lab up');
   svgText(F.root, F.x(end) + 6, F.y(mDn[mDn.length - 1]![1]) + 4, 'VOO', 'lab down');
   const S = doc.summaries.VOO[`group:${group}`]!;
@@ -397,13 +417,15 @@ function drawGroup(host: HTMLElement, caption: HTMLElement, v: View, group: 'equ
 
 function bandsText(v: View): string {
   const voo = v.doc.benchmarks['VOO']!;
-  const [d4, d5] = v.doc.special_days;
+  const days = windowStrip(v.doc).map((s) => s.day);
   const f = bandFinding(v.doc, v.basis);
+  const top = days.filter((d) => d.band === 'top_decile').length;
+  const beyond = days.filter((d) => d.rank === 1).length;
   return [
     fill(C.bands.edges, { t1: share(voo.band_edges.t1, 2), t2: share(voo.band_edges.t2, 2), d9: share(voo.band_edges.d9, 2),
-      m4: pct(voo.moves[d4], 2), m5: pct(voo.moves[d5], 2) }),
+      top: capital(countWord(top)), days: String(days.length), beyond: countWord(beyond) }),
     fill(C.bands.finding, { synSmall: fmt(f.synSmall), synLarge: fmt(f.synLarge), eqSmall: fmt(f.eqSmall), eqLarge: fmt(f.eqLarge) }),
-    fill(f.lessAgain ? C.bands.lessAgain : C.bands.nov5, { syn: fmt(f.synNov5), eq: fmt(f.eqNov5) }),
+    fill(f.lessAgain ? C.bands.lessAgain : C.bands.window, { syn: fmt(f.synWindow), eq: fmt(f.eqWindow) }),
   ].join(' ');
 }
 
@@ -412,7 +434,7 @@ function bandsHead(first: string, second: string, secondCls?: string): HTMLEleme
   return el('thead', {},
     el('tr', {}, th(first, undefined, { rowspan: '2' }), th(second, secondCls, { rowspan: '2' }),
       th(h.small, 'span', { colspan: '2' }), th(h.medium, 'span', { colspan: '2' }), th(h.large, 'span', { colspan: '2' }),
-      th(h.top, 'span', { colspan: '2' }), th(h.nov4, 'span'), th(h.nov5, 'span')),
+      th(h.top, 'span', { colspan: '2' }), th(h.win, 'span', { colspan: '2' })),
     el('tr', { class: 'sub' }, ...[...STUDY_BANDS.flatMap(() => [h.u, h.b]), h.u, h.b].map((s) => th(s, 'num'))));
 }
 
@@ -424,7 +446,7 @@ function bandsTable(v: View): HTMLElement {
       const s = S[k]!;
       return el('tr', {}, el('th', { class: 'row-label' }, L.bandRows[k]), td(String(s.tickers.length), 'num'),
         ...STUDY_BANDS.flatMap((b) => [td(m(s.bands[b].u), 'num'), td(m(s.bands[b].b), 'num')]),
-        el('td', { class: 'num' }, el('b', {}, m(s.nov4_day_capture))), el('td', { class: 'num' }, el('b', {}, m(s.nov5_day_buffer))));
+        el('td', { class: 'num' }, el('b', {}, m(s.window_u))), el('td', { class: 'num' }, el('b', {}, m(s.window_b))));
     })));
 }
 
@@ -433,7 +455,17 @@ function bandsAll(v: View): HTMLElement {
     el('tbody', {}, ...rowsByGroup(studyRows(v.doc, v.basis), 12, ({ fund: f, reading: r, benchmark: bn }) =>
       el('tr', {}, td(f.ticker, 'ticker'), td(bn, 'ticker'),
         ...STUDY_BANDS.flatMap((b) => [td(fmt(r.bands[b].u), 'num'), td(fmt(r.bands[b].b), 'num')]),
-        el('td', { class: 'num' }, el('b', {}, fmt(r.nov4.kept))), el('td', { class: 'num' }, el('b', {}, fmt(r.nov5.avoided)))))));
+        el('td', { class: 'num' }, el('b', {}, fmt(r.window.u))), el('td', { class: 'num' }, el('b', {}, fmt(r.window.b)))))));
+}
+
+function stripTable(doc: StudyDocument): HTMLElement {
+  const h = C.groups.strip.head;
+  return el('table', {},
+    el('thead', {}, el('tr', {}, th(h.date), th(h.voo, 'num'), th(h.size), th(h.eq, 'num'), th(h.syn, 'num'))),
+    el('tbody', {}, ...windowStrip(doc).map(({ day: d, eq, syn }) =>
+      el('tr', {}, td(day(d.date), 'ticker'), td(pct(d.bench, 2), `num ${d.side}`),
+        td(d.rank === 1 ? `${sizeOf(d)}, ${C.k.days.beyond}` : sizeOf(d)),
+        td(fmt(eq?.median), 'num'), td(fmt(syn?.median), 'num')))));
 }
 
 function quadTable(v: View): HTMLElement {
@@ -481,6 +513,7 @@ export function renderGainExposure(doc: StudyDocument, handlers: StudyHandlers):
   const kHost = el('div', { class: 'chart wide' });
   const kLeadP = el('p', { class: 'lead fund' });
   const kSpecialP = el('p', { class: 'caption small' });
+  const kDaysHost = el('div', { class: 'scroll-x' });
   const planeHost = el('div', { class: 'chart wide' });
   const upbP = el('p', {});
   const exampleP = el('p', {});
@@ -508,6 +541,7 @@ export function renderGainExposure(doc: StudyDocument, handlers: StudyHandlers):
     const f = fundNow();
     kLeadP.textContent = kLead(v, f);
     kSpecialP.textContent = kSpecial(v, f);
+    clear(kDaysHost); kDaysHost.appendChild(kDaysTable(v, f));
     drawK(kHost, v, f);
   };
   const drawTables = () => {
@@ -549,11 +583,14 @@ export function renderGainExposure(doc: StudyDocument, handlers: StudyHandlers):
       el('div', { class: 'controls' }, el('div', {}, el('label', { for: 'study-fund' }, C.k.fund), fundSel)),
       kLeadP,
       key([['k-mk-up', C.k.key.marketUp], ['line k-up', C.k.key.fundUp], ['k-mk-down', C.k.key.marketDown], ['line k-down', C.k.key.fundDown]]),
-      kHost, kSpecialP, explain(TABLE.explainSummary, C.k.explain)),
+      kHost, kSpecialP,
+      el('h4', {}, C.k.days.title), el('p', { class: 'caption small' }, C.k.days.caption), kDaysHost,
+      explain(TABLE.explainSummary, C.k.explain)),
     section('violet', C.exposure.title, C.exposure.caption,
       el('p', {}, C.exposure.intro), el('p', {}, C.exposure.parts),
       el('div', { class: 'formula' }, C.exposure.formula),
-      exampleP, upbP, el('p', {}, C.exposure.nov5),
+      exampleP, upbP, el('p', {}, fill(C.exposure.window, {
+        up: String(doc.benchmarks['VOO']!.window.up_days), days: String(doc.special_window.days.length) })),
       key([['dot k-syn', C.exposure.key.syn], ['sq k-eq', C.exposure.key.eq], ['line k-quiet', C.exposure.key.range],
         ['dot k-day5', C.exposure.key.day5], ['dash k-ink', C.exposure.key.one]]),
       el('div', { class: 'toggle' }, day5, el('label', { for: 'study-day5' }, C.exposure.toggle)),
@@ -566,7 +603,9 @@ export function renderGainExposure(doc: StudyDocument, handlers: StudyHandlers):
       el('div', { class: 'panels' },
         el('div', {}, el('h4', {}, L.groups.equity_sleeve), eqCap, eqHost),
         el('div', {}, el('h4', {}, L.groups.synthetic_long), synCap, synHost)),
-      el('p', { class: 'caption small' }, C.groups.hover)),
+      el('p', { class: 'caption small' }, C.groups.hover),
+      el('h4', {}, C.groups.strip.title), el('p', { class: 'caption small' }, C.groups.strip.caption),
+      el('div', { class: 'scroll-x' }, stripTable(doc))),
     section('orange', C.bands.title, C.bands.caption,
       el('p', {}, C.bands.refresh), bandsP, bandsHost, explain(TABLE.explainSummary, C.bands.explain),
       el('details', { class: 'detail' }, el('summary', {}, C.bands.every), bandsAllHost)),

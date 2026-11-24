@@ -897,6 +897,48 @@ tables move behind the fund chooser and only the group figures stay in the open.
 
 ---
 
+## 3F D-26 · Gain Exposure replaced: 4 to 23 November in place of 4 and 5
+
+The owner asked on 2026-11-24 for the Gain Exposure report to be replaced on the
+site by one whose special period runs from 4 to 23 November. The market behind the
+first edition did not stop on 5 November: VOO fell further on 20 November, and rose
+further on 23 November, than on any day of the year before 4 November.
+
+**A published report can be replaced, never edited.** 3F D-25 said a new report is
+a new id and never an edit of a published one. That holds. The replacement is
+`gain-exposure-2026-11-23`, computed in `analysis/gain_exposure_2026-11-23/`. The
+first edition's document leaves `data/_studies/` (git keeps it), its analysis stays
+committed as the record, and `#/selected/gain-exposure-2026-11` forwards to the
+replacement. Replacement takes the owner's word, as this one did.
+
+**The year is unchanged.** 2 January to 3 November, the same grouping (approved
+2026-11-09) and the same bootstrap seed. On a fresh pull every fund's year-to-date
+U, B and E reproduced the first edition within 1.4e-6, and no settled label moved.
+
+**The window is pooled and also shown day by day.** Its own U, B and E come from
+its rising and falling days through `market_side`, so a side with fewer than six
+days gives no figure (3F D-11). VOO rose on only five of the fourteen days, so
+against VOO and EFA the window has no U and no E of its own. A group median of
+those is shown only where every member has one: a median of the funds that happen
+to have a figure would describe a selection. The figure every fund has is the
+window's Gain Exposure on the year, the window's down capture over the year's U.
+It is the same number as the give-back, the window's falls over the year's summed
+rises, fund over market, and it generalizes the first edition's "5 November's E"
+exactly. No range: three weeks are too few week blocks to resample.
+
+**Day by day against VOO for the groups.** On their own benchmarks the funds' days
+need not point the same way (a QQQ day can rise while VOO falls), so the group
+medians in the daily table are always against VOO, as the group panels already were.
+
+Schema 2.0 replaces `special_days` and the `nov4`/`nov5` readings with
+`special_window`, `window`, `days_in_window` and `giveback`. The validator proves
+the window's identities as it does the year's.
+
+*Reverses if:* the owner wants the first edition back beside this one. In that case
+its document returns under its own id and the forward is removed.
+
+---
+
 ## Open
 
 | # | Question | Blocking |

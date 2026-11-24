@@ -180,7 +180,10 @@ export async function loadReport(ticker: string, month: string): Promise<ReportD
  * data/_studies/, and scripts/validate-studies.mjs checks this list against the
  * folder in both directions, so the front page never links to a missing file.
  */
-export const SELECTED_REPORTS: readonly string[] = ['gain-exposure-2026-11'];
+export const SELECTED_REPORTS: readonly string[] = ['gain-exposure-2026-11-23'];
+
+/** Reports the owner replaced on the site, each to the one that replaced it (3F D-26). Old links keep working. */
+export const SUPERSEDED_REPORTS: Readonly<Record<string, string>> = { 'gain-exposure-2026-11': 'gain-exposure-2026-11-23' };
 
 const studies = new Map<string, StudyDocument>();
 

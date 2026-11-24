@@ -13,7 +13,7 @@ import { installDom } from './dom-shim3f.ts';
 import type { FakeElement } from './dom-shim.ts';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
-const doc = () => JSON.parse(readFileSync(join(root, 'data', '_studies', 'gain-exposure-2026-11.json'), 'utf8'));
+const doc = () => JSON.parse(readFileSync(join(root, 'data', '_studies', 'gain-exposure-2026-11-23.json'), 'utf8'));
 
 let installed: { uninstall: () => void } | null = null;
 afterEach(() => {
@@ -43,7 +43,8 @@ test('the cards show the published medians', async () => {
   const d = doc();
   ok(values.includes(d.summaries.named['group:synthetic_long'].E.median.toFixed(2)));
   ok(values.includes(d.summaries.named['subgroup:index_etf_sleeve'].E.median.toFixed(2)));
-  ok(values[0]!.startsWith('−4.37'));
+  ok(values[0]!.startsWith('−4.27'));
+  ok(values.includes(`${d.summaries.named['group:synthetic_long'].window_giveback.median.toFixed(2)}×`));
 });
 
 test('the sub-group is named in words, never by the fund it holds', async () => {
@@ -69,6 +70,23 @@ test('the charts are drawn, one K and one row per fund in the exposure chart', a
   ok(node.findByClass('fd-up').length >= 1);
   strictEqual(node.findByClass('ci').length, doc().funds.filter((f: { readings: Record<string, { E_range: unknown }>; named_benchmark: string | null }) =>
     f.readings[f.named_benchmark ?? 'VOO']!.E_range).length);
+});
+
+test('every window day is listed, for the fund and for the groups', async () => {
+  const node = await render();
+  const d = doc();
+  strictEqual(tableOf(node, 'Day', 0).findAll('tbody')[0]!.findAll('tr').length, d.special_window.days.length);
+  strictEqual(tableOf(node, 'Day', 1).findAll('tbody')[0]!.findAll('tr').length, d.special_window.days.length);
+});
+
+test('a window share from too few days shows a dash, never a number', async () => {
+  const node = await render();
+  const sel = node.findAll('select').find((s) => s.getAttribute('id') === 'study-basis')!;
+  sel.value = 'VOO';
+  sel.dispatch('change');
+  const t = node.findAll('table').find((x) => x.findAll('th').some((h) => h.textContent === '4–23 Nov on the year'))!;
+  const first = t.findAll('tbody')[0]!.findAll('tr').find((r) => !(r.getAttribute('class') ?? '').startsWith('group'))!;
+  strictEqual(first.findAll('td')[2]!.textContent, '—');
 });
 
 test('the limits carry the quarter-to-quarter caveat', async () => {

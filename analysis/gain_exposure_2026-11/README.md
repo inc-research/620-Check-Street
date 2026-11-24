@@ -1,5 +1,10 @@
 # Gain Exposure: YTD 2026, with 4 and 5 November (3F D-25)
 
+**Replaced on the site by 3F D-26** (`analysis/gain_exposure_2026-11-23/`). This
+folder is kept as the record of the first edition. Its document left
+`data/_studies/` and is in git history, so `export.py --check` here no longer runs
+in CI.
+
 The analysis behind the first selected report. The site reads only
 `data/_studies/gain-exposure-2026-11.json`, which `export.py` writes from
 `results.json` here. Figures are fixed as of 2026-11-09 and are not rebuilt monthly.

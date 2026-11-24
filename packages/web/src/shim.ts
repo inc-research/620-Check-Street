@@ -86,6 +86,7 @@ export {
   readingFor,
   studyHero,
   studyRows,
+  windowStrip,
   upbRange,
   validateStudy,
   type Basis,
@@ -94,6 +95,8 @@ export {
   type StudyFund,
   type StudyReading,
   type StudyRow,
+  type StripRow,
+  type WindowDay,
 } from '@third-floor/core';
 
 export {

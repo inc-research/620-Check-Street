@@ -87,8 +87,9 @@ See 3F D-13 and 3F D-14.
 Above the fund list sit the **selected reports**: dated studies across the funds,
 fixed as of the day they were published, each read from one file in
 `data/_studies/`. The first is Gain Exposure, which sets synthetic longs beside
-equity sleeves for 2026 and on 4 and 5 November. See 3F D-25 and
-`analysis/gain_exposure_2026-11/`.
+equity sleeves for 2026 and over 4 to 23 November. It replaced an edition that
+looked at 4 and 5 November alone. See 3F D-25, 3F D-26 and
+`analysis/gain_exposure_2026-11-23/`.
 
 ## The OBSERVER Folder
 

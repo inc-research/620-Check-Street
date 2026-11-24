@@ -30,7 +30,7 @@
     "check:observer": "python3 scripts/build_observer.py --check",
     "validate:observer": "python3 scripts/validate_observer.py OBSERVER/ --quiet && python3 OBSERVER/references/replicate.py",
     "validate:studies": "node scripts/validate-studies.mjs",
-    "check:studies": "python3 analysis/gain_exposure_2026-11/export.py --check"
+    "check:studies": "python3 analysis/gain_exposure_2026-11-23/export.py --check"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

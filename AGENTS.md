@@ -670,6 +670,11 @@ sentence, and `packages/web/src/views/study/` draws it at `#/selected/<id>`.
 
 Selected reports may set funds side by side; fund pages may not. They are never
 rebuilt monthly, and a new one is a new id, never an edit of a published one.
+**Amended by 3F D-26:** with the owner's word a published report can be *replaced*
+by a new id. The old document leaves `data/_studies/`, its analysis folder stays as
+the record, and `SUPERSEDED_REPORTS` in `state.ts` forwards its route. Gain
+Exposure is now `gain-exposure-2026-11-23` (4 to 23 November, schema 2.0), from
+`analysis/gain_exposure_2026-11-23/`.
 The rolling Gain Exposure study (`OUT_OF_GIT/studies/rolling_E_2026-11/`) is not
 published yet.
 
@@ -748,6 +753,12 @@ Each step has a gate. Run the gate; do not assume the step.
     the page draws from the document with no `innerHTML`; no archive, snapshot,
     report, fee, rate or OBSERVER file touched.
 
-**All seventeen steps are built.** The two open questions the site was waiting on
+18. ✅ Gain Exposure replaced with the 4 to 23 November edition (3F D-26). *Gate:*
+    the year-to-date figures reproduce the first edition from a fresh pull;
+    `export.py --check` and `validate-studies` pass with the window identities; the
+    old route forwards; no archive, snapshot, report, fee, rate or OBSERVER file
+    touched.
+
+**All eighteen steps are built.** The two open questions the site was waiting on
 are closed: 3F-O-05 no (the archive contradicts the caveat's premise) and
 3F-O-06 yes, LADM stays.

@@ -15,7 +15,7 @@ import type { StudyDocument } from '../src/study/types.ts';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const load = (): StudyDocument =>
-  JSON.parse(readFileSync(join(root, 'data', '_studies', 'gain-exposure-2026-11.json'), 'utf8'));
+  JSON.parse(readFileSync(join(root, 'data', '_studies', 'gain-exposure-2026-11-23.json'), 'utf8'));
 
 test('the committed Gain Exposure report validates', () => {
   deepStrictEqual(validateStudy(load()), []);
@@ -53,6 +53,34 @@ test('a leg that does not end at its sums is refused', () => {
   ok(validateStudy(doc).some((p) => p.message === 'the up leg does not end at its sums'));
 });
 
+test('a window U from fewer than six rising days is refused', () => {
+  const doc = load();
+  const r = doc.funds[0]!.readings['VOO']!;
+  ok(r.window.up_days < 6);
+  r.window.u = 0.5;
+  ok(validateStudy(doc).some((p) => p.message.includes('fewer than 6')));
+});
+
+test('a give-back that is not the window’s down capture over the year’s U is refused', () => {
+  const doc = load();
+  doc.funds[0]!.readings['VOO']!.giveback.ratio! += 0.05;
+  ok(validateStudy(doc).some((p) => p.message.includes('give-back ratio')));
+});
+
+test('a window day that does not add up to the window’s sums is refused', () => {
+  const doc = load();
+  doc.funds[0]!.readings['VOO']!.days_in_window[1]!.fund -= 0.01;
+  ok(validateStudy(doc).some((p) => p.message.includes('do not add up to its sums') || p.message.includes('share')));
+});
+
+test('a group median over only some of the group is refused', () => {
+  const doc = load();
+  const s = doc.summaries.VOO['group:synthetic_long']!;
+  ok(s.window_u === null);
+  s.window_u = { n: 3, median: 0.5, min: 0.4, max: 0.6 };
+  ok(validateStudy(doc).some((p) => p.message === 'a median over only some of the group'));
+});
+
 test('rows run by group, then sub-group, then E from the highest', () => {
   const rows = studyRows(load(), 'named');
   strictEqual(rows[0]!.fund.group, 'equity_sleeve');
@@ -69,8 +97,12 @@ test('VOO basis reads every fund against VOO', () => {
 test('the cards and findings read the published figures', () => {
   const doc = load();
   const h = studyHero(doc);
-  strictEqual(h.marketRank, 1);
-  ok(h.marketFall < -0.04);
+  strictEqual(h.worstDay, '2026-11-05');
+  strictEqual(h.worstRank, 1);
+  ok(h.worstMove < -0.04);
+  strictEqual(h.windowDays, 14);
+  strictEqual(h.upDays + h.downDays, 14);
+  strictEqual(h.synGiveBack, doc.summaries.named['group:synthetic_long']!.window_giveback!.median);
   strictEqual(h.synE, doc.summaries.named['group:synthetic_long']!.E!.median);
   const spread = indexEtfSpread(doc, 'named');
   strictEqual(spread.length, 6);

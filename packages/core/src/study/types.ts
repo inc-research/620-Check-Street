@@ -2,7 +2,8 @@
 //
 // A selected report (3F D-25): one dated study, computed once in analysis/ and
 // committed to data/_studies/. Frozen, never rebuilt monthly. The page renders it
-// and never recomputes it (INV-5).
+// and never recomputes it (INV-5). Schema 2.0 (3F D-26) reads a special window of
+// days beside the year, where 1.0 read two single days.
 
 export type GroupKey = 'equity_sleeve' | 'synthetic_long' | 'reference_only';
 export type SubgroupKey =
@@ -24,6 +25,38 @@ export interface Band {
   down_days: number;
 }
 
+/** The special window pooled: U, B and E from its own rising and falling days. */
+export interface WindowReading {
+  days: number;
+  up_days: number;
+  down_days: number;
+  flat_days: number;
+  sums: { fund_up: number; bench_up: number; fund_down: number; bench_down: number };
+  /** Null where the benchmark rose on fewer than six of the window's days (3F D-11). */
+  u: number | null;
+  /** Null where the benchmark fell on fewer than six of the window's days. */
+  b: number | null;
+  u_plus_b: number | null;
+  E: number | null;
+  fund_net_sum: number;
+  bench_net_sum: number;
+  growth: { fund: number; bench: number };
+}
+
+/** One day of the window on its own. */
+export interface WindowDay {
+  date: string;
+  fund: number;
+  bench: number;
+  side: 'up' | 'down' | 'flat';
+  /** The fund’s move over the benchmark’s; null on a flat day. */
+  share: number | null;
+  band: BandKey | null;
+  /** 1 = larger than every day of the year to date. */
+  rank: number;
+  of: number;
+}
+
 export interface StudyReading {
   first_day: string;
   days: number;
@@ -41,18 +74,14 @@ export interface StudyReading {
   market_gain_loss: number;
   fund_net_sum: number;
   bench_net_sum: number;
-  nov4: { fund: number; bench: number; kept: number | null; rank: number };
-  nov5: {
-    fund: number;
-    bench: number;
-    avoided: number | null;
-    given_back_fund: number | null;
-    given_back_bench: number | null;
-    /** 5 November’s Gain Exposure: the day’s down capture over the year’s U. */
-    E: number | null;
-    rank: number;
-    of: number;
-  };
+  window: WindowReading;
+  days_in_window: WindowDay[];
+  /**
+   * The share of the year’s summed rises the window’s falls took back, fund and
+   * market. The ratio is the window’s down capture over the year’s U: the
+   * window’s Gain Exposure on the year.
+   */
+  giveback: { fund: number | null; bench: number | null; ratio: number | null };
   bands: Record<BandKey, Band>;
   both_up: { capture: number | null; days: number };
   both_down: { capture: number | null; days: number };
@@ -101,9 +130,13 @@ export interface GroupSummary {
   E_settled_above_1: number;
   E_settled_below_1: number;
   E_not_settled: number;
-  nov4_day_capture: Stat | null;
-  nov5_day_buffer: Stat | null;
-  nov5_takeback_ratio: Stat | null;
+  /** Medians over every member, or null where any member has no figure. */
+  window_u: Stat | null;
+  window_b: Stat | null;
+  window_E: Stat | null;
+  window_giveback: Stat | null;
+  /** The middle fund’s share of each window day’s move. */
+  day_capture: Record<string, Stat | null>;
   bands: Record<BandKey, { u: Stat | null; b: Stat | null }>;
 }
 
@@ -116,8 +149,10 @@ export interface StudyDocument {
   id: string;
   title: string;
   published: string;
+  /** The report this one replaced on the site, where it replaced one (3F D-26). */
+  supersedes?: string;
   window: { start: string; end: string };
-  special_days: [string, string];
+  special_window: { start: string; end: string; days: string[] };
   provenance: {
     prices_fetched_at: string;
     price_basis: string;
@@ -129,7 +164,12 @@ export interface StudyDocument {
     min_days_to_report: number;
     analysis: string;
   };
-  benchmarks: Record<string, { moves: Record<string, number>; band_edges: { t1: number; t2: number; d9: number } }>;
+  benchmarks: Record<string, {
+    /** Each window day’s move. */
+    moves: Record<string, number>;
+    window: { sum_up: number; sum_down: number; up_days: number; down_days: number; growth: number };
+    band_edges: { t1: number; t2: number; d9: number };
+  }>;
   funds: StudyFund[];
   summaries: Record<Basis, Record<string, GroupSummary>>;
 }

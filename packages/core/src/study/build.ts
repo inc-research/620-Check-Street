@@ -5,7 +5,7 @@
 // a sub-group spans. Selections and orderings only; every number is read from the
 // document as published (INV-5).
 
-import type { Basis, BandKey, GroupKey, StudyDocument, StudyFund, StudyReading, SubgroupKey } from './types.ts';
+import type { Basis, BandKey, GroupKey, Stat, StudyDocument, StudyFund, StudyReading, SubgroupKey, WindowDay } from './types.ts';
 import { benchmarkFor } from './validate.ts';
 
 export const STUDY_GROUP_ORDER: GroupKey[] = ['equity_sleeve', 'synthetic_long', 'reference_only'];
@@ -36,36 +36,46 @@ export function studyRows(doc: StudyDocument, basis: Basis): StudyRow[] {
 }
 
 export interface StudyHero {
-  marketFall: number;
-  marketDays: number;
-  marketRank: number;
-  qqqFall: number | null;
+  /** VOO compounded over the special window, as an investor saw it. */
+  marketWindow: number;
+  windowDays: number; upDays: number; downDays: number;
+  worstDay: string; worstMove: number; worstRank: number;
+  bestDay: string; bestMove: number; bestRank: number;
+  qqqWindow: number | null;
   directE: number; directCount: number; directBelowOne: number;
   synE: number; synCount: number; synSettledBelow: number;
   indexE: number; indexCount: number; indexUMax: number; indexUMin: number;
   synGiveBack: number; eqGiveBack: number;
 }
 
+/** VOO's window days, each with its size against the year (from any fund read against VOO). */
+function vooDays(doc: StudyDocument): WindowDay[] {
+  return doc.funds.find((f) => f.readings['VOO'])!.readings['VOO']!.days_in_window;
+}
+
 /** The five cards, always on each fund's own benchmark, as published. */
 export function studyHero(doc: StudyDocument): StudyHero {
   const s = doc.summaries.named;
-  const nov5 = doc.special_days[1];
-  const anyVoo = doc.funds.find((f) => f.readings['VOO'])!.readings['VOO']!;
+  const voo = doc.benchmarks['VOO']!;
+  const days = vooDays(doc);
+  const worst = days.reduce((a, b) => (b.bench < a.bench ? b : a));
+  const best = days.reduce((a, b) => (b.bench > a.bench ? b : a));
   const direct = s['subgroup:direct_stocks']!, syn = s['group:synthetic_long']!, eq = s['group:equity_sleeve']!;
   const index = s['subgroup:index_etf_sleeve']!;
   const rowsOf = (tickers: string[]) =>
     doc.funds.filter((f) => tickers.includes(f.ticker)).map((f) => readingFor(f, 'named').reading);
   const indexU = rowsOf(index.tickers).map((r) => r.u);
   return {
-    marketFall: doc.benchmarks['VOO']!.moves[nov5]!,
-    marketDays: anyVoo.nov5.of,
-    marketRank: anyVoo.nov5.rank,
-    qqqFall: doc.benchmarks['QQQ']?.moves[nov5] ?? null,
+    marketWindow: voo.window.growth - 1,
+    windowDays: days.length, upDays: voo.window.up_days, downDays: voo.window.down_days,
+    worstDay: worst.date, worstMove: worst.bench, worstRank: worst.rank,
+    bestDay: best.date, bestMove: best.bench, bestRank: best.rank,
+    qqqWindow: doc.benchmarks['QQQ'] ? doc.benchmarks['QQQ'].window.growth - 1 : null,
     directE: direct.E!.median, directCount: direct.E!.n,
     directBelowOne: rowsOf(direct.tickers).filter((r) => r.u_plus_b < 1).length,
     synE: syn.E!.median, synCount: syn.E!.n, synSettledBelow: syn.E_settled_below_1,
     indexE: index.E!.median, indexCount: index.E!.n, indexUMax: Math.max(...indexU), indexUMin: Math.min(...indexU),
-    synGiveBack: syn.nov5_takeback_ratio!.median, eqGiveBack: eq.nov5_takeback_ratio!.median,
+    synGiveBack: syn.window_giveback!.median, eqGiveBack: eq.window_giveback!.median,
   };
 }
 
@@ -84,9 +94,9 @@ export function indexEtfSpread(doc: StudyDocument, basis: Basis): { ticker: stri
 }
 
 export interface BandFinding {
-  synSmall: number; synLarge: number; synNov5: number;
-  eqSmall: number; eqLarge: number; eqNov5: number;
-  /** Both groups avoided less on 5 November than on large days generally. */
+  synSmall: number; synLarge: number; synWindow: number;
+  eqSmall: number; eqLarge: number; eqWindow: number;
+  /** Both groups avoided less over the window than on large days generally. */
   lessAgain: boolean;
 }
 
@@ -94,8 +104,28 @@ export function bandFinding(doc: StudyDocument, basis: Basis): BandFinding {
   const s = doc.summaries[basis];
   const syn = s['group:synthetic_long']!, eq = s['group:equity_sleeve']!;
   const f = {
-    synSmall: syn.bands.small.b!.median, synLarge: syn.bands.large.b!.median, synNov5: syn.nov5_day_buffer!.median,
-    eqSmall: eq.bands.small.b!.median, eqLarge: eq.bands.large.b!.median, eqNov5: eq.nov5_day_buffer!.median,
+    synSmall: syn.bands.small.b!.median, synLarge: syn.bands.large.b!.median, synWindow: syn.window_b!.median,
+    eqSmall: eq.bands.small.b!.median, eqLarge: eq.bands.large.b!.median, eqWindow: eq.window_b!.median,
   };
-  return { ...f, lessAgain: f.synNov5 < f.synLarge && f.eqNov5 < f.eqLarge };
+  return { ...f, lessAgain: f.synWindow < f.synLarge && f.eqWindow < f.eqLarge };
+}
+
+export interface StripRow {
+  day: WindowDay;
+  /** The middle fund's share of the day's move in each group, on this basis. */
+  eq: Stat | null;
+  syn: Stat | null;
+}
+
+/**
+ * Every window day against VOO, with each group's middle share. Always VOO: on
+ * their own benchmarks the funds' days need not even point the same way.
+ */
+export function windowStrip(doc: StudyDocument): StripRow[] {
+  const s = doc.summaries.VOO;
+  return vooDays(doc).map((day) => ({
+    day,
+    eq: s['group:equity_sleeve']!.day_capture[day.date] ?? null,
+    syn: s['group:synthetic_long']!.day_capture[day.date] ?? null,
+  }));
 }

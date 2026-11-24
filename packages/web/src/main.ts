@@ -28,7 +28,7 @@ import {
   type Snapshot,
   GAIN_EXPOSURE,
 } from './shim.ts';
-import { SELECTED_REPORTS, findFund, loadFees, loadIndex, loadRates, loadReport, loadSnapshot, loadStudy, state } from './state.ts';
+import { SELECTED_REPORTS, SUPERSEDED_REPORTS, findFund, loadFees, loadIndex, loadRates, loadReport, loadSnapshot, loadStudy, state } from './state.ts';
 import { renderGainExposure } from './views/study/gainExposure.ts';
 import { fill } from './views/report.ts';
 import { renderFunds } from './views/funds.ts';
@@ -134,6 +134,11 @@ function selectedId(): string | null {
 }
 
 async function renderSelected(id: string): Promise<void> {
+  const replacedBy = SUPERSEDED_REPORTS[id];
+  if (replacedBy) {
+    location.replace(`#/selected/${replacedBy}`);
+    return;
+  }
   if (!SELECTED_REPORTS.includes(id)) {
     show(message(fill(GAIN_EXPOSURE.notFound.message, { id }), GAIN_EXPOSURE.notFound.remedy));
     return;
